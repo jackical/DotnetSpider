@@ -75,6 +75,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CountableThreadPoolTests.cs" />
     <Compile Include="PageExtract2MultiTypesTests.cs" />
     <Compile Include="PerformanceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
