@@ -9,25 +9,19 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 	/// </summary>
 	//check:
 	//[Synchronization]
-	public class QueueScheduler : IScheduler, IMonitorableScheduler
+	public class QueueDuplicateRemovedScheduler : DuplicateRemovedScheduler, IMonitorableScheduler
 	{
 		//check:
 		private readonly Queue<Request> _queue = new Queue<Request>();
-		private readonly List<Request> _allRequests = new List<Request>();
-
-		public void Init(ITask task)
-		{
-		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void Push(Request request, ITask task)
+		protected override void PushWhenNoDuplicate(Request request, ITask task)
 		{
 			_queue.Enqueue(request);
-			_allRequests.Add(request);
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public Request Poll(ITask task)
+		public override Request Poll(ITask task)
 		{
 			return _queue.Count > 0 ? _queue.Dequeue() : null;
 		}
@@ -39,7 +33,7 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 
 		public int GetTotalRequestsCount(ITask task)
 		{
-			return _allRequests.Count;
+			return DuplicateRemover.GetTotalRequestsCount(task);
 		}
 	}
 }

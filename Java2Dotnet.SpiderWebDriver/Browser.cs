@@ -4,6 +4,7 @@
 	{
 		Firefox,
 		Phantomjs,
-		Chrome
+		Chrome,
+		Edge
 	}
 }

@@ -28,7 +28,7 @@ namespace Java2Dotnet.Spider.Samples
 			ooSpider.SetEmptySleepTime(15000);
 			ooSpider.SetThreadNum(1);
 			ooSpider.ModelPipeline.CachedSize = 2;
-			ooSpider.SetScheduler(new QueueScheduler());
+			ooSpider.SetScheduler(new QueueDuplicateRemovedScheduler());
 			ooSpider.AddUrl("http://sh.ganji.com/zpdianhuaxiaoshou/o1/");
 			ooSpider.Run();
 		}

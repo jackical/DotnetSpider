@@ -24,7 +24,7 @@ namespace Java2Dotnet.Spider.Samples.Samples
 				new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new ConsolePageModelPipeline(), typeof(walter));
 			ooSpider.SetEmptySleepTime(15000);
 			ooSpider.SetThreadNum(1);
-			ooSpider.SetScheduler(new QueueScheduler());
+			ooSpider.SetScheduler(new QueueDuplicateRemovedScheduler());
 			ooSpider.AddUrl("http://top.iqiyi.com/dianshiju.html#");
 			ooSpider.Run();
 		}

@@ -50,8 +50,12 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 
 		public void UpdateStatus()
 		{
-			using (var redis = _pool.GetClient())
+			using (var redis = _pool?.GetClient())
 			{
+				if (redis == null)
+				{
+					return;
+				}
 				redis.Password = _password;
 				object status = new
 				{

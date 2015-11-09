@@ -11,6 +11,7 @@
 		/// Extract from the raw html
 		/// </summary>
 		RawHtml,
+		Json,
 		Enviroment,
 		Url
 	}

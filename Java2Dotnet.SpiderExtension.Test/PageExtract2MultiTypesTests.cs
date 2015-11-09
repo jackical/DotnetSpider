@@ -41,7 +41,7 @@ namespace Java2Dotnet.Spider.Extension.Test
 			ooSpider.SetEmptySleepTime(15000);
 			ooSpider.SetThreadNum(1);
 			ooSpider.ModelPipeline.CachedSize = 1;
-			ooSpider.SetScheduler(new QueueScheduler());
+			ooSpider.SetScheduler(new QueueDuplicateRemovedScheduler());
 			var results = ooSpider.GetAll(new[] { typeof(Yuanzi), typeof(Jinghua) }, "http://www.cnblogs.com/");
 			Assert.AreEqual("园子", results[typeof(Yuanzi)][0].Name);
 			Assert.AreEqual("新闻", results[typeof(Jinghua)][0].Name);
@@ -54,7 +54,7 @@ namespace Java2Dotnet.Spider.Extension.Test
 			ooSpider.SetEmptySleepTime(15000);
 			ooSpider.SetThreadNum(1);
 			ooSpider.ModelPipeline.CachedSize = 1;
-			ooSpider.SetScheduler(new QueueScheduler());
+			ooSpider.SetScheduler(new QueueDuplicateRemovedScheduler());
 			var results = ooSpider.GetAll(new[] { typeof(Jinghua) }, "http://www.cnblogs.com/");
 			Assert.AreEqual("新闻", results[typeof(Jinghua)][0].Name);
 		}
@@ -67,7 +67,7 @@ namespace Java2Dotnet.Spider.Extension.Test
 			ooSpider.SetEmptySleepTime(15000);
 			ooSpider.SetThreadNum(1);
 			ooSpider.ModelPipeline.CachedSize = 1;
-			ooSpider.SetScheduler(new QueueScheduler());
+			ooSpider.SetScheduler(new QueueDuplicateRemovedScheduler());
 			ooSpider.AddUrl("http://www.cnblogs.com/");
 			ooSpider.Run();
 			DataRepository dataRepository = new DataRepository(typeof(Jinghua));

@@ -74,6 +74,7 @@
     <Compile Include="Proxy\HttpHost.cs" />
     <Compile Include="Proxy\Proxy.cs" />
     <Compile Include="Proxy\ProxyPool.cs" />
+    <Compile Include="Scheduler\QueueScheduler.cs" />
     <Compile Include="Selector\AndSelector.cs" />
     <Compile Include="Selector\BaseElementSelector.cs" />
     <Compile Include="Selector\CssSelector.cs" />
@@ -125,7 +126,7 @@
     <Compile Include="Scheduler\DuplicateRemovedScheduler.cs" />
     <Compile Include="Scheduler\IMonitorableScheduler.cs" />
     <Compile Include="Scheduler\PriorityScheduler.cs" />
-    <Compile Include="Scheduler\QueueScheduler.cs" />
+    <Compile Include="Scheduler\QueueDuplicateRemovedScheduler.cs" />
     <Compile Include="Scheduler\IScheduler.cs" />
     <Compile Include="ISpiderListener.cs" />
     <Compile Include="CountableThreadPool.cs" />

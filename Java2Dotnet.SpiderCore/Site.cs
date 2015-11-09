@@ -16,7 +16,7 @@ namespace Java2Dotnet.Spider.Core
 	{
 		private readonly Dictionary<string, string> _defaultCookies = new Dictionary<string, string>();
 		private readonly Dictionary<string, Dictionary<string, string>> _cookies = new Dictionary<string, Dictionary<string, string>>();
-		private readonly HashSet<Request> _startRequests = new HashSet<Request>();
+		private readonly List<Request> _startRequests = new List<Request>();
 		private readonly Hashtable _headers = new Hashtable();
 		private ProxyPool _httpProxyPool = new ProxyPool();
 
@@ -129,7 +129,7 @@ namespace Java2Dotnet.Spider.Core
 			return UrlUtils.ConvertToUrls(_startRequests);
 		}
 
-		public HashSet<Request> GetStartRequests()
+		public List<Request> GetStartRequests()
 		{
 			return _startRequests;
 		}

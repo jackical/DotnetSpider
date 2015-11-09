@@ -10,7 +10,7 @@ namespace Java2Dotnet.Spider.Core.Test.Scheduler
 		[TestMethod]
 		public void QueueSchedulerPushPollSynchronized()
 		{
-			QueueScheduler scheduler = new QueueScheduler();
+			QueueDuplicateRemovedScheduler scheduler = new QueueDuplicateRemovedScheduler();
 			ITask task = new DefaultTask("test", new Site());
 
 			Parallel.For(0, 1000, new ParallelOptions() { MaxDegreeOfParallelism = 30 }, i =>
@@ -39,7 +39,7 @@ namespace Java2Dotnet.Spider.Core.Test.Scheduler
 		[TestMethod]
 		public void QueueSchedulerPush()
 		{
-			QueueScheduler scheduler = new QueueScheduler();
+			QueueDuplicateRemovedScheduler scheduler = new QueueDuplicateRemovedScheduler();
 			ITask task = new DefaultTask("test", new Site());
 			scheduler.Push(new Request("a", 1, null), task);
 			scheduler.Push(new Request("a", 1, null), task);
@@ -57,7 +57,7 @@ namespace Java2Dotnet.Spider.Core.Test.Scheduler
 		[TestMethod]
 		public void QueueSchedulerPoll()
 		{
-			QueueScheduler scheduler = new QueueScheduler();
+			QueueDuplicateRemovedScheduler scheduler = new QueueDuplicateRemovedScheduler();
 			ITask task = new DefaultTask("test", new Site());
 			scheduler.Push(new Request("a", 1, null), task);
 			scheduler.Push(new Request("a", 1, null), task);

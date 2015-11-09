@@ -58,8 +58,8 @@ namespace Java2Dotnet.Spider.Core
 		protected IDownloader Downloader { get; set; }
 		protected List<IPipeline> Pipelines { get; set; } = new List<IPipeline>();
 		protected IPageProcessor PageProcessor { get; set; }
-		protected HashSet<Request> StartRequests { get; set; }
-		protected IScheduler Scheduler { get; set; } = new QueueScheduler();
+		protected List<Request> StartRequests { get; set; }
+		protected IScheduler Scheduler { get; set; } = new QueueDuplicateRemovedScheduler();
 		public int ThreadNum { get; set; } = 1;
 		public int Deep { get; set; } = int.MaxValue;
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(Spider));
@@ -147,7 +147,7 @@ namespace Java2Dotnet.Spider.Core
 		public Spider StartUrls(IList<string> startUrls)
 		{
 			CheckIfRunning();
-			StartRequests = new HashSet<Request>(UrlUtils.ConvertToRequests(startUrls, 1));
+			StartRequests = new List<Request>(UrlUtils.ConvertToRequests(startUrls, 1));
 			return this;
 		}
 
@@ -160,7 +160,7 @@ namespace Java2Dotnet.Spider.Core
 		public Spider StartRequest(IList<Request> startRequests)
 		{
 			CheckIfRunning();
-			StartRequests = new HashSet<Request>(startRequests);
+			StartRequests = new List<Request>(startRequests);
 			return this;
 		}
 
@@ -292,7 +292,7 @@ namespace Java2Dotnet.Spider.Core
 			{
 				if (StartRequests.Count > 0)
 				{
-					Parallel.ForEach(StartRequests, new ParallelOptions() { MaxDegreeOfParallelism = 100 }, request =>
+					Parallel.ForEach(StartRequests, new ParallelOptions() { MaxDegreeOfParallelism = 25 }, request =>
 					{
 						Scheduler.Push((Request)request.Clone(), this);
 					});

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Java2Dotnet.Spider.Core;
@@ -23,9 +22,9 @@ namespace Java2Dotnet.Spider.Extension.Model
 		private ISelector _helpUrlRegionSelector;
 		private readonly Type _modelType;
 		private List<FieldExtractor> _fieldExtractors;
+		private IObjectFormatter _targetUrlFormatter;
 		private Extractor _objectExtractor;
 		private readonly static log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(PageModelExtractor));
-		private static readonly WebClient WebClient = new WebClient();
 		private static readonly Regex UrlRegex = new Regex(@"((http|https|ftp):(\/\/|\\\\)((\w)+[.]){1£¬}(net|com|cn|org|cc|tv|[0-9]{1£¬3})(((\/[\~]*|\\[\~]*)(\w)+)|[.](\w)+)*(((([?](\w)+){1}[=]*))*((\w)+){1}([\&](\w)+[\=](\w)+)*)*)");
 
 		private PageModelExtractor(Type type)
@@ -193,15 +192,15 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 		private void InitTypeExtractors()
 		{
-			System.Attribute annotation = _modelType.GetCustomAttribute<TargetUrl>();
-			if (annotation == null)
+			TargetUrl targetUrlAttribute = _modelType.GetCustomAttribute<TargetUrl>();
+
+			if (targetUrlAttribute == null)
 			{
 				_targetUrlPatterns.Add(new Regex("(.*)"));
 			}
 			else
 			{
-				TargetUrl targetUrl = (TargetUrl)annotation;
-				string[] value = targetUrl.Value;
+				string[] value = targetUrlAttribute.Value;
 
 				if (value != null)
 				{
@@ -215,28 +214,25 @@ namespace Java2Dotnet.Spider.Extension.Model
 					_targetUrlPatterns.Add(new Regex("(.*)"));
 				}
 
-				_targetUrlRegionSelector = new XPathSelector(string.IsNullOrEmpty(targetUrl.SourceRegion) ? "." : targetUrl.SourceRegion);
+				_targetUrlRegionSelector = new XPathSelector(string.IsNullOrEmpty(targetUrlAttribute.SourceRegion) ? "." : targetUrlAttribute.SourceRegion);
 			}
-			annotation = _modelType.GetCustomAttribute<HelpUrl>();
-			if (annotation != null)
+			HelpUrl helpAnnotation = _modelType.GetCustomAttribute<HelpUrl>();
+			if (helpAnnotation != null)
 			{
-				HelpUrl helpUrl = (HelpUrl)annotation;
-				string[] value = helpUrl.Value;
+				string[] value = helpAnnotation.Value;
 				foreach (string s in value)
 				{
 					_helpUrlPatterns.Add(new Regex("(" + s.Replace(".", "\\.").Replace("*", "[^\"'#]*") + ")"));
 				}
-				if (!string.IsNullOrEmpty(helpUrl.SourceRegion))
+				if (!string.IsNullOrEmpty(helpAnnotation.SourceRegion))
 				{
-					_helpUrlRegionSelector = new XPathSelector(helpUrl.SourceRegion);
+					_helpUrlRegionSelector = new XPathSelector(helpAnnotation.SourceRegion);
 				}
 			}
-			annotation = _modelType.GetCustomAttribute<ExtractBy>();
-			if (annotation != null)
+			ExtractBy extractByAttribute = _modelType.GetCustomAttribute<ExtractBy>();
+			if (extractByAttribute != null)
 			{
-				ExtractBy extractBy = (ExtractBy)annotation;
-
-				_objectExtractor = ExtractorUtils.GetExtractor(extractBy);
+				_objectExtractor = ExtractorUtils.GetExtractor(extractByAttribute);
 			}
 		}
 
@@ -287,7 +283,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 			}
 		}
 
-		private object ProcessSingle(Page page, string html, bool isRaw)
+		private object ProcessSingle(Page page, string content, bool isEntire)
 		{
 			object instance = Activator.CreateInstance(_modelType);
 			foreach (FieldExtractor fieldExtractor in _fieldExtractors)
@@ -301,7 +297,10 @@ namespace Java2Dotnet.Spider.Extension.Model
 							value = page.GetHtml().SelectDocumentForList(fieldExtractor.Selector);
 							break;
 						case ExtractSource.Html:
-							value = isRaw ? page.GetHtml().SelectDocumentForList(fieldExtractor.Selector) : fieldExtractor.Selector.SelectList(html);
+							value = isEntire ? page.GetHtml().SelectDocumentForList(fieldExtractor.Selector) : fieldExtractor.Selector.SelectList(content);
+							break;
+						case ExtractSource.Json:
+							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).GetAll() : fieldExtractor.Selector.SelectList(content);
 							break;
 						case ExtractSource.Url:
 							value = fieldExtractor.Selector.SelectList(page.GetUrl().ToString());
@@ -313,7 +312,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 								break;
 							}
 						default:
-							value = fieldExtractor.Selector.SelectList(html);
+							value = fieldExtractor.Selector.SelectList(content);
 							break;
 					}
 					if ((value == null || value.Count == 0) && fieldExtractor.NotNull)
@@ -428,7 +427,10 @@ namespace Java2Dotnet.Spider.Extension.Model
 							value = page.GetHtml().SelectDocument(fieldExtractor.Selector);
 							break;
 						case ExtractSource.Html:
-							value = isRaw ? page.GetHtml().SelectDocument(fieldExtractor.Selector) : fieldExtractor.Selector.Select(html);
+							value = isEntire ? page.GetHtml().SelectDocument(fieldExtractor.Selector) : fieldExtractor.Selector.Select(content);
+							break;
+						case ExtractSource.Json:
+							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).Value : fieldExtractor.Selector.Select(content);
 							break;
 						case ExtractSource.Url:
 							value = fieldExtractor.Selector.Select(page.GetUrl().ToString());
@@ -443,7 +445,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 								break;
 							}
 						default:
-							value = fieldExtractor.Selector.Select(html);
+							value = fieldExtractor.Selector.Select(content);
 							break;
 					}
 					if (value == null && fieldExtractor.NotNull)
@@ -538,6 +540,11 @@ namespace Java2Dotnet.Spider.Extension.Model
 		public IList<Regex> GetTargetUrlPatterns()
 		{
 			return _targetUrlPatterns;
+		}
+
+		public IObjectFormatter GetTargetUrlFormatter()
+		{
+			return _targetUrlFormatter;
 		}
 
 		public IList<Regex> GetHelpUrlPatterns()

@@ -2,8 +2,6 @@
 using System.Runtime.CompilerServices;
 using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Core.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Java2Dotnet.Spider.Core
 {
@@ -26,7 +24,7 @@ namespace Java2Dotnet.Spider.Core
 
 		private Html _html;
 
-		private JObject _json;
+		private Json _json;
 
 		private string _rawText;
 
@@ -75,9 +73,9 @@ namespace Java2Dotnet.Spider.Core
 		/// Get json content of page
 		/// </summary>
 		/// <returns></returns>
-		public JObject GetJson()
+		public Json GetJson()
 		{
-			return _json ?? (_json = (JObject)JsonConvert.DeserializeObject(_rawText));
+			return _json ?? (_json = new Json(_rawText));
 		}
 
 		public void SetHtml(Html html)

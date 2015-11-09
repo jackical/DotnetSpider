@@ -41,6 +41,10 @@ namespace Java2Dotnet.Spider.Extension.Model.Attribute
 					{
 						Source = ExtractSource.Enviroment;
 					}
+					if (value == ExtracType.JsonPath)
+					{
+						Source = ExtractSource.Json;
+					}
 				}
 			}
 		}

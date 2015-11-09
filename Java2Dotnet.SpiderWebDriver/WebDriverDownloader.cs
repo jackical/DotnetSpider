@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -8,6 +9,7 @@ using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Downloader;
 using Java2Dotnet.Spider.Core.Selector;
 using OpenQA.Selenium;
+using Java2Dotnet.Spider.Lib;
 
 namespace Java2Dotnet.Spider.WebDriver
 {
@@ -27,27 +29,22 @@ namespace Java2Dotnet.Spider.WebDriver
 			_webDriverWaitTime = webDriverWaitTime;
 			_browser = browser;
 
-			Task.Factory.StartNew(() =>
+			if (browser == Browser.Firefox)
 			{
-				while (true)
+				Task.Factory.StartNew(() =>
 				{
-					Process[] faultProcesses = Process.GetProcessesByName("WerFault");
-					foreach (var process in faultProcesses)
+					while (true)
 					{
-						try
+						IntPtr maindHwnd = WindowsFormUtil.FindWindow(null, "plugin-container.exe - 应用程序错误");
+						if (maindHwnd != IntPtr.Zero)
 						{
-							process.Kill();
+							WindowsFormUtil.SendMessage(maindHwnd, WindowsFormUtil.WM_CLOSE, 0, 0);
 						}
-						catch (Exception)
-						{
-							// ignored
-						}
+						Thread.Sleep(500);
 					}
-
-					Thread.Sleep(500);
-				}
-				// ReSharper disable once FunctionNeverReturns
-			});
+					// ReSharper disable once FunctionNeverReturns
+				});
+			}
 		}
 
 		public override Page Download(Request request, ITask task)
@@ -73,13 +70,17 @@ namespace Java2Dotnet.Spider.WebDriver
 					}
 
 					IOptions manage = driverService.WebDriver.Manage();
-					if (site.GetCookies() != null)
+					if (site.GetCookies() != null && site.GetCookies().Count > 0)
 					{
 						foreach (KeyValuePair<String, String> cookieEntry in site.GetCookies())
 						{
 							Cookie cookie = new Cookie(cookieEntry.Key, cookieEntry.Value);
 							manage.Cookies.AddCookie(cookie);
 						}
+					}
+					else
+					{
+						manage.Cookies.DeleteAllCookies();
 					}
 				}
 
