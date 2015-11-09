@@ -99,12 +99,12 @@ namespace Java2Dotnet.Spider.Core
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void WaitToEnd()
 		{
-			_end = true;
-
 			while (_tasks.Count > 0)
 			{
 				Thread.Sleep(1000);
 			}
+
+			_end = true;
 		}
 
 		public bool IsShutdown => _cts.IsCancellationRequested;
@@ -113,11 +113,12 @@ namespace Java2Dotnet.Spider.Core
 		public void Shutdown()
 		{
 			_cts.Cancel();
-			_end = true;
+
 			while (!_cts.IsCancellationRequested)
 			{
 				Thread.Sleep(500);
 			}
+			_end = true;
 		}
 	}
 }
