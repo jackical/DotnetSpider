@@ -75,7 +75,7 @@ namespace Java2Dotnet.Spider.WebDriver
 							{
 								profile.SetPreference("permissions.default.image", 2);
 							}
-							if (!_option.LoadPlashPlayer)
+							if (!_option.LoadFlashPlayer)
 							{
 								profile.SetPreference("dom.ipc.plugins.enabled.libflashplayer.so", "false");
 							}
