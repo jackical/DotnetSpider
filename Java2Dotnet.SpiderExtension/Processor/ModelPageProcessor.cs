@@ -6,6 +6,8 @@ using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Processor;
 using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Extension.Model;
+using Java2Dotnet.Spider.Extension.Model.Formatter;
+using ServiceStack;
 
 namespace Java2Dotnet.Spider.Extension.Processor
 {
@@ -16,7 +18,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 	{
 		private readonly IList<PageModelExtractor> _pageModelExtractorList = new List<PageModelExtractor>();
 
-		public static ModelPageProcessor Create(Site site,  params Type[] types)
+		public static ModelPageProcessor Create(Site site, params Type[] types)
 		{
 			ModelPageProcessor modelPageProcessor = new ModelPageProcessor(site);
 			foreach (Type type in types)
@@ -52,7 +54,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 				PostProcessPageModel(process);
 				page.PutField(pageModelExtractor.GetModelType().FullName, process);
 
-				ExtractLinks(page, pageModelExtractor.GetTargetUrlRegionSelector(), pageModelExtractor.GetTargetUrlPatterns());
+				ExtractLinks(page, pageModelExtractor.GetTargetUrlRegionSelector(), pageModelExtractor.GetTargetUrlPatterns(), pageModelExtractor.GetTargetUrlFormatter());
 			}
 			if (page.GetResultItems().GetAll().Count == 0)
 			{
@@ -66,9 +68,21 @@ namespace Java2Dotnet.Spider.Extension.Processor
 		/// <param name="page"></param>
 		/// <param name="urlRegionSelector"></param>
 		/// <param name="urlPatterns"></param>
-		private void ExtractLinks(Page page, ISelector urlRegionSelector, IList<Regex> urlPatterns)
+		/// <param name="formatter"></param>
+		private void ExtractLinks(Page page, ISelector urlRegionSelector, IList<Regex> urlPatterns, IObjectFormatter formatter = null)
 		{
 			var links = urlRegionSelector == null ? new List<string>() : page.GetHtml().SelectList(urlRegionSelector).Links().GetAll();
+
+			// check: 仔细考虑是放在前面, 还是在后面做 formatter, 我倾向于在前面. 对targetUrl做formatter则表示Start Url也应该是要符合这个规则的。
+			if (formatter != null)
+			{
+				List<string> tmp = new List<string>();
+				foreach (var link in links)
+				{
+					tmp.Add(formatter.Format(link));
+				}
+				links = tmp;
+			}
 
 			if (urlPatterns == null || urlPatterns.Count == 0)
 			{

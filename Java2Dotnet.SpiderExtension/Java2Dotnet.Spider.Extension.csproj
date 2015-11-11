@@ -114,6 +114,7 @@
     <Compile Include="Model\Attribute\Column.cs" />
     <Compile Include="Model\Attribute\ComboExtract.cs" />
     <Compile Include="Model\Attribute\ExtractBy.cs" />
+    <Compile Include="Model\Attribute\TargetUrlFormatter.cs" />
     <Compile Include="Model\Attribute\HelpUrl.cs" />
     <Compile Include="Model\Attribute\Download.cs" />
     <Compile Include="Model\Attribute\Stoper.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Model\Formatter\CustomizeFormatter.cs" />
     <Compile Include="Model\Formatter\FormatterFactory.cs" />
     <Compile Include="Model\Formatter\IObjectFormatter.cs" />
+    <Compile Include="Model\Formatter\AppendFormatter.cs" />
     <Compile Include="Model\Formatter\ReplaceFormatter.cs" />
     <Compile Include="Model\Formatter\PrefixFormatter.cs" />
     <Compile Include="Model\Formatter\RegexFormatter.cs" />

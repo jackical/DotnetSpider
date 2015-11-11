@@ -215,6 +215,14 @@ namespace Java2Dotnet.Spider.Extension.Model
 				}
 
 				_targetUrlRegionSelector = new XPathSelector(string.IsNullOrEmpty(targetUrlAttribute.SourceRegion) ? "." : targetUrlAttribute.SourceRegion);
+
+				TargetUrlFormatter formatter = _modelType.GetCustomAttribute<TargetUrlFormatter>();
+
+				if (formatter?.FormatterType != null)
+				{
+					_targetUrlFormatter = (IObjectFormatter)Activator.CreateInstance(formatter.FormatterType);
+					_targetUrlFormatter.InitParam(formatter.Value);
+				}
 			}
 			HelpUrl helpAnnotation = _modelType.GetCustomAttribute<HelpUrl>();
 			if (helpAnnotation != null)

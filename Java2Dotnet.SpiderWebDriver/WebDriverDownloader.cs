@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -22,6 +20,7 @@ namespace Java2Dotnet.Spider.WebDriver
 		private static bool _isLogined;
 
 		public Func<IWebDriver, bool> LoginFunc;
+		public Func<string, string> UrlFormatFunc;
 
 		public WebDriverDownloader(Browser browser = Browser.Phantomjs, int webDriverWaitTime = 200, Option option = null)
 		{
@@ -92,6 +91,11 @@ namespace Java2Dotnet.Spider.WebDriver
 				string realUrl = uri.Scheme + "://" + uri.DnsSafeHost + uri.AbsolutePath + (string.IsNullOrEmpty(query) ? ""
 					: ("?" + HttpUtility.UrlPathEncode(uri.Query.Substring(1, uri.Query.Length - 1))));
 
+				if (UrlFormatFunc != null)
+				{
+					realUrl = UrlFormatFunc(realUrl);
+				}
+
 				driverService.WebDriver.Navigate().GoToUrl(realUrl);
 
 				Thread.Sleep(_webDriverWaitTime);
@@ -100,6 +104,7 @@ namespace Java2Dotnet.Spider.WebDriver
 				page.SetRawText(driverService.WebDriver.PageSource);
 				page.SetUrl(new PlainText(request.Url));
 				page.SetTargetUrl(new PlainText(driverService.WebDriver.Url));
+				page.Title = driverService.WebDriver.Title;
 
 				//customer verify
 				if (DownloadVerifyEvent != null)

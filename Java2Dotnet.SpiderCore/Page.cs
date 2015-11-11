@@ -175,6 +175,8 @@ namespace Java2Dotnet.Spider.Core
 			_url = url;
 		}
 
+		public string Title { get; set; }
+
 		public void SetTargetUrl(ISelectable url)
 		{
 			_targetUrl = url;
