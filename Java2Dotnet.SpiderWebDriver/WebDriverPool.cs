@@ -62,7 +62,13 @@ namespace Java2Dotnet.Spider.WebDriver
 					switch (_browser)
 					{
 						case Browser.Phantomjs:
-							e = new PhantomJSDriver();
+							var phantomJsDriverService = PhantomJSDriverService.CreateDefaultService();
+							if (!string.IsNullOrEmpty(_option.Proxy))
+							{
+								phantomJsDriverService.Proxy = _option.Proxy;
+								phantomJsDriverService.ProxyAuthentication = _option.ProxyAuthentication;
+							}
+							e = new PhantomJSDriver(phantomJsDriverService);
 							break;
 						case Browser.Firefox:
 							FirefoxProfile profile = new FirefoxProfile();
@@ -70,7 +76,7 @@ namespace Java2Dotnet.Spider.WebDriver
 							{
 								profile.AlwaysLoadNoFocusLibrary = true;
 							}
-							//profile.SetPreference("permissions.default.stylesheet", 2);
+
 							if (!_option.LoadImage)
 							{
 								profile.SetPreference("permissions.default.image", 2);
@@ -79,6 +85,11 @@ namespace Java2Dotnet.Spider.WebDriver
 							{
 								profile.SetPreference("dom.ipc.plugins.enabled.libflashplayer.so", "false");
 							}
+							if (!string.IsNullOrEmpty(_option.Proxy))
+							{
+								profile.SetProxyPreferences(new Proxy() { HttpProxy = _option.Proxy });
+							}
+
 							e = new FirefoxDriver(profile);
 							break;
 						case Browser.Chrome:
@@ -88,6 +99,10 @@ namespace Java2Dotnet.Spider.WebDriver
 							if (!_option.LoadImage)
 							{
 								opt.AddUserProfilePreference("profile", new { default_content_settings = new { images = 2 } });
+							}
+							if (!string.IsNullOrEmpty(_option.Proxy))
+							{
+								opt.Proxy = new Proxy() { HttpProxy = _option.Proxy };
 							}
 							e = new ChromeDriver(cds, opt);
 							break;
