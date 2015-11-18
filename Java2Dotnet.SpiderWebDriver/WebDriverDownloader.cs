@@ -46,7 +46,7 @@ namespace Java2Dotnet.Spider.WebDriver
 			}
 		}
 
-		public override Page Download(Request request, ITask task)
+		public override Page Download(Request request, ISpider spider)
 		{
 			CheckInit();
 
@@ -58,7 +58,7 @@ namespace Java2Dotnet.Spider.WebDriver
 
 				lock (this)
 				{
-					Site site = task.Site;
+					Site site = spider.Site;
 					if (!_isLogined && LoginFunc != null)
 					{
 						_isLogined = LoginFunc.Invoke(driverService.WebDriver);
@@ -77,10 +77,10 @@ namespace Java2Dotnet.Spider.WebDriver
 							manage.Cookies.AddCookie(cookie);
 						}
 					}
-					else
-					{
-						manage.Cookies.DeleteAllCookies();
-					}
+					//else
+					//{
+					//	manage.Cookies.DeleteAllCookies();
+					//}
 				}
 
 				//Logger.Info("Downloading page " + request.Url);

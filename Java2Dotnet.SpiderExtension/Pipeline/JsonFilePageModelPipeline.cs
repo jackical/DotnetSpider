@@ -32,11 +32,11 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 			SetPath(path);
 		}
 
-		public void Process(Dictionary<Type, List<dynamic>> data, ITask task)
+		public void Process(Dictionary<Type, List<dynamic>> data, ISpider spider)
 		{
 			foreach (var pair in data)
 			{
-				string path = BasePath + "/" + task.Identify + "/";
+				string path = BasePath + "/" + spider.Identify + "/";
 				try
 				{
 					string filename = path + pair.Key.FullName + ".json";

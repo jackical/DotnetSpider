@@ -6,7 +6,7 @@ namespace Java2Dotnet.Spider.Core.Scheduler.Component
 	{
 		private readonly ConcurrentDictionary<string, string> _urls = new ConcurrentDictionary<string, string>();
 
-		public bool IsDuplicate(Request request, ITask task)
+		public bool IsDuplicate(Request request, ISpider spider)
 		{
 			bool isDuplicate = _urls.ContainsKey(request.Url);
 			if (!isDuplicate)
@@ -16,12 +16,12 @@ namespace Java2Dotnet.Spider.Core.Scheduler.Component
 			return isDuplicate;
 		}
 
-		public void ResetDuplicateCheck(ITask task)
+		public void ResetDuplicateCheck(ISpider spider)
 		{
 			_urls.Clear();
 		}
 
-		public int GetTotalRequestsCount(ITask task)
+		public int GetTotalRequestsCount(ISpider spider)
 		{
 			return _urls.Count;
 		}

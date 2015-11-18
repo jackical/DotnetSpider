@@ -12,7 +12,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		private readonly Dictionary<Type, List<dynamic>> _collector = new Dictionary<Type, List<dynamic>>();
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void Process(Dictionary<Type, List<dynamic>> data, ITask task)
+		public void Process(Dictionary<Type, List<dynamic>> data, ISpider spider)
 		{
 			foreach (var pair in data)
 			{

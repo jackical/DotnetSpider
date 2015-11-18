@@ -5,7 +5,7 @@ using log4net;
 
 namespace Java2Dotnet.Spider.Core.Pipeline
 {
-	public delegate void FlushCachedPipeline(ITask task);
+	public delegate void FlushCachedPipeline(ISpider spider);
 
 	public abstract class CachedPipeline : IPipeline
 	{
@@ -15,7 +15,7 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 
 		public int CachedSize { get; set; } = 1;
 
-		public void Process(ResultItems resultItems, ITask task)
+		public void Process(ResultItems resultItems, ISpider spider)
 		{
 			_cached.Add(resultItems);
 
@@ -30,19 +30,19 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 				}
 
 				// 做成异步
-				Process(result.ToList(), task);
+				Process(result.ToList(), spider);
 			}
 		}
 
-		public void Flush(ITask task)
+		public void Flush(ISpider spider)
 		{
 			if (_cached.Count > 0)
 			{
-				Process(_cached, task);
+				Process(_cached, spider);
 				_cached.Clear();
 			}
 		}
 
-		protected abstract void Process(List<ResultItems> resultItemsList, ITask task);
+		protected abstract void Process(List<ResultItems> resultItemsList, ISpider spider);
 	}
 }

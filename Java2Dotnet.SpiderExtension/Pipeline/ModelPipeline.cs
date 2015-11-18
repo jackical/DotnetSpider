@@ -20,7 +20,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 			return this;
 		}
 
-		protected override void Process(List<ResultItems> resultItemsList, ITask task)
+		protected override void Process(List<ResultItems> resultItemsList, ISpider spider)
 		{
 			if (resultItemsList == null || resultItemsList.Count == 0)
 			{
@@ -60,7 +60,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 						}
 					}
 				}
-				pipelineEntry.Value.Process(resultDictionary, task);
+				pipelineEntry.Value.Process(resultDictionary, spider);
 			}
 		}
 	}

@@ -11,26 +11,26 @@ namespace Java2Dotnet.Spider.Core.Test.Scheduler
 		public void QueueSchedulerPushPollSynchronized()
 		{
 			QueueDuplicateRemovedScheduler scheduler = new QueueDuplicateRemovedScheduler();
-			ITask task = new DefaultTask("test", new Site());
+			ISpider spider = new DefaultSpider("test", new Site());
 
 			Parallel.For(0, 1000, new ParallelOptions() { MaxDegreeOfParallelism = 30 }, i =>
 			{
-				scheduler.Push(new Request("a", 1, null), task);
-				scheduler.Push(new Request("a", 1, null), task);
-				scheduler.Push(new Request("a", 1, null), task);
+				scheduler.Push(new Request("a", 1, null), spider);
+				scheduler.Push(new Request("a", 1, null), spider);
+				scheduler.Push(new Request("a", 1, null), spider);
 
-				scheduler.Push(new Request("b", 1, null), task);
+				scheduler.Push(new Request("b", 1, null), spider);
 
-				scheduler.Push(new Request(i.ToString(), 1, null), task);
+				scheduler.Push(new Request(i.ToString(), 1, null), spider);
 			});
 
 			Parallel.For(0, 1000, new ParallelOptions() { MaxDegreeOfParallelism = 30 }, i =>
 			{
-				scheduler.Poll(task);
+				scheduler.Poll(spider);
 			});
 
-			int left = scheduler.GetLeftRequestsCount(task);
-			int total = scheduler.GetTotalRequestsCount(task);
+			int left = scheduler.GetLeftRequestsCount(spider);
+			int total = scheduler.GetTotalRequestsCount(spider);
 
 			Assert.AreEqual(left, 2);
 			Assert.AreEqual(total, 1002);
@@ -40,14 +40,14 @@ namespace Java2Dotnet.Spider.Core.Test.Scheduler
 		public void QueueSchedulerPush()
 		{
 			QueueDuplicateRemovedScheduler scheduler = new QueueDuplicateRemovedScheduler();
-			ITask task = new DefaultTask("test", new Site());
-			scheduler.Push(new Request("a", 1, null), task);
-			scheduler.Push(new Request("a", 1, null), task);
-			scheduler.Push(new Request("a", 1, null), task);
+			ISpider spider = new DefaultSpider("test", new Site());
+			scheduler.Push(new Request("a", 1, null), spider);
+			scheduler.Push(new Request("a", 1, null), spider);
+			scheduler.Push(new Request("a", 1, null), spider);
 
-			scheduler.Push(new Request("b", 1, null), task);
-			int left = scheduler.GetLeftRequestsCount(task);
-			int total = scheduler.GetTotalRequestsCount(task);
+			scheduler.Push(new Request("b", 1, null), spider);
+			int left = scheduler.GetLeftRequestsCount(spider);
+			int total = scheduler.GetTotalRequestsCount(spider);
 
 			Assert.AreEqual(left, 2);
 			Assert.AreEqual(total, 2);
@@ -58,18 +58,18 @@ namespace Java2Dotnet.Spider.Core.Test.Scheduler
 		public void QueueSchedulerPoll()
 		{
 			QueueDuplicateRemovedScheduler scheduler = new QueueDuplicateRemovedScheduler();
-			ITask task = new DefaultTask("test", new Site());
-			scheduler.Push(new Request("a", 1, null), task);
-			scheduler.Push(new Request("a", 1, null), task);
-			scheduler.Push(new Request("a", 1, null), task);
+			ISpider spider = new DefaultSpider("test", new Site());
+			scheduler.Push(new Request("a", 1, null), spider);
+			scheduler.Push(new Request("a", 1, null), spider);
+			scheduler.Push(new Request("a", 1, null), spider);
 
-			scheduler.Push(new Request("b", 1, null), task);
+			scheduler.Push(new Request("b", 1, null), spider);
 
-			var request = scheduler.Poll(task);
+			var request = scheduler.Poll(spider);
 			Assert.AreEqual(request.Url, "a");
 
-			int left = scheduler.GetLeftRequestsCount(task);
-			int total = scheduler.GetTotalRequestsCount(task);
+			int left = scheduler.GetLeftRequestsCount(spider);
+			int total = scheduler.GetTotalRequestsCount(spider);
 
 			Assert.AreEqual(left, 1);
 			Assert.AreEqual(total, 2);

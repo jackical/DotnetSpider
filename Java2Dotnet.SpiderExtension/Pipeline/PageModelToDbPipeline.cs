@@ -30,7 +30,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 
 		private readonly AutomicLong _totalCount = new AutomicLong(0);
 
-		public void Process(Dictionary<Type, List<dynamic>> data, ITask task)
+		public void Process(Dictionary<Type, List<dynamic>> data, ISpider spider)
 		{
 			if (data == null)
 			{

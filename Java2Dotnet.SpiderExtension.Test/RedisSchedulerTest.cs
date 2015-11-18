@@ -12,19 +12,30 @@ namespace Java2Dotnet.Spider.Extension.Test
 		{
 			RedisScheduler redisScheduler = new RedisScheduler("localhost", "");
 
-			ITask task = new TestTask();
+			ISpider spider = new TestSpider();
 			Request request = new Request("http://www.ibm.com/developerworks/cn/java/j-javadev2-22/", 1, null);
 			request.PutExtra("1", "2");
-			redisScheduler.Push(request, task);
-			redisScheduler.Poll(task);
+			redisScheduler.Push(request, spider);
+			redisScheduler.Poll(spider);
 			//System.out.println(poll);
 		}
 	}
 
-	internal class TestTask : ITask
+	internal class TestSpider : ISpider
 	{
 		public string Identify => "1";
 
 		public Site Site => null;
+		public void Start()
+		{
+		}
+
+		public void Run()
+		{
+		}
+
+		public void Stop()
+		{
+		}
 	};
 }

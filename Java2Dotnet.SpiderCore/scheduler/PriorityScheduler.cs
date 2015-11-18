@@ -16,7 +16,7 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 		private readonly PriorityBlockingQueue<Request> _priorityQueuePlus = new PriorityBlockingQueue<Request>(InitialCapacity);
 		private readonly PriorityBlockingQueue<Request> _priorityQueueMinus = new PriorityBlockingQueue<Request>(InitialCapacity, new Comparator());
 
-		protected override void PushWhenNoDuplicate(Request request, ITask task)
+		protected override void PushWhenNoDuplicate(Request request, ISpider spider)
 		{
 			if (request.Priority == 0)
 			{
@@ -32,7 +32,7 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 			}
 		}
 
-		public override Request Poll(ITask task)
+		public override Request Poll(ISpider spider)
 		{
 			Request poll = _priorityQueuePlus.Pop();
 			if (poll != null)
@@ -47,14 +47,14 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 			return _priorityQueueMinus.Pop();
 		}
 
-		public int GetLeftRequestsCount(ITask task)
+		public int GetLeftRequestsCount(ISpider spider)
 		{
 			return _noPriorityQueue.Count;
 		}
 
-		public int GetTotalRequestsCount(ITask task)
+		public int GetTotalRequestsCount(ISpider spider)
 		{
-			return DuplicateRemover.GetTotalRequestsCount(task);
+			return DuplicateRemover.GetTotalRequestsCount(spider);
 		}
 
 		private class Comparator : IComparer<Request>

@@ -8,7 +8,7 @@ namespace Java2Dotnet.Spider.Core.Test.Pipeline
 	public class FilePipelineTest
 	{
 		private ResultItems _resultItems;
-		private ITask _task;
+		private ISpider _spider;
 
 		[TestInitialize]
 		public void Before()
@@ -17,22 +17,33 @@ namespace Java2Dotnet.Spider.Core.Test.Pipeline
 			_resultItems.Put("content", "webmagic 爬虫工具");
 			Request request = new Request("http://www.baidu.com", 1, null);
 			_resultItems.Request = request;
-			_task = new TestTask();
+			_spider = new TestSpider();
 
 		}
 
-		private class TestTask : ITask
+		private class TestSpider : ISpider
 		{
 			public string Identify => Guid.NewGuid().ToString();
 
 			public Site Site => null;
+			public void Start()
+			{
+			}
+
+			public void Run()
+			{
+			}
+
+			public void Stop()
+			{
+			}
 		};
 
 		[TestMethod]
 		public void TestProcess()
 		{
 			FilePipeline filePipeline = new FilePipeline();
-			filePipeline.Process(_resultItems, _task);
+			filePipeline.Process(_resultItems, _spider);
 		}
 	}
 }

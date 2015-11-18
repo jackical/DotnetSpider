@@ -29,12 +29,12 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 		}
 
-		public override void Init(ITask task)
+		public override void Init(ISpider spider)
 		{
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
-				redis.AddItemToSortedSet(TaskList, task.Identify, DateTimeUtil.GetCurrentTimeStamp());
+				redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
 			}
 		}
 
@@ -45,46 +45,46 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			DuplicateRemover = this;
 		}
 
-		public void ResetDuplicateCheck(ITask task)
+		public void ResetDuplicateCheck(ISpider spider)
 		{
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
-				redis.Remove(GetSetKey(task));
+				redis.Remove(GetSetKey(spider));
 			}
 		}
 
-		private string GetSetKey(ITask task)
+		private string GetSetKey(ISpider spider)
 		{
-			return SetPrefix + Encrypt.Md5Encrypt(task.Identify);
+			return SetPrefix + Encrypt.Md5Encrypt(spider.Identify);
 		}
 
-		private string GetQueueKey(ITask task)
+		private string GetQueueKey(ISpider spider)
 		{
-			return QueuePrefix + Encrypt.Md5Encrypt(task.Identify);
+			return QueuePrefix + Encrypt.Md5Encrypt(spider.Identify);
 		}
 
-		public bool IsDuplicate(Request request, ITask task)
+		public bool IsDuplicate(Request request, ISpider spider)
 		{
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
-				bool isDuplicate = redis.SetContainsItem(GetSetKey(task), request.Url);
+				bool isDuplicate = redis.SetContainsItem(GetSetKey(spider), request.Url);
 				if (!isDuplicate)
 				{
-					redis.AddItemToSet(GetSetKey(task), request.Url);
+					redis.AddItemToSet(GetSetKey(spider), request.Url);
 				}
 				return isDuplicate;
 			}
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		protected override void PushWhenNoDuplicate(Request request, ITask task)
+		protected override void PushWhenNoDuplicate(Request request, ISpider spider)
 		{
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
-				redis.AddItemToSortedSet(GetQueueKey(task), request.Url);
+				redis.AddItemToSortedSet(GetQueueKey(spider), request.Url);
 
 				// 没有必要判断浪费性能了, 这里不可能为空。最少会有一个层级数据 Grade
 				//if (request.Extras != null && request.Extras.Count > 0)
@@ -92,14 +92,14 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 					string field = Encrypt.Md5Encrypt(request.Url);
 					string value = JsonConvert.SerializeObject(request);
 
-					redis.SetEntryInHash(ItemPrefix + task.Identify, field, value);
-					var value1 = redis.GetValueFromHash(ItemPrefix + task.Identify, field);
+					redis.SetEntryInHash(ItemPrefix + spider.Identify, field, value);
+					var value1 = redis.GetValueFromHash(ItemPrefix + spider.Identify, field);
 
 					// 验证数据是否存入成功
 					for (int i = 0; i < 10 && value1 != value; ++i)
 					{
-						redis.SetEntryInHash(ItemPrefix + task.Identify, field, value);
-						value1 = redis.GetValueFromHash(ItemPrefix + task.Identify, field);
+						redis.SetEntryInHash(ItemPrefix + spider.Identify, field, value);
+						value1 = redis.GetValueFromHash(ItemPrefix + spider.Identify, field);
 						Thread.Sleep(150);
 					}
 				//}
@@ -107,18 +107,18 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public override Request Poll(ITask task)
+		public override Request Poll(ISpider spider)
 		{
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
-				string url = redis.PopItemWithLowestScoreFromSortedSet(GetQueueKey(task));
+				string url = redis.PopItemWithLowestScoreFromSortedSet(GetQueueKey(spider));
 				if (url == null)
 				{
 					return null;
 				}
 
-				string hashId = ItemPrefix + task.Identify;
+				string hashId = ItemPrefix + spider.Identify;
 				string field = Encrypt.Md5Encrypt(url);
 
 				string json = null;
@@ -140,22 +140,22 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			}
 		}
 
-		public int GetLeftRequestsCount(ITask task)
+		public int GetLeftRequestsCount(ISpider spider)
 		{
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
-				long size = redis.GetSortedSetCount(GetQueueKey(task));
+				long size = redis.GetSortedSetCount(GetQueueKey(spider));
 				return (int)size;
 			}
 		}
 
-		public int GetTotalRequestsCount(ITask task)
+		public int GetTotalRequestsCount(ISpider spider)
 		{
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
-				long size = redis.GetSetCount(GetSetKey(task));
+				long size = redis.GetSetCount(GetSetKey(spider));
 				return (int)size;
 			}
 		}

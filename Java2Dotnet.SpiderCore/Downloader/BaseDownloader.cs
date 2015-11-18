@@ -10,7 +10,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(BaseDownloader));
 		protected int ThreadNum;
 
-		public virtual Page Download(Request request, ITask task)
+		public virtual Page Download(Request request, ISpider spider)
 		{
 			return null;
 		}

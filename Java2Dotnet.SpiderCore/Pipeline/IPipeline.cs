@@ -10,7 +10,7 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 		/// Process extracted results.
 		/// </summary>
 		/// <param name="resultItems"></param>
-		/// <param name="task"></param>
-		void Process(ResultItems resultItems, ITask task);
+		/// <param name="spider"></param>
+		void Process(ResultItems resultItems, ISpider spider);
 	}
 }

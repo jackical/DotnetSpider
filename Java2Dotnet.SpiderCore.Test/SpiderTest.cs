@@ -42,7 +42,7 @@ namespace Java2Dotnet.Spider.Core.Test
 
 		private class TestPipeline : IPipeline
 		{
-			public void Process(ResultItems resultItems, ITask task)
+			public void Process(ResultItems resultItems, ISpider spider)
 			{
 				foreach (DictionaryEntry entry in resultItems.GetAll())
 				{
@@ -73,16 +73,16 @@ namespace Java2Dotnet.Spider.Core.Test
 			private AtomicInteger _count = new AtomicInteger();
 			private Random _random = new Random();
 
-			public void Init(ITask task)
+			public void Init(ISpider spider)
 			{
 			}
 
-			public void Push(Request request, ITask task)
+			public void Push(Request request, ISpider spider)
 			{
 			}
 
 			[MethodImpl(MethodImplOptions.Synchronized)]
-			public Request Poll(ITask task)
+			public Request Poll(ISpider spider)
 			{
 				if (_count.Inc() > 1000)
 				{
@@ -95,7 +95,7 @@ namespace Java2Dotnet.Spider.Core.Test
 				return new Request("test", 1, null);
 			}
 
-			public void Finish(ITask task)
+			public void Finish(ISpider spider)
 			{
 			}
 		}
@@ -112,7 +112,7 @@ namespace Java2Dotnet.Spider.Core.Test
 
 		public class TestDownloader : IDownloader
 		{
-			public Page Download(Request request, ITask task)
+			public Page Download(Request request, ISpider spider)
 			{
 				return new Page(request).SetRawText("");
 			}

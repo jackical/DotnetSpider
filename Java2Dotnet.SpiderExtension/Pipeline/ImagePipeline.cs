@@ -17,7 +17,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		private readonly ConcurrentDictionary<Type, List<PropertyInfo>> _cache = new ConcurrentDictionary<Type, List<PropertyInfo>>();
 		private readonly static WebClient WebClient = new WebClient();
 
-		public void Process(Dictionary<Type, List<dynamic>> data, ITask task)
+		public void Process(Dictionary<Type, List<dynamic>> data, ISpider spider)
 		{
 			if (data == null)
 			{
@@ -85,7 +85,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 					return;
 				}
 
-				string direcotryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\dotnetspider\") + PathSeperator + task.Identify + PathSeperator;
+				string direcotryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"data\dotnetspider\") + PathSeperator + spider.Identify + PathSeperator;
 
 				foreach (var value in data.Values)
 				{

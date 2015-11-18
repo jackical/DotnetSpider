@@ -10,22 +10,22 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 	/// </summary>
 	public interface IScheduler
 	{
-		void Init(ITask task);
+		void Init(ISpider spider);
 
 		/// <summary>
 		/// Add a url to fetch
 		/// </summary>
 		/// <param name="request"></param>
-		/// <param name="task"></param>
+		/// <param name="spider"></param>
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		void Push(Request request, ITask task);
+		void Push(Request request, ISpider spider);
 
 		/// <summary>
 		/// Get an url to crawl
 		/// </summary>
-		/// <param name="task"></param>
+		/// <param name="spider"></param>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		Request Poll(ITask task);
+		Request Poll(ISpider spider);
 	}
 }

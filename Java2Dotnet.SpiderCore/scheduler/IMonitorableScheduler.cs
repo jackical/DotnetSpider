@@ -8,9 +8,9 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 	public interface IMonitorableScheduler : IScheduler
 	{
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		int GetLeftRequestsCount(ITask task);
+		int GetLeftRequestsCount(ISpider spider);
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		int GetTotalRequestsCount(ITask task);
+		int GetTotalRequestsCount(ISpider spider);
 	}
 }

@@ -11,23 +11,23 @@ namespace Java2Dotnet.Spider.Core.Scheduler.Component
 		/// Check whether the request is duplicate.
 		/// </summary>
 		/// <param name="request"></param>
-		/// <param name="task"></param>
+		/// <param name="spider"></param>
 		/// <returns></returns>
-		bool IsDuplicate(Request request, ITask task);
+		bool IsDuplicate(Request request, ISpider spider);
 
 		/// <summary>
 		/// Reset duplicate check.
 		/// </summary>
-		/// <param name="task"></param>
+		/// <param name="spider"></param>
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		void ResetDuplicateCheck(ITask task);
+		void ResetDuplicateCheck(ISpider spider);
 
 		/// <summary>
 		/// Get TotalRequestsCount for monitor.
 		/// </summary>
-		/// <param name="task"></param>
+		/// <param name="spider"></param>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		int GetTotalRequestsCount(ITask task);
+		int GetTotalRequestsCount(ISpider spider);
 	}
 }

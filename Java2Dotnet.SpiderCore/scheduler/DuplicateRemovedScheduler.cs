@@ -14,27 +14,27 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 		protected IDuplicateRemover DuplicateRemover { get; set; } = new HashSetDuplicateRemover();
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void Push(Request request, ITask task)
+		public void Push(Request request, ISpider spider)
 		{
-			if (!DuplicateRemover.IsDuplicate(request, task) || ShouldReserved(request))
+			if (!DuplicateRemover.IsDuplicate(request, spider) || ShouldReserved(request))
 			{
 				//_logger.InfoFormat("Push to queue {0}", request.Url);
-				PushWhenNoDuplicate(request, task);
+				PushWhenNoDuplicate(request, spider);
 			}
 		}
 
-		public virtual void Init(ITask task)
+		public virtual void Init(ISpider spider)
 		{
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public virtual Request Poll(ITask task)
+		public virtual Request Poll(ISpider spider)
 		{
 			return null;
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		protected virtual void PushWhenNoDuplicate(Request request, ITask task)
+		protected virtual void PushWhenNoDuplicate(Request request, ISpider spider)
 		{
 		}
 

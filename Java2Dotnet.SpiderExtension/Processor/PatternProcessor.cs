@@ -11,7 +11,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 		{
 		}
 
-		public abstract MatchOther ProcessResult(ResultItems resultItems, ITask task);
+		public abstract MatchOther ProcessResult(ResultItems resultItems, ISpider spider);
 		public abstract MatchOther ProcessPage(Page page);
 	}
 }

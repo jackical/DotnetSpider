@@ -22,7 +22,7 @@ using Newtonsoft.Json;
 namespace Java2Dotnet.Spider.Core
 {
 	/// <summary>
-	/// Entrance of a crawler. 
+	/// 
 	/// A spider contains four modules: Downloader, Scheduler, PageProcessor and
 	/// Pipeline. 
 	/// Every module is a field of Spider.  
@@ -42,7 +42,7 @@ namespace Java2Dotnet.Spider.Core
 	/// "http://my.oschina.net/*blog"))  
 	/// .scheduler(new FileCacheQueueScheduler("/data/temp/webmagic/cache/")).run();  
 	/// </summary>
-	public class Spider : ITask
+	public class Spider : ISpider
 	{
 		public event FlushCachedPipeline FlushEvent;
 
@@ -458,7 +458,9 @@ namespace Java2Dotnet.Spider.Core
 			//watch.Stop();
 
 			//Logger.Info("Cost time:" + (float)watch.ElapsedMilliseconds / 1000);
-			Stat.Set(StatFinished);
+
+			// 注释掉这一行, 如果Stop了也会到这里, 但并不是Finished. 
+			// Stat.Set(StatFinished);
 		}
 
 		protected void OnClose()

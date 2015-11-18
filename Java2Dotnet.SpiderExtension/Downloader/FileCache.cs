@@ -37,10 +37,10 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 			return this;
 		}
 
-		public Page Download(Request request, ITask task)
+		public Page Download(Request request, ISpider spider)
 		{
 			// ReSharper disable once UnusedVariable
-			string path = BasePath + "/" + task.Identify + "/";
+			string path = BasePath + "/" + spider.Identify + "/";
 			Page page;
 			try
 			{
@@ -67,7 +67,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 					Logger.Warn("File read error for url " + request.Url, e);
 				}
 			}
-			page = DownloadWhenMiss(request, task);
+			page = DownloadWhenMiss(request, spider);
 			return page;
 		}
 
@@ -92,19 +92,19 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 			return htmlBuilder.ToString();
 		}
 
-		private Page DownloadWhenMiss(Request request, ITask task)
+		private Page DownloadWhenMiss(Request request, ISpider spider)
 		{
 			Page page = null;
 			if (_downloaderWhenFileMiss != null)
 			{
-				page = _downloaderWhenFileMiss.Download(request, task);
+				page = _downloaderWhenFileMiss.Download(request, spider);
 			}
 			return page;
 		}
 
-		public void Process(ResultItems resultItems, ITask task)
+		public void Process(ResultItems resultItems, ISpider spider)
 		{
-			string path = BasePath + PathSeperator + task.Identify + PathSeperator;
+			string path = BasePath + PathSeperator + spider.Identify + PathSeperator;
 			try
 			{
 				FileInfo fileInfo = PrepareFile(path + Encrypt.Md5Encrypt(resultItems.Request.Url) + ".html");

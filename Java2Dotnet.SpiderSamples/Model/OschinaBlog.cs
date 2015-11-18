@@ -37,7 +37,7 @@ namespace Java2Dotnet.Spider.Samples.Model
 
 		private class TestPageModelPipeline : IPageModelPipeline
 		{
-			public void Process(Dictionary<Type, List<dynamic>> data, ITask task)
+			public void Process(Dictionary<Type, List<dynamic>> data, ISpider spider)
 			{
 			}
 		}

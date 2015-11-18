@@ -101,7 +101,7 @@
     <Compile Include="Request.cs" />
     <Compile Include="ResultItems.cs" />
     <Compile Include="Site.cs" />
-    <Compile Include="ITask.cs" />
+    <Compile Include="ISpider.cs" />
     <Compile Include="Utils\FilePersistentBase.cs" />
     <Compile Include="Utils\HttpUtils.cs" />
     <Compile Include="Utils\LimitedConcurrencyLevelTaskScheduler.cs" />

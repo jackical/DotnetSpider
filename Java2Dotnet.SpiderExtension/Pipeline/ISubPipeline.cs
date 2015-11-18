@@ -9,8 +9,8 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		/// Process the page, extract urls to fetch, extract the data and store
 		/// </summary>
 		/// <param name="resultItems"></param>
-		/// <param name="task"></param>
+		/// <param name="spider"></param>
 		/// <returns></returns>
-		MatchOther ProcessResult(ResultItems resultItems, ITask task);
+		MatchOther ProcessResult(ResultItems resultItems, ISpider spider);
 	}
 }

@@ -11,9 +11,9 @@ namespace Java2Dotnet.Spider.Core.Downloader
 		/// Downloads web pages and store in Page object.
 		/// </summary>
 		/// <param name="request"></param>
-		/// <param name="task"></param>
+		/// <param name="spider"></param>
 		/// <returns></returns>
-		Page Download(Request request, ITask task);
+		Page Download(Request request, ISpider spider);
 
 		void SetThreadNum(int threadNum);
 	}

@@ -10,9 +10,9 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 	{
 		private IList<ISubPipeline> _subPipelines = new List<ISubPipeline>();
 
-		public void Process(ResultItems resultItems, ITask task)
+		public void Process(ResultItems resultItems, ISpider spider)
 		{
-			if ((from subPipeline in _subPipelines where subPipeline.Match(resultItems.Request) select subPipeline.ProcessResult(resultItems, task)).Any(matchOtherProcessorProcessor => matchOtherProcessorProcessor != MatchOther.Yes))
+			if ((from subPipeline in _subPipelines where subPipeline.Match(resultItems.Request) select subPipeline.ProcessResult(resultItems, spider)).Any(matchOtherProcessorProcessor => matchOtherProcessorProcessor != MatchOther.Yes))
 			{
 			}
 		}

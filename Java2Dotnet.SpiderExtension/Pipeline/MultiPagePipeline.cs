@@ -20,7 +20,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		private readonly DoubleKeyMap<string, string, bool> _pageMap = new DoubleKeyMap<string, string, bool>();
 		private readonly DoubleKeyMap<string, string, IMultiPageModel> _objectMap = new DoubleKeyMap<string, string, IMultiPageModel>();
 
-		public void Process(ResultItems resultItems, ITask task)
+		public void Process(ResultItems resultItems, ISpider spider)
 		{
 			IDictionary resultItemsAll = resultItems.GetAll();
 			List<object> deleteList = new List<object>();

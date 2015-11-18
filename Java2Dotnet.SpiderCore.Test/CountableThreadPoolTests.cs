@@ -1,8 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Java2Dotnet.Spider.Core;
-using System.Threading;
+﻿using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Java2Dotnet.Spider.Extension.Test
+namespace Java2Dotnet.Spider.Core.Test
 {
 	[TestClass]
 	public class CountableThreadPoolTests

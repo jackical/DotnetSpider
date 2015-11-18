@@ -5,10 +5,10 @@ namespace Java2Dotnet.Spider.Core
 	/// <summary>
 	/// Interface for identifying different tasks.
 	/// </summary>
-	public class DefaultTask : ITask
+	public class DefaultSpider : ISpider
 	{
 		private static  readonly Regex IdentifyRegex=new Regex(@"^[0-9A-Za-z_-]+$");
-		public DefaultTask(string uuid, Site site)
+		public DefaultSpider(string uuid, Site site)
 		{
 			if (!IdentifyRegex.IsMatch(uuid))
 			{
@@ -28,5 +28,17 @@ namespace Java2Dotnet.Spider.Core
 		/// Site of a task
 		/// </summary>
 		public Site Site { get; }
+
+		public void Start()
+		{
+		}
+
+		public void Run()
+		{
+		}
+
+		public void Stop()
+		{
+		}
 	}
 }

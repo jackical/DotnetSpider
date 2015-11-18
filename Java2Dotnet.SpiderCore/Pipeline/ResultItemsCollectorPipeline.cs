@@ -11,7 +11,7 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 		private readonly List<ResultItems> _collector = new List<ResultItems>();
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void Process(ResultItems resultItems, ITask task)
+		public void Process(ResultItems resultItems, ISpider spider)
 		{
 			_collector.Add(resultItems);
 		}

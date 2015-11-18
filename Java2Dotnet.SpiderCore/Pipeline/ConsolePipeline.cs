@@ -8,7 +8,7 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 	/// </summary>
 	public class ConsolePipeline : IPipeline
 	{
-		public void Process(ResultItems resultItems, ITask task)
+		public void Process(ResultItems resultItems, ISpider spider)
 		{
 			foreach (DictionaryEntry entry in resultItems.GetAll())
 			{

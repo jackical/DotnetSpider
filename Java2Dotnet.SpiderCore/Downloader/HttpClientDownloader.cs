@@ -20,14 +20,14 @@ namespace Java2Dotnet.Spider.Core.Downloader
 	[Synchronization]
 	public class HttpClientDownloader : BaseDownloader
 	{
-		public override Page Download(Request request, ITask task)
+		public override Page Download(Request request, ISpider spider)
 		{
-			if (task.Site == null)
+			if (spider.Site == null)
 			{
 				return null;
 			}
 
-			Site site = task.Site;
+			Site site = spider.Site;
 
 			ICollection<int> acceptStatCode = site.AcceptStatCode;
 			var charset = site.Encoding;
@@ -72,7 +72,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			}
 			finally
 			{
-				request.PutExtra(Request.StatusCode, statusCode);
+				// 先Close Response, 避免前面语句异常导致没有关闭.
 				try
 				{
 					//ensure the connection is released back to pool
@@ -84,6 +84,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 				{
 					Logger.Warn("Close response fail.", e);
 				}
+				request.PutExtra(Request.StatusCode, statusCode);
 			}
 		}
 

@@ -87,7 +87,21 @@ namespace Java2Dotnet.Spider.WebDriver
 							}
 							if (!string.IsNullOrEmpty(_option.Proxy))
 							{
-								profile.SetProxyPreferences(new Proxy() { HttpProxy = _option.Proxy });
+								string[] p = _option.Proxy.Split(':');
+								string host = p[0];
+								int port = Convert.ToInt32(p[1]);
+								profile.SetPreference("network.proxy.ftp_port", port);
+								profile.SetPreference("network.proxy.gopher", host);
+								profile.SetPreference("network.proxy.gopher_port", port);
+								profile.SetPreference("network.proxy.http", host);
+								profile.SetPreference("network.proxy.http_port", port);
+								profile.SetPreference("network.proxy.no_proxies_on", "localhost,127.0.0.1,<-loopback>");
+								profile.SetPreference("network.proxy.share_proxy_settings", true);
+								profile.SetPreference("network.proxy.socks", host);
+								profile.SetPreference("network.proxy.socks_port", port);
+								profile.SetPreference("network.proxy.ssl", host);
+								profile.SetPreference("network.proxy.ssl_port", port);
+								profile.SetPreference("network.proxy.type", 1);
 							}
 
 							e = new FirefoxDriver(profile);

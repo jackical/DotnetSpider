@@ -22,7 +22,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		}
 
 		//[MethodImplAttribute(MethodImplOptions.Synchronized)]
-		public void Process(ResultItems resultItems, ITask task)
+		public void Process(ResultItems resultItems, ISpider spider)
 		{
 			if (resultItems == null)
 			{
@@ -58,7 +58,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 				}
 			}
 
-			_collectorPipeline.Process(resultDictionary, task);
+			_collectorPipeline.Process(resultDictionary, spider);
 		}
 	}
 }

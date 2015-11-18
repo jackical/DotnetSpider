@@ -260,9 +260,9 @@ namespace Java2Dotnet.Spider.Core
 		/// </summary>
 		public bool IsUseGzip { get; set; }
 
-		public ITask ToTask()
+		public ISpider ToTask()
 		{
-			return new DefaultTask(Domain, this);
+			return new DefaultSpider(Domain, this);
 		}
 
 		public override bool Equals(object o)
