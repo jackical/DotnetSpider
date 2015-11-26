@@ -21,15 +21,22 @@ namespace Java2Dotnet.Spider.Core.Utils
 		/// <returns></returns>
 		public static string CanonicalizeUrl(string url, string refer)
 		{
-			Uri bas = new Uri(refer);
+			try
+			{
+				Uri bas = new Uri(refer);
 
-			// workaround: java resolves '//path/file + ?foo' to '//path/?foo', not '//path/file?foo' as desired
-			//if (url.StartsWith("?"))
-			//	url = bas.PathAndQuery + url;
+				// workaround: java resolves '//path/file + ?foo' to '//path/?foo', not '//path/file?foo' as desired
+				//if (url.StartsWith("?"))
+				//	url = bas.PathAndQuery + url;
 
-			Uri abs = new Uri(bas, url);
+				Uri abs = new Uri(bas, url);
 
-			return abs.AbsoluteUri;
+				return abs.AbsoluteUri;
+			}
+			catch (Exception)
+			{
+				return url;
+			}
 		}
 
 		//public static string getHost(string url)

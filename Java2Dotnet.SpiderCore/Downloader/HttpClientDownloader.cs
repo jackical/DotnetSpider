@@ -152,6 +152,11 @@ namespace Java2Dotnet.Spider.Core.Downloader
 				httpWebRequest.Proxy = new WebProxy(host.Host, host.Port);
 				request.PutExtra(Request.Proxy, host);
 			}
+			else
+			{
+				// 避开Fiddler之类的代理
+				httpWebRequest.Proxy = null;
+			}
 
 			return httpWebRequest;
 		}

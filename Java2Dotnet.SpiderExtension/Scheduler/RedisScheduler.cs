@@ -78,7 +78,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			}
 		}
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
+		//[MethodImpl(MethodImplOptions.Synchronized)]
 		protected override void PushWhenNoDuplicate(Request request, ISpider spider)
 		{
 			using (var redis = _pool.GetClient())
@@ -106,7 +106,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			}
 		}
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
+		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public override Request Poll(ISpider spider)
 		{
 			using (var redis = _pool.GetClient())

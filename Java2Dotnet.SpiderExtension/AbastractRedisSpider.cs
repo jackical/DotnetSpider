@@ -50,24 +50,31 @@ namespace Java2Dotnet.Spider.Extension
 					string key = "locker-" + Name;
 					// 取得锁
 					redis.Password = RedisPassword;
-					locker = redis.AcquireLock(key);
+					Console.WriteLine("Lock: " + key);
+					locker = redis.AcquireLock(key, TimeSpan.FromMinutes(10));
 
 					var lockerValue = redis.GetValue(Name);
 					bool needInitStartRequest = lockerValue != "finished";
+
+					Console.WriteLine("Prepare site with paramete: " + needInitStartRequest);
+
 					Site site = PrepareSite(needInitStartRequest);
 					if (needInitStartRequest)
 					{
 						redis.SetValue(Name, "finished");
 					}
-					_spider = ExecuteSpider(site);
+
+					Console.WriteLine("Init spider with site.");
+					_spider = InitSpider(site);
 					_spider.InitComponent();
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
 					//测试是否操时
 				}
 				finally
 				{
+					Console.WriteLine("Release lock.");
 					locker?.Dispose();
 				}
 			}
@@ -75,7 +82,7 @@ namespace Java2Dotnet.Spider.Extension
 
 		protected abstract Site PrepareSite(bool needInitStartRequest);
 
-		protected abstract Core.Spider ExecuteSpider(Site site);
+		protected abstract Core.Spider InitSpider(Site site);
 		public abstract string RedisHost { get; }
 		public abstract string RedisPassword { get; }
 		public abstract string Name { get; }

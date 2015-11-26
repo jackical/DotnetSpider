@@ -67,7 +67,7 @@ namespace Java2Dotnet.Spider.Core
 			}
 			else
 			{
-				_cookies.Add(name, new Dictionary<string, string> { { name, value } });
+				_cookies.Add(domain, new Dictionary<string, string> { { name, value } });
 			}
 			return this;
 		}

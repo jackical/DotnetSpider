@@ -22,6 +22,7 @@ namespace Java2Dotnet.Spider.Core.Selector
 			try
 			{
 				HtmlDocument document = new HtmlDocument();
+				document.OptionAutoCloseOnEnd = true;
 				document.LoadHtml(text);
 				Document = document.DocumentNode;
 
