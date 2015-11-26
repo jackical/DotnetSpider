@@ -52,7 +52,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 					continue;
 				}
 				PostProcessPageModel(process);
-				page.PutField(pageModelExtractor.GetModelType().FullName, process);
+				page.PutField(pageModelExtractor.GetActualType().FullName, process);
 
 				ExtractLinks(page, pageModelExtractor.GetTargetUrlRegionSelector(), pageModelExtractor.GetTargetUrlPatterns(), pageModelExtractor.GetTargetUrlFormatter());
 			}

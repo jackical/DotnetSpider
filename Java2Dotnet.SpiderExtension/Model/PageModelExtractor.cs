@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -21,15 +22,19 @@ namespace Java2Dotnet.Spider.Extension.Model
 		private readonly IList<Regex> _helpUrlPatterns = new List<Regex>();
 		private ISelector _helpUrlRegionSelector;
 		private readonly Type _modelType;
+		private readonly Type _actualType;
 		private List<FieldExtractor> _fieldExtractors;
 		private IObjectFormatter _targetUrlFormatter;
 		private Extractor _objectExtractor;
 		private readonly static log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(PageModelExtractor));
 		private static readonly Regex UrlRegex = new Regex(@"((http|https|ftp):(\/\/|\\\\)((\w)+[.]){1£¬}(net|com|cn|org|cc|tv|[0-9]{1£¬3})(((\/[\~]*|\\[\~]*)(\w)+)|[.](\w)+)*(((([?](\w)+){1}[=]*))*((\w)+){1}([\&](\w)+[\=](\w)+)*)*)");
+		private readonly bool _isGeneric;
 
 		private PageModelExtractor(Type type)
 		{
+			_isGeneric = typeof(IEnumerable).IsAssignableFrom(type);
 			_modelType = type;
+			_actualType = _isGeneric ? type.MakeGenericType() : type;
 		}
 
 		public static PageModelExtractor Create(Type type)
@@ -59,7 +64,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		{
 			InitTypeExtractors();
 			_fieldExtractors = new List<FieldExtractor>();
-			foreach (PropertyInfo field in _modelType.GetProperties())
+			foreach (PropertyInfo field in _actualType.GetProperties())
 			{
 				FieldExtractor fieldExtractor = GetAttributeExtractBy(field);
 				FieldExtractor fieldExtractorTmp = GetAttributeExtractCombo(field);
@@ -192,7 +197,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 		private void InitTypeExtractors()
 		{
-			TargetUrl targetUrlAttribute = _modelType.GetCustomAttribute<TargetUrl>();
+			TargetUrl targetUrlAttribute = _actualType.GetCustomAttribute<TargetUrl>();
 
 			if (targetUrlAttribute == null)
 			{
@@ -216,7 +221,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 				_targetUrlRegionSelector = new XPathSelector(string.IsNullOrEmpty(targetUrlAttribute.SourceRegion) ? "." : targetUrlAttribute.SourceRegion);
 
-				TargetUrlFormatter formatter = _modelType.GetCustomAttribute<TargetUrlFormatter>();
+				TargetUrlFormatter formatter = _actualType.GetCustomAttribute<TargetUrlFormatter>();
 
 				if (formatter?.FormatterType != null)
 				{
@@ -224,7 +229,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 					_targetUrlFormatter.InitParam(formatter.Value);
 				}
 			}
-			HelpUrl helpAnnotation = _modelType.GetCustomAttribute<HelpUrl>();
+			HelpUrl helpAnnotation = _actualType.GetCustomAttribute<HelpUrl>();
 			if (helpAnnotation != null)
 			{
 				string[] value = helpAnnotation.Value;
@@ -237,14 +242,14 @@ namespace Java2Dotnet.Spider.Extension.Model
 					_helpUrlRegionSelector = new XPathSelector(helpAnnotation.SourceRegion);
 				}
 			}
-			ExtractBy extractByAttribute = _modelType.GetCustomAttribute<ExtractBy>();
+			ExtractBy extractByAttribute = _actualType.GetCustomAttribute<ExtractBy>();
 			if (extractByAttribute != null)
 			{
 				_objectExtractor = ExtractorUtils.GetExtractor(extractByAttribute);
 			}
 		}
 
-		public object Process(Page page)
+		public dynamic Process(Page page)
 		{
 			bool matched = false;
 			if (page.GetUrl() != null)
@@ -273,14 +278,24 @@ namespace Java2Dotnet.Spider.Extension.Model
 			}
 			else
 			{
-				if (_objectExtractor.Multi)
+				if (_isGeneric)
 				{
 					IList<string> list = _objectExtractor.Selector.SelectList(page.GetRawText());
 					if (_objectExtractor.Count < long.MaxValue)
 					{
 						list = list.Take((int)_objectExtractor.Count).ToList();
 					}
-					return list.Select(s => ProcessSingle(page, s, false)).Where(o => o != null).ToList();
+
+					dynamic result = Activator.CreateInstance(_modelType);
+					foreach (var item in list)
+					{
+						var obj = ProcessSingle(page, item, false);
+						if (obj != null)
+						{
+							result.Add(obj);
+						}
+					}
+					return result;
 				}
 				else
 				{
@@ -293,7 +308,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 		private object ProcessSingle(Page page, string content, bool isEntire)
 		{
-			object instance = Activator.CreateInstance(_modelType);
+			object instance = Activator.CreateInstance(_actualType);
 			foreach (FieldExtractor fieldExtractor in _fieldExtractors)
 			{
 				if (fieldExtractor.Multi)
@@ -540,9 +555,9 @@ namespace Java2Dotnet.Spider.Extension.Model
 			return values.Select(value => Convert(value, objectFormatter)).ToList();
 		}
 
-		public Type GetModelType()
+		public Type GetActualType()
 		{
-			return _modelType;
+			return _actualType;
 		}
 
 		public IList<Regex> GetTargetUrlPatterns()

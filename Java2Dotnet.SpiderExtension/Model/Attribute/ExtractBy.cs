@@ -61,12 +61,6 @@ namespace Java2Dotnet.Spider.Extension.Model.Attribute
 		/// </summary>
 		public ExtractSource Source { get; set; }
 
-		/// <summary>
-		/// Define whether the extractor return more than one result.
-		/// It works only if you already added 'ExtractBy' to Class.   
-		/// </summary>
-		public bool Multi { get; set; }
-
 		public long Count { get; set; } = long.MaxValue;
 
 		//public string Expresion { get; set; }

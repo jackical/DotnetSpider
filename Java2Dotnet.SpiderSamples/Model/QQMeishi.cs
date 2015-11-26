@@ -6,7 +6,7 @@ using Java2Dotnet.Spider.Extension.Pipeline;
 namespace Java2Dotnet.Spider.Samples.Model
 {
 	[TargetUrl(Value = new[] { "http://meishi.qq.com/beijing/c/all[\\-p2]*" })]
-	[ExtractBy(Value = "//ul[@id=\"promos_list2\"]/li", Multi = true)]
+	[ExtractBy(Value = "//ul[@id=\"promos_list2\"]/li")]
 	public class QqMeishi
 	{
 		[ExtractBy(Value = "//div[@class=info]/a[@class=title]/h4/text()")]

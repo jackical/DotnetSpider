@@ -55,7 +55,7 @@ namespace Java2Dotnet.Spider.Core
 		/// </summary>
 		/// <param name="key"></param>
 		/// <param name="field"></param>
-		public void PutField(string key, object field)
+		public void PutField(string key, dynamic field)
 		{
 			_resultItems.Put(key, field);
 		}

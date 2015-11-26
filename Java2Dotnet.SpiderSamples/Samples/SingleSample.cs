@@ -13,7 +13,7 @@ using Java2Dotnet.Spider.Extension.Scheduler;
 
 namespace Java2Dotnet.Spider.Samples.Samples
 {
-	[ExtractBy(Value = "//*[@id=\"tab_top50\"]/div[1]/ul/li", Multi = true, Count = 1)]
+	[ExtractBy(Value = "//*[@id=\"tab_top50\"]/div[1]/ul/li", Count = 1)]
 	[Scheme("Test")]
 	[StoredAs("SingleTest")]
 	public class SingleSample
@@ -21,7 +21,7 @@ namespace Java2Dotnet.Spider.Samples.Samples
 		public static void RunTask()
 		{
 			OoSpider ooSpider = OoSpider.Create("aiqiyi_movies_" + DateTime.Now.ToLocalTime(),
-				new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new ConsolePageModelPipeline(), typeof(walter));
+				new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new ConsolePageModelPipeline(), typeof(SingleSample));
 			ooSpider.SetEmptySleepTime(15000);
 			ooSpider.SetThreadNum(1);
 			ooSpider.SetScheduler(new QueueDuplicateRemovedScheduler());
@@ -41,7 +41,7 @@ namespace Java2Dotnet.Spider.Samples.Samples
 		[ExtractBy(Value = "/li/a[1]/@href")]
 		public string Url { get; set; }
 
-		[ExtractBy(Value = "/li/span[1]/a", Multi = true)]
+		[ExtractBy(Value = "/li/span[1]/a")]
 		public List<string> Label_1 { get; set; }
 
 		[StoredAs("tag", StoredAs.ValueType.Varchar, false, 500)]

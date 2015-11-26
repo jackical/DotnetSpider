@@ -16,7 +16,7 @@ namespace Java2Dotnet.Spider.Core.Test.Example
 		[ExtractBy(Value = "div.BlogContent", Type = ExtractBy.ExtracType.Css)]
 		public string Content { get; set; }
 
-		[ExtractBy(Value = "//div[@class='BlogTags']/a/text()", Multi = true)]
+		[ExtractBy(Value = "//div[@class='BlogTags']/a/text()")]
 		public List<string> Tags { get; set; }
 
 		[ExtractBy(Value = "//div[@class='BlogStat']/regex('\\d+-\\d+-\\d+\\s+\\d+:\\d+')")]

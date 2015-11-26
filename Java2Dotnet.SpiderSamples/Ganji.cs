@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Scheduler;
@@ -15,7 +16,7 @@ namespace Java2Dotnet.Spider.Samples
 	[TargetUrl(Value = new[] { "zpdianhuaxiaoshou/o[0-9]+/" }, SourceRegion = "//*[@id=\"list-job-id\"]/div[15]/ul")]
 
 	//////*[@id="list-job-id"]/div[9]/dl[1]
-	[ExtractBy(Value = "//*[@id=\"list-job-id\"]/div[9]/dl", Multi = true)]
+	[ExtractBy(Value = "//*[@id=\"list-job-id\"]/div[9]/dl")]
 	[Scheme("ganji")]
 	[StoredAs("post")]
 	public class Ganji : SpiderEntity
@@ -24,7 +25,7 @@ namespace Java2Dotnet.Spider.Samples
 		{
 			OoSpider ooSpider = OoSpider.Create("ganji_posts_" + DateTime.Now.Date.ToString("yyyy-MM-dd"),
 				new Site { SleepTime = 1000, Encoding = Encoding.UTF8 },
-				new PageModelToDbPipeline(), typeof(Ganji));
+				new PageModelToDbPipeline(), typeof(List<Ganji>));
 			ooSpider.SetEmptySleepTime(15000);
 			ooSpider.SetThreadNum(1);
 			ooSpider.ModelPipeline.CachedSize = 2;
