@@ -46,8 +46,8 @@ namespace Java2Dotnet.Spider.Extension.Processor
 			{
 				ExtractLinks(page, pageModelExtractor.GetHelpUrlRegionSelector(), pageModelExtractor.GetHelpUrlPatterns());
 
-				object process = pageModelExtractor.Process(page);
-				if (process == null || (process is IList && ((IList)process).Count == 0))
+				dynamic process = pageModelExtractor.Process(page);
+				if (process == null || (process is IEnumerable && !((IEnumerable)process).GetEnumerator().MoveNext()))
 				{
 					continue;
 				}
@@ -102,7 +102,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 			}
 		}
 
-		protected virtual void PostProcessPageModel(object obj)
+		protected virtual void PostProcessPageModel(dynamic obj)
 		{
 		}
 

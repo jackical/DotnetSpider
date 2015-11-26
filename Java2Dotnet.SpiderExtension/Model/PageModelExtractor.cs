@@ -34,7 +34,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		{
 			_isGeneric = typeof(IEnumerable).IsAssignableFrom(type);
 			_modelType = type;
-			_actualType = _isGeneric ? type.MakeGenericType() : type;
+			_actualType = _isGeneric ? type.GenericTypeArguments[0]: type;
 		}
 
 		public static PageModelExtractor Create(Type type)
@@ -306,9 +306,9 @@ namespace Java2Dotnet.Spider.Extension.Model
 			}
 		}
 
-		private object ProcessSingle(Page page, string content, bool isEntire)
+		private dynamic ProcessSingle(Page page, string content, bool isEntire)
 		{
-			object instance = Activator.CreateInstance(_actualType);
+			var instance = Activator.CreateInstance(_actualType);
 			foreach (FieldExtractor fieldExtractor in _fieldExtractors)
 			{
 				if (fieldExtractor.Multi)

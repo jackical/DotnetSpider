@@ -20,8 +20,8 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 				Pipeline = pipeline;
 			}
 
-			public bool IsGeneric { get; private set; }
-			public IPageModelPipeline Pipeline { get; private set; }
+			public bool IsGeneric { get;  }
+			public IPageModelPipeline Pipeline { get;  }
 		}
 
 		private readonly Dictionary<Type, PageModelPipelineInfo> _pageModelPipelines = new Dictionary<Type, PageModelPipelineInfo>();
@@ -29,7 +29,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		public ModelPipeline Put(Type type, IPageModelPipeline pageModelPipeline)
 		{
 			bool isGeneric = typeof(IEnumerable).IsAssignableFrom(type);
-			var actuallyType = isGeneric ? type.MakeGenericType() : type;
+			var actuallyType = isGeneric ? type.GenericTypeArguments[0] : type;
 			_pageModelPipelines.Add(actuallyType, new PageModelPipelineInfo(isGeneric, pageModelPipeline));
 
 			return this;

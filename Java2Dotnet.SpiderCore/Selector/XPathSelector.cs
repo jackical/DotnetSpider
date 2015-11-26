@@ -15,9 +15,10 @@ namespace Java2Dotnet.Spider.Core.Selector
 			//if (!string.IsNullOrEmpty(this.xpath))
 			//{
 			Match match = AttributeXPathRegex.Match(_xpath);
-			if (_xpath.EndsWith(match.Value))
+			if (!string.IsNullOrEmpty(match.Value) && _xpath.EndsWith(match.Value))
 			{
 				_attribute = match.Value.Replace("@", "");
+				_xpath = _xpath.Replace("/" + match.Value, "");
 			}
 			//}
 		}
