@@ -21,6 +21,7 @@ namespace Java2Dotnet.Spider.WebDriver
 
 		public Func<IWebDriver, bool> LoginFunc;
 		public Func<string, string> UrlFormatFunc;
+		public Func<IWebDriver, bool> AfterNavigateFunc;
 
 		public WebDriverDownloader(Browser browser = Browser.Phantomjs, int webDriverWaitTime = 200, Option option = null)
 		{
@@ -102,6 +103,8 @@ namespace Java2Dotnet.Spider.WebDriver
 				driverService.WebDriver.Navigate().GoToUrl(realUrl);
 
 				Thread.Sleep(_webDriverWaitTime);
+
+				AfterNavigateFunc?.Invoke(driverService.WebDriver);
 
 				Page page = new Page(request);
 				page.SetRawText(driverService.WebDriver.PageSource);
