@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 
-namespace Java2Dotnet.Spider.Lib
+namespace Java2Dotnet.Spider.Redial
 {
-	public class AdslUtil
+	public class SshAdslUtil
 	{
 		public void Connect(string connectionName, string user, string pass)
 		{
@@ -11,13 +11,13 @@ namespace Java2Dotnet.Spider.Lib
 			InvokeCmd(arg);
 		}
 
-		public void Disconnect(string connectionName)
+		private void Disconnect(string connectionName)
 		{
 			string arg = $"rasdial \"{connectionName}\" /disconnect";
 			InvokeCmd(arg);
 		}
 
-		public static string InvokeCmd(string cmdArgs)
+		private static void InvokeCmd(string cmdArgs)
 		{
 			Process p = new Process
 			{
@@ -34,7 +34,6 @@ namespace Java2Dotnet.Spider.Lib
 			p.Start();
 			p.StandardInput.WriteLine(cmdArgs);
 			p.StandardInput.WriteLine("exit");
-			return p.StandardOutput.ReadToEnd();
 		}
 	}
 }

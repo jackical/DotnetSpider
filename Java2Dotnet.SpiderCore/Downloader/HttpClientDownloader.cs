@@ -41,6 +41,10 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			try
 			{
 				HttpWebRequest httpWebRequest = GetHttpWebRequest(request, site, headers);
+
+				// 统一拨号换IP
+				Redialer?.WaitforRedialFinish();
+
 				response = (HttpWebResponse)httpWebRequest.GetResponse();
 				statusCode = (int)response.StatusCode;
 				request.PutExtra(Request.StatusCode, statusCode);

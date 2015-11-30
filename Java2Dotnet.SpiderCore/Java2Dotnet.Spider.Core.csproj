@@ -74,6 +74,7 @@
     <Compile Include="Proxy\HttpHost.cs" />
     <Compile Include="Proxy\Proxy.cs" />
     <Compile Include="Proxy\ProxyPool.cs" />
+    <Compile Include="Redial\IRedial.cs" />
     <Compile Include="Scheduler\QueueScheduler.cs" />
     <Compile Include="Selector\AndSelector.cs" />
     <Compile Include="Selector\BaseElementSelector.cs" />
