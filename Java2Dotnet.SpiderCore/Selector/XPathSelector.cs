@@ -28,7 +28,7 @@ namespace Java2Dotnet.Spider.Core.Selector
 			var node = element.SelectSingleNode(_xpath);
 			if (node != null)
 			{
-				return HasAttribute() ? node.Attributes[_attribute].Value?.Trim() : node.InnerHtml?.Trim();
+				return HasAttribute() ? (node.Attributes.Contains(_attribute) ? node.Attributes[_attribute].Value?.Trim() : null) : node.InnerHtml?.Trim();
 			}
 			return null;
 		}

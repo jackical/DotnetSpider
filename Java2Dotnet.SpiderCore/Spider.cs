@@ -88,8 +88,8 @@ namespace Java2Dotnet.Spider.Core
 		private readonly Site _site;
 		private Regex _subHtmlRegex;
 		private static readonly object ErroLogFileLocker = new object();
-		private static readonly Regex IdentifyRegex = new Regex(@"^[\d\w\s-]+$");
-		private bool isInit;
+		private static readonly Regex IdentifyRegex = new Regex(@"^[\d\w\s-/]+$");
+		private bool _isInit;
 
 		/// <summary>
 		/// Create a spider with pageProcessor.
@@ -272,7 +272,7 @@ namespace Java2Dotnet.Spider.Core
 
 		public void InitComponent()
 		{
-			if (isInit)
+			if (_isInit)
 			{
 				Logger.InfoFormat("Component already init.");
 				return;
@@ -338,7 +338,7 @@ namespace Java2Dotnet.Spider.Core
 				RemoveMenu(closeMenu, SC_CLOSE, 0x0);
 			}
 
-			isInit = true;
+			_isInit = true;
 		}
 
 		private void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
@@ -423,7 +423,8 @@ namespace Java2Dotnet.Spider.Core
 								ProcessRequest(request1, cts);
 								OnSuccess(request1);
 								Uri uri = new Uri(request1.Url);
-								Logger.Info($"Request: { HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
+								//Logger.Info($"Request: { HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
+								Console.WriteLine($"Request: { HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
 								return 1;
 							}
 							catch (Exception e)
