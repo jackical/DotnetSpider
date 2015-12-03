@@ -90,6 +90,7 @@ namespace Java2Dotnet.Spider.Core
 		private static readonly object ErroLogFileLocker = new object();
 		private static readonly Regex IdentifyRegex = new Regex(@"^[\d\w\s-/]+$");
 		private bool _isInit;
+		private static object _consoleLocker=new object();
 
 		/// <summary>
 		/// Create a spider with pageProcessor.
@@ -402,7 +403,7 @@ namespace Java2Dotnet.Spider.Core
 						{
 							try
 							{
-								lock (this)
+								lock (_consoleLocker)
 								{
 									Console.ForegroundColor = ConsoleColor.Green;
 									Console.WriteLine(
@@ -427,8 +428,10 @@ namespace Java2Dotnet.Spider.Core
 								OnSuccess(request1);
 								Uri uri = new Uri(request1.Url);
 								//Logger.Info($"Request: { HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
-
-								Console.WriteLine($"Request: {HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
+								lock (_consoleLocker)
+								{
+									Console.WriteLine($"Request: {HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
+								}
 								return 1;
 							}
 							catch (Exception e)
@@ -903,7 +906,7 @@ namespace Java2Dotnet.Spider.Core
 		{
 			if (Stat.CompareAndSet(StatRunning, StatStopped))
 			{
-				lock (this)
+				lock (_consoleLocker)
 				{
 					Console.ForegroundColor = ConsoleColor.Yellow;
 					Console.WriteLine("Spider " + Identify + " stop success!");
@@ -912,7 +915,7 @@ namespace Java2Dotnet.Spider.Core
 			}
 			else
 			{
-				lock (this)
+				lock (_consoleLocker)
 				{
 					Console.ForegroundColor = ConsoleColor.Red;
 					Logger.Info("Spider " + Identify + " stop fail!");

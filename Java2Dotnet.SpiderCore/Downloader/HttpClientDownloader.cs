@@ -42,9 +42,8 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			HttpWebResponse response = null;
 			try
 			{
-				HttpWebRequest httpWebRequest = GetHttpWebRequest(request, site, headers);
-
 				Redialer?.WaitforRedialFinish();
+				HttpWebRequest httpWebRequest = GetHttpWebRequest(request, site, headers);
 				response = (HttpWebResponse)httpWebRequest.GetResponse();
 				statusCode = (int)response.StatusCode;
 				request.PutExtra(Request.StatusCode, statusCode);
@@ -66,16 +65,16 @@ namespace Java2Dotnet.Spider.Core.Downloader
 					throw new SpiderExceptoin("Download failed.");
 				}
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
-				//_exceptionCount.Inc();
+				_exceptionCount.Inc();
 
-				//if (_exceptionCount.Value > 15)
-				//{
-				//	_exceptionCount.Set(0);
-				//	Redialer?.Redial();
-				//}
-				throw e;
+				if (_exceptionCount.Value > 25)
+				{
+					_exceptionCount.Set(0);
+					Redialer?.Redial();
+				}
+				throw;
 			}
 			finally
 			{

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -30,6 +31,7 @@ namespace Java2Dotnet.Spider.Redial
 		private readonly string _interface;
 		private readonly string _user;
 		private readonly string _password;
+		private readonly string _dbOperateFlagFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpdier", "DbOperate");
 
 		public static FileLockerRedialer Default
 		{
@@ -106,6 +108,17 @@ namespace Java2Dotnet.Spider.Redial
 					stream = File.Open(_lockerFilePath, FileMode.Create, FileAccess.Write);
 
 					Logger.Warn("Try to redial network...");
+
+					// 等待数据库操作完成
+					while (true)
+					{
+						if (!Directory.GetFiles(_dbOperateFlagFolder).Any())
+						{
+							break;
+						}
+
+						Thread.Sleep(50);
+					}
 
 					RedialInternet();
 				}

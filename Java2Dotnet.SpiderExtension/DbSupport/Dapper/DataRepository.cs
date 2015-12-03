@@ -43,6 +43,10 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 		/// <returns></returns>
 		public void Insert(object instance)
 		{
+			if (instance == null)
+			{
+				return;
+			}
 			var sql = SqlGenerator.GetInsert(false);
 			using (IDbConnection conn = GetConnection())
 			{
@@ -58,6 +62,11 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 		/// <returns></returns>
 		public IEnumerable<dynamic> GetWhere(object filters)
 		{
+			if (filters == null)
+			{
+				return null;
+			}
+
 			var sql = SqlGenerator.GetSelect(filters);
 			using (IDbConnection conn = GetConnection())
 			{
@@ -75,6 +84,10 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 		/// <returns></returns>
 		public void Update(object instance)
 		{
+			if (instance == null)
+			{
+				return;
+			}
 			var sql = SqlGenerator.GetUpdate();
 			using (IDbConnection conn = GetConnection())
 			{
