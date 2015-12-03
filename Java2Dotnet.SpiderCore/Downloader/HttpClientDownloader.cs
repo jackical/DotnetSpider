@@ -42,9 +42,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			{
 				HttpWebRequest httpWebRequest = GetHttpWebRequest(request, site, headers);
 
-				// 统一拨号换IP
 				Redialer?.WaitforRedialFinish();
-
 				response = (HttpWebResponse)httpWebRequest.GetResponse();
 				statusCode = (int)response.StatusCode;
 				request.PutExtra(Request.StatusCode, statusCode);
@@ -52,15 +50,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 				{
 					Page page = HandleResponse(request, charset, response, statusCode);
 
-					//customer verify
-					if (DownloadVerifyEvent != null)
-					{
-						string msg = "";
-						if (!DownloadVerifyEvent(page, ref msg))
-						{
-							throw new SpiderExceptoin(msg);
-						}
-					}
+					ValidatePage(page);
 
 					// 结束后要置空, 这个值存到Redis会导置无限循环跑单个任务
 					request.PutExtra(Request.CycleTriedTimes, null);
@@ -121,8 +111,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 
 			HttpWebRequest httpWebRequest = SelectRequestMethod(request);
 
-			httpWebRequest.UserAgent = site.UserAgent ??
-									   "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0Mozilla/5.0 (Windows NT 10.0; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0";
+			httpWebRequest.UserAgent = site.UserAgent ?? "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0Mozilla/5.0 (Windows NT 10.0; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0";
 
 			if (site.IsUseGzip)
 			{

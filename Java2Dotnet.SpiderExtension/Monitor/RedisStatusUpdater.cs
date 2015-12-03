@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using Java2Dotnet.Spider.Extension.Scheduler;
+using Java2Dotnet.Spider.Redial;
 using Newtonsoft.Json;
 using ServiceStack.Redis;
 
@@ -19,8 +20,8 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 		{
 			_spider = spider;
 			_spiderStatus = spiderStatus;
-			string host = ConfigurationManager.AppSettings["redishost"];
-			_password = ConfigurationManager.AppSettings["redishostpass"];
+			string host = ConfigurationManager.AppSettings["redisServer"];
+			_password = ConfigurationManager.AppSettings["redisPassword"];
 			if (!string.IsNullOrEmpty(host))
 			{
 				_pool = new RedisManagerPool(host);
@@ -50,6 +51,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 
 		public void UpdateStatus()
 		{
+			Redialer.Default.WaitforRedialFinish();
 			using (var redis = _pool?.GetClient())
 			{
 				if (redis == null)
