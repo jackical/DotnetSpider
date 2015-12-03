@@ -19,6 +19,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 
 	public sealed class PageModelToDbPipeline : IPageModelPipeline
 	{
+		private readonly static log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(PageModelToDbPipeline));
 		private readonly OperateType _operateType;
 		public long TotalCount => _totalCount.Value;
 		private readonly ConcurrentDictionary<Type, IDataRepository> _cache = new ConcurrentDictionary<Type, IDataRepository>();
@@ -100,7 +101,19 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 				{
 					case OperateType.Insert:
 						{
-							dataRepository?.Insert(pair.Value);
+							for (int i = 0; i < 10; i++)
+							{
+								try
+								{
+									dataRepository?.Insert(pair.Value);
+									break;
+								}
+								catch (Exception)
+								{
+									Logger.Warn($"Try to save data to DB failed. Times: {i}");
+									// ignored
+								}
+							}
 							break;
 						}
 					case OperateType.Update:

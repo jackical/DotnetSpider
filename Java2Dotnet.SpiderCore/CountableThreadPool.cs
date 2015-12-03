@@ -48,7 +48,7 @@ namespace Java2Dotnet.Spider.Core
 						{
 							_tasks.Remove(finishedTask);
 						}
-						Thread.Sleep(50);
+						Thread.Sleep(10);
 					}
 				}
 			});
@@ -80,7 +80,7 @@ namespace Java2Dotnet.Spider.Core
 			// List中保留比最大线程数多5个
 			while (GetAliveAndWaitingThreadCount() >= _maxTaskCount)
 			{
-				Thread.Sleep(50);
+				Thread.Sleep(10);
 			}
 
 			var task = _factory.StartNew(o =>

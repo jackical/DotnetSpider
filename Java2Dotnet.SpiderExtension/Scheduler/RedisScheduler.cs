@@ -6,6 +6,7 @@ using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Core.Scheduler.Component;
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Lib;
+using Java2Dotnet.Spider.Redial;
 using Newtonsoft.Json;
 using ServiceStack.Redis;
 
@@ -27,10 +28,12 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		public RedisScheduler(string host, string password)
 			: this(new RedisManagerPool(new List<string> { host }, new RedisPoolConfig { MaxPoolSize = 100 }), password)
 		{
+
 		}
 
 		public override void Init(ISpider spider)
 		{
+			Redialer.Default.WaitforRedialFinish();
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
@@ -42,11 +45,13 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			_password = password;
 			_pool = pool;
+
 			DuplicateRemover = this;
 		}
 
 		public void ResetDuplicateCheck(ISpider spider)
 		{
+			Redialer.Default.WaitforRedialFinish();
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
@@ -66,6 +71,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public bool IsDuplicate(Request request, ISpider spider)
 		{
+			Redialer.Default.WaitforRedialFinish();
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
@@ -81,6 +87,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		protected override void PushWhenNoDuplicate(Request request, ISpider spider)
 		{
+			Redialer.Default.WaitforRedialFinish();
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
@@ -89,19 +96,19 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 				// 没有必要判断浪费性能了, 这里不可能为空。最少会有一个层级数据 Grade
 				//if (request.Extras != null && request.Extras.Count > 0)
 				//{
-					string field = Encrypt.Md5Encrypt(request.Url);
-					string value = JsonConvert.SerializeObject(request);
+				string field = Encrypt.Md5Encrypt(request.Url);
+				string value = JsonConvert.SerializeObject(request);
 
+				redis.SetEntryInHash(ItemPrefix + spider.Identify, field, value);
+				var value1 = redis.GetValueFromHash(ItemPrefix + spider.Identify, field);
+
+				// 验证数据是否存入成功
+				for (int i = 0; i < 10 && value1 != value; ++i)
+				{
 					redis.SetEntryInHash(ItemPrefix + spider.Identify, field, value);
-					var value1 = redis.GetValueFromHash(ItemPrefix + spider.Identify, field);
-
-					// 验证数据是否存入成功
-					for (int i = 0; i < 10 && value1 != value; ++i)
-					{
-						redis.SetEntryInHash(ItemPrefix + spider.Identify, field, value);
-						value1 = redis.GetValueFromHash(ItemPrefix + spider.Identify, field);
-						Thread.Sleep(150);
-					}
+					value1 = redis.GetValueFromHash(ItemPrefix + spider.Identify, field);
+					Thread.Sleep(150);
+				}
 				//}
 			}
 		}
@@ -109,6 +116,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public override Request Poll(ISpider spider)
 		{
+			Redialer.Default.WaitforRedialFinish();
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
@@ -123,6 +131,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 				string json = null;
 				//redis 有可能取数据失败
+
 				for (int i = 0; i < 10 && string.IsNullOrEmpty(json = redis.GetValueFromHash(hashId, field)); ++i)
 				{
 					Thread.Sleep(150);
@@ -142,6 +151,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public int GetLeftRequestsCount(ISpider spider)
 		{
+			Redialer.Default.WaitforRedialFinish();
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;
@@ -152,6 +162,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public int GetTotalRequestsCount(ISpider spider)
 		{
+			Redialer.Default.WaitforRedialFinish();
 			using (var redis = _pool.GetClient())
 			{
 				redis.Password = _password;

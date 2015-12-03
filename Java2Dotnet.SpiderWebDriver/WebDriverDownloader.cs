@@ -112,16 +112,7 @@ namespace Java2Dotnet.Spider.WebDriver
 				page.SetTargetUrl(new PlainText(driverService.WebDriver.Url));
 				page.Title = driverService.WebDriver.Title;
 
-				//customer verify
-				if (DownloadVerifyEvent != null)
-				{
-					string msg = "";
-					if (!DownloadVerifyEvent(page, ref msg))
-					{
-						_webDriverPool.Close(driverService);
-						throw new SpiderExceptoin(msg);
-					}
-				}
+				ValidatePage(page);
 
 				// 结束后要置空, 这个值存到Redis会导置无限循环跑单个任务
 				request.PutExtra(Request.CycleTriedTimes, null);

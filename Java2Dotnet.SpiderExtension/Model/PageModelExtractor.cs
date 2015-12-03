@@ -34,7 +34,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		{
 			_isGeneric = typeof(IEnumerable).IsAssignableFrom(type);
 			_modelType = type;
-			_actualType = _isGeneric ? type.GenericTypeArguments[0]: type;
+			_actualType = _isGeneric ? type.GenericTypeArguments[0] : type;
 		}
 
 		public static PageModelExtractor Create(Type type)
@@ -531,6 +531,9 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 			IAfterExtractor afterExtractor = instance as IAfterExtractor;
 			afterExtractor?.AfterProcess(page);
+
+			var customize = instance as ICustomize;
+			customize?.Customize();
 
 			return instance;
 		}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using Dapper;
+using Java2Dotnet.Spider.Redial;
 
 namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 {
@@ -45,6 +46,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 			var sql = SqlGenerator.GetInsert(false);
 			using (IDbConnection conn = GetConnection())
 			{
+				Redialer.Default.WaitforRedialFinish();
 				conn.Execute(sql, instance, null, 99999, CommandType.Text);
 			}
 		}
@@ -59,6 +61,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 			var sql = SqlGenerator.GetSelect(filters);
 			using (IDbConnection conn = GetConnection())
 			{
+				Redialer.Default.WaitforRedialFinish();
 				return conn.Query(sql, filters, null, false, 99999, CommandType.Text);
 			}
 		}
@@ -75,6 +78,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 			var sql = SqlGenerator.GetUpdate();
 			using (IDbConnection conn = GetConnection())
 			{
+				Redialer.Default.WaitforRedialFinish();
 				conn.Execute(sql, instance, null, 99999, CommandType.Text);
 			}
 		}
@@ -88,6 +92,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 		{
 			using (IDbConnection conn = GetConnection())
 			{
+				Redialer.Default.WaitforRedialFinish();
 				return conn.Execute(sql, null, null, 99999, CommandType.Text);
 			}
 		}
@@ -99,6 +104,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 		{
 			using (IDbConnection conn = GetConnection())
 			{
+				Redialer.Default.WaitforRedialFinish();
 				conn.Execute(SqlGenerator.GetCreateTable(), null, null, 99999, CommandType.Text);
 			}
 		}
@@ -107,6 +113,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 		{
 			using (IDbConnection conn = GetConnection())
 			{
+				Redialer.Default.WaitforRedialFinish();
 				conn.Execute(SqlGenerator.GetCreateSheme(), null, null, 99999, CommandType.Text);
 			}
 		}

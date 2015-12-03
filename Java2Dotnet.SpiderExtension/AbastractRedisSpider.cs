@@ -66,6 +66,7 @@ namespace Java2Dotnet.Spider.Extension
 
 					Console.WriteLine("Init spider with site.");
 					_spider = InitSpider(site);
+					_spider.SetScheduler(Scheduler);
 					_spider.InitComponent();
 				}
 				catch (Exception e)
@@ -83,8 +84,8 @@ namespace Java2Dotnet.Spider.Extension
 		protected abstract Site PrepareSite(bool needInitStartRequest);
 
 		protected abstract Core.Spider InitSpider(Site site);
-		public abstract string RedisHost { get; }
-		public abstract string RedisPassword { get; }
+		public virtual string RedisHost { get; } = "localhost";
+		public virtual string RedisPassword { get; } = null;
 		public abstract string Name { get; }
 	}
 }
