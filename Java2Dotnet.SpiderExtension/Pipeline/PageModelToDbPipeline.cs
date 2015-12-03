@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.DbSupport;
@@ -101,7 +102,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 				{
 					case OperateType.Insert:
 						{
-							for (int i = 0; i < 10; i++)
+							for (int i = 0; i < 20; i++)
 							{
 								try
 								{
@@ -111,6 +112,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 								catch (Exception)
 								{
 									Logger.Warn($"Try to save data to DB failed. Times: {i}");
+									Thread.Sleep(2000);
 									// ignored
 								}
 							}

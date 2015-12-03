@@ -402,11 +402,14 @@ namespace Java2Dotnet.Spider.Core
 						{
 							try
 							{
-								Console.ForegroundColor = ConsoleColor.Green;
-								Console.WriteLine(
-									$"Left: {monitor.GetLeftRequestsCount(this)} Total: {monitor.GetTotalRequestsCount(this)} AliveThread: {ThreadPool.GetThreadAlive()} ThreadNum: {ThreadPool.GetThreadNum()}");
-								Console.ResetColor();
-								Thread.Sleep(800);
+								lock (this)
+								{
+									Console.ForegroundColor = ConsoleColor.Green;
+									Console.WriteLine(
+										$"Left: {monitor.GetLeftRequestsCount(this)} Total: {monitor.GetTotalRequestsCount(this)} AliveThread: {ThreadPool.GetThreadAlive()} ThreadNum: {ThreadPool.GetThreadNum()}");
+									Console.ResetColor();
+									Thread.Sleep(800);
+								}
 							}
 							catch
 							{
@@ -424,7 +427,8 @@ namespace Java2Dotnet.Spider.Core
 								OnSuccess(request1);
 								Uri uri = new Uri(request1.Url);
 								//Logger.Info($"Request: { HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
-								Console.WriteLine($"Request: { HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
+
+								Console.WriteLine($"Request: {HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
 								return 1;
 							}
 							catch (Exception e)
@@ -899,15 +903,21 @@ namespace Java2Dotnet.Spider.Core
 		{
 			if (Stat.CompareAndSet(StatRunning, StatStopped))
 			{
-				Console.ForegroundColor = ConsoleColor.Yellow;
-				Console.WriteLine("Spider " + Identify + " stop success!");
-				Console.ResetColor();
+				lock (this)
+				{
+					Console.ForegroundColor = ConsoleColor.Yellow;
+					Console.WriteLine("Spider " + Identify + " stop success!");
+					Console.ResetColor();
+				}
 			}
 			else
 			{
-				Console.ForegroundColor = ConsoleColor.Red;
-				Logger.Info("Spider " + Identify + " stop fail!");
-				Console.ResetColor();
+				lock (this)
+				{
+					Console.ForegroundColor = ConsoleColor.Red;
+					Logger.Info("Spider " + Identify + " stop fail!");
+					Console.ResetColor();
+				}
 			}
 		}
 

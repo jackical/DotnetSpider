@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileLockerRedialer.cs" />
     <Compile Include="SshAdslUtil.cs" />
     <Compile Include="AdslUtil.cs" />
     <Compile Include="Redialer.cs" />

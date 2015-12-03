@@ -20,6 +20,8 @@ namespace Java2Dotnet.Spider.Core.Downloader
 	[Synchronization]
 	public class HttpClientDownloader : BaseDownloader
 	{
+		private static AutomicLong _exceptionCount = new AutomicLong(0);
+
 		public override Page Download(Request request, ISpider spider)
 		{
 			if (spider.Site == null)
@@ -63,6 +65,17 @@ namespace Java2Dotnet.Spider.Core.Downloader
 				{
 					throw new SpiderExceptoin("Download failed.");
 				}
+			}
+			catch (Exception e)
+			{
+				//_exceptionCount.Inc();
+
+				//if (_exceptionCount.Value > 15)
+				//{
+				//	_exceptionCount.Set(0);
+				//	Redialer?.Redial();
+				//}
+				throw e;
 			}
 			finally
 			{

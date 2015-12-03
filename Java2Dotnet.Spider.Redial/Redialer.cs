@@ -63,7 +63,6 @@ namespace Java2Dotnet.Spider.Redial
 				redialSetting = RedialStatus.Running.ToString();
 				SetRedialStatus(redialSetting);
 			}
-
 		}
 
 		public static Redialer Default
