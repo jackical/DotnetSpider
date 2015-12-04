@@ -63,11 +63,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileLockerRedialer.cs" />
+    <Compile Include="INetworkValidater.cs" />
     <Compile Include="SshAdslUtil.cs" />
     <Compile Include="AdslUtil.cs" />
     <Compile Include="Redialer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedialException.cs" />
+    <Compile Include="VpsNetworkValidater.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Java2Dotnet.SpiderCore\Java2Dotnet.Spider.Core.csproj">

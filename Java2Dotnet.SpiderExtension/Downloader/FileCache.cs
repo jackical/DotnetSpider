@@ -4,6 +4,7 @@ using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Downloader;
 using Java2Dotnet.Spider.Core.Pipeline;
 using Java2Dotnet.Spider.Core.Processor;
+using Java2Dotnet.Spider.Core.Redial;
 using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Core.Utils;
 using log4net;
@@ -74,6 +75,8 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 		public void SetThreadNum(int threadNum)
 		{
 		}
+
+		public IRedialer Redialer { get; set; }
 
 		private string GetHtml(StreamReader bufferedReader)
 		{

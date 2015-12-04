@@ -11,6 +11,8 @@ using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.DbSupport;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper.Attributes;
+using Java2Dotnet.Spider.Lib;
+using Java2Dotnet.Spider.Redial;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
 {
@@ -27,16 +29,9 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		public long TotalCount => _totalCount.Value;
 		private readonly ConcurrentDictionary<Type, IDataRepository> _cache = new ConcurrentDictionary<Type, IDataRepository>();
 
-		private readonly string _dbOperateFlagFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpdier", "DbOperate");
-
 		public PageModelToDbPipeline(OperateType operateType = OperateType.Insert)
 		{
 			_operateType = operateType;
-			DirectoryInfo di = new DirectoryInfo(_dbOperateFlagFolder);
-			if (!di.Exists)
-			{
-				di.Create();
-			}
 		}
 
 		private readonly AutomicLong _totalCount = new AutomicLong(0);
@@ -107,41 +102,35 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 						}
 					}
 				}
+
 				switch (_operateType)
 				{
 					case OperateType.Insert:
 						{
-							Stream stream = null;
-							string id = Path.Combine(_dbOperateFlagFolder, Guid.NewGuid().ToString());
-							try
+							for (int i = 0; i < 100; i++)
 							{
-								stream = File.Open(id, FileMode.Create, FileAccess.Write);
-
-								for (int i = 0; i < 100; i++)
+								try
 								{
-									try
-									{
-										dataRepository?.Insert(pair.Value);
-										break;
-									}
-									catch (Exception e)
-									{
-										Logger.Warn($"Try to save data to DB failed. Times: {i + 1}", e);
-										Thread.Sleep(2000);
-										// ignored
-									}
+									dataRepository?.Insert(pair.Value);
+									break;
+								}
+								catch (Exception e)
+								{
+									Logger.Warn($"Try to save data to DB failed. Times: {i + 1}", e);
+									Thread.Sleep(2000);
+									// ignored
 								}
 							}
-							finally
-							{
-								stream?.Close();
-								File.Delete(id);
-							}
+
 							break;
 						}
 					case OperateType.Update:
 						{
-							dataRepository?.Update(pair.Value);
+							AtomicExecutor.Execute("db-update", () =>
+							{
+								dataRepository?.Update(pair.Value);
+							});
+
 							break;
 						}
 				}

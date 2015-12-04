@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using Java2Dotnet.Spider.Extension.Scheduler;
+using Java2Dotnet.Spider.Extension.Utils;
 using Java2Dotnet.Spider.Redial;
 using Newtonsoft.Json;
 using ServiceStack.Redis;
@@ -51,8 +52,8 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 
 		public void UpdateStatus()
 		{
-			Redialer.Default.WaitforRedialFinish();
-			using (var redis = _pool?.GetClient())
+			FileLockerRedialer.Default.WaitforRedialFinish();
+			using (var redis = _pool?.GetSafeGetClient())
 			{
 				if (redis == null)
 				{

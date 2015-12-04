@@ -26,12 +26,14 @@ namespace Java2Dotnet.Spider.Redial
 		/// </summary>
 		private bool Skip { get; set; }
 
-		private readonly string _lockerFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "redialer.lock");
+		private readonly string _lockerFilePath;
 		private static FileLockerRedialer _instanse;
 		private readonly string _interface;
 		private readonly string _user;
 		private readonly string _password;
-		private readonly string _dbOperateFlagFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpdier", "DbOperate");
+		private static readonly string AtomicActionFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpdier", "AtomicAction");
+
+		public INetworkValidater NetworkValidater { get; set; }
 
 		public static FileLockerRedialer Default
 		{
@@ -47,6 +49,14 @@ namespace Java2Dotnet.Spider.Redial
 
 		private FileLockerRedialer()
 		{
+			var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpdier");
+
+			DirectoryInfo di = new DirectoryInfo(folder);
+			if (!di.Exists)
+			{
+				di.Create();
+			}
+			_lockerFilePath = Path.Combine(folder, "redialer.lock");
 			var interface1 = ConfigurationManager.AppSettings["redialInterface"];
 			_interface = string.IsNullOrEmpty(interface1) ? "宽带连接" : interface1;
 
@@ -61,14 +71,11 @@ namespace Java2Dotnet.Spider.Redial
 				return;
 			}
 
-			var redialSetting = File.Exists(_lockerFilePath);
-
-			if (redialSetting)
+			if (File.Exists(_lockerFilePath))
 			{
 				while (true)
 				{
-					var redialSetting1 = File.Exists(_lockerFilePath);
-					if (!redialSetting1)
+					if (!File.Exists(_lockerFilePath))
 					{
 						break;
 					}
@@ -84,14 +91,11 @@ namespace Java2Dotnet.Spider.Redial
 				return;
 			}
 
-			var redialSetting = File.Exists(_lockerFilePath);
-
-			if (redialSetting)
+			if (File.Exists(_lockerFilePath))
 			{
 				while (true)
 				{
-					var redialSetting1 = File.Exists(_lockerFilePath);
-					if (!redialSetting1)
+					if (!File.Exists(_lockerFilePath))
 					{
 						break;
 					}
@@ -107,20 +111,24 @@ namespace Java2Dotnet.Spider.Redial
 				{
 					stream = File.Open(_lockerFilePath, FileMode.Create, FileAccess.Write);
 
+					// wait all operation stop.
+					Thread.Sleep(5000);
 					Logger.Warn("Try to redial network...");
 
 					// 等待数据库操作完成
 					while (true)
 					{
-						if (!Directory.GetFiles(_dbOperateFlagFolder).Any())
+						if (!Directory.GetFiles(AtomicActionFolder).Any())
 						{
 							break;
 						}
 
-						Thread.Sleep(50);
+						Thread.Sleep(10);
 					}
 
 					RedialInternet();
+
+					Logger.Warn("Redial finished.");
 				}
 				finally
 				{
@@ -128,36 +136,37 @@ namespace Java2Dotnet.Spider.Redial
 					File.Delete(_lockerFilePath);
 				}
 			}
-
-			Logger.Warn("Redial finished.");
 		}
 
 		private void RedialInternet()
 		{
 			AdslUtil.Connect(_interface, _user, _password);
 
-			Thread.Sleep(1500);
+			Thread.Sleep(2000);
 
-			WaitForConnection();
+			NetworkValidater?.Wait();
 		}
 
-		private static void WaitForConnection()
+		private class DefalutNetworkValidater : INetworkValidater
 		{
-			while (true)
+			public void Wait()
 			{
-				try
+				while (true)
 				{
-					Ping p = new Ping();//创建Ping对象p
-					PingReply pr = p.Send("www.baidu.com", 30000);//向指定IP或者主机名的计算机发送ICMP协议的ping数据包
-
-					if (pr.Status == IPStatus.Success)//如果ping成功
+					try
 					{
-						return;
+						Ping p = new Ping();//创建Ping对象p
+						PingReply pr = p.Send("www.baidu.com", 30000);//向指定IP或者主机名的计算机发送ICMP协议的ping数据包
+
+						if (pr.Status == IPStatus.Success)//如果ping成功
+						{
+							return;
+						}
+						Thread.Sleep(100);
 					}
-					Thread.Sleep(100);
-				}
-				catch
-				{
+					catch
+					{
+					}
 				}
 			}
 		}

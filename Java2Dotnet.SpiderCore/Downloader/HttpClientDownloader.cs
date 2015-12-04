@@ -6,11 +6,13 @@ using System.IO.Compression;
 using System.Net;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
+using System.Threading;
 using System.Web;
 using HtmlAgilityPack;
 using Java2Dotnet.Spider.Core.Proxy;
 using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Core.Utils;
+using Java2Dotnet.Spider.Lib;
 
 namespace Java2Dotnet.Spider.Core.Downloader
 {
@@ -40,41 +42,62 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			int statusCode = 0;
 
 			HttpWebResponse response = null;
+			HttpWebRequest httpWebRequest = null;
 			try
 			{
-				Redialer?.WaitforRedialFinish();
-				HttpWebRequest httpWebRequest = GetHttpWebRequest(request, site, headers);
-				response = (HttpWebResponse)httpWebRequest.GetResponse();
-				statusCode = (int)response.StatusCode;
-				request.PutExtra(Request.StatusCode, statusCode);
-				if (StatusAccept(acceptStatCode, statusCode))
+				int retryNum = 3;
+				for (int i = 0; i < retryNum; ++i)
 				{
-					Page page = HandleResponse(request, charset, response, statusCode);
+					try
+					{
+						Redialer?.WaitforRedialFinish();
+						httpWebRequest = GetHttpWebRequest(request, site, headers);
+						response = AtomicExecutor.Execute("http-downloader-download", () =>
+						{
+							return (HttpWebResponse)httpWebRequest.GetResponse();
+						});
 
-					ValidatePage(page);
+						statusCode = (int)response.StatusCode;
+						request.PutExtra(Request.StatusCode, statusCode);
+						if (StatusAccept(acceptStatCode, statusCode))
+						{
+							Page page = HandleResponse(request, charset, response, statusCode);
 
-					// 结束后要置空, 这个值存到Redis会导置无限循环跑单个任务
-					request.PutExtra(Request.CycleTriedTimes, null);
+							ValidatePage(page);
 
-					httpWebRequest.ServicePoint.ConnectionLimit = int.MaxValue;
-					OnSuccess(request);
-					return page;
+							// 结束后要置空, 这个值存到Redis会导置无限循环跑单个任务
+							request.PutExtra(Request.CycleTriedTimes, null);
+
+							httpWebRequest.ServicePoint.ConnectionLimit = int.MaxValue;
+							OnSuccess(request);
+
+							return page;
+						}
+						else
+						{
+							throw new SpiderExceptoin("Download failed.");
+						}
+					}
+					catch (Exception)
+					{
+						Thread.Sleep(500);
+						// ignored
+					}
 				}
-				else
-				{
-					throw new SpiderExceptoin("Download failed.");
-				}
+
+				//正常结果在上面已经Return了, 到此处必然是下载失败的值.
+				throw new SpiderExceptoin("Download failed.");
 			}
 			catch (Exception)
 			{
 				_exceptionCount.Inc();
 
-				if (_exceptionCount.Value > 25)
+				if (_exceptionCount.Value > 15)
 				{
 					_exceptionCount.Set(0);
 					Redialer?.Redial();
 				}
-				throw;
+				throw new SpiderExceptoin("Download failed.");
 			}
 			finally
 			{

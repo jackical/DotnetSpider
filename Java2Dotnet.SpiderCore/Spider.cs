@@ -90,7 +90,6 @@ namespace Java2Dotnet.Spider.Core
 		private static readonly object ErroLogFileLocker = new object();
 		private static readonly Regex IdentifyRegex = new Regex(@"^[\d\w\s-/]+$");
 		private bool _isInit;
-		private static readonly object _consoleLocker=new object();
 
 		/// <summary>
 		/// Create a spider with pageProcessor.
@@ -271,6 +270,11 @@ namespace Java2Dotnet.Spider.Core
 			return this;
 		}
 
+		public IDownloader GetDownloader()
+		{
+			return Downloader;
+		}
+
 		public void InitComponent()
 		{
 			if (_isInit)
@@ -301,7 +305,7 @@ namespace Java2Dotnet.Spider.Core
 			{
 				if (StartRequests.Count > 0)
 				{
-					Parallel.ForEach(StartRequests, new ParallelOptions() { MaxDegreeOfParallelism = 25 }, request =>
+					Parallel.ForEach(StartRequests, new ParallelOptions() { MaxDegreeOfParallelism = 100 }, request =>
 					{
 						Scheduler.Push((Request)request.Clone(), this);
 					});
@@ -403,13 +407,7 @@ namespace Java2Dotnet.Spider.Core
 						{
 							try
 							{
-								lock (_consoleLocker)
-								{
-									Console.ForegroundColor = ConsoleColor.Green;
-									Console.WriteLine(
-										$"Left: {monitor.GetLeftRequestsCount(this)} Total: {monitor.GetTotalRequestsCount(this)} AliveThread: {ThreadPool.GetThreadAlive()} ThreadNum: {ThreadPool.GetThreadNum()}");
-									Console.ResetColor();
-								}
+								Console.WriteLine($"Left: {monitor.GetLeftRequestsCount(this)} Total: {monitor.GetTotalRequestsCount(this)} AliveThread: {ThreadPool.GetThreadAlive()} ThreadNum: {ThreadPool.GetThreadNum()}");
 							}
 							catch
 							{
@@ -426,10 +424,9 @@ namespace Java2Dotnet.Spider.Core
 								OnSuccess(request1);
 								Uri uri = new Uri(request1.Url);
 								//Logger.Info($"Request: { HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
-								lock (_consoleLocker)
-								{
-									Console.WriteLine($"Request: {HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
-								}
+
+								Console.WriteLine($"Request: {HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
+
 								return 1;
 							}
 							catch (Exception e)
@@ -632,7 +629,7 @@ namespace Java2Dotnet.Spider.Core
 					page = AddToCycleRetry(request, _site);
 				}
 
-				Logger.Warn("Download page " + request.Url + " failed.", e);
+				Logger.Warn("Download page " + request.Url + " failed.");
 			}
 
 			//watch.Stop();
@@ -904,21 +901,13 @@ namespace Java2Dotnet.Spider.Core
 		{
 			if (Stat.CompareAndSet(StatRunning, StatStopped))
 			{
-				lock (_consoleLocker)
-				{
-					Console.ForegroundColor = ConsoleColor.Yellow;
-					Console.WriteLine("Spider " + Identify + " stop success!");
-					Console.ResetColor();
-				}
+				Console.WriteLine("Spider " + Identify + " stop success!");
 			}
 			else
 			{
-				lock (_consoleLocker)
-				{
-					Console.ForegroundColor = ConsoleColor.Red;
-					Logger.Info("Spider " + Identify + " stop fail!");
-					Console.ResetColor();
-				}
+				String msg = "Spider " + Identify + " stop fail!";
+				Console.WriteLine(msg);
+				Logger.Info(msg);
 			}
 		}
 

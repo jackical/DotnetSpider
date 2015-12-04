@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SafeExecutor.cs" />
+    <Compile Include="AtomicExecutor.cs" />
     <Compile Include="BlockingQueue.cs" />
     <Compile Include="BloomFilter.cs" />
     <Compile Include="DateTimeUtil.cs" />

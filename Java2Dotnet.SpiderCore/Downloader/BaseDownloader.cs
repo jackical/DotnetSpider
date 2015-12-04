@@ -8,7 +8,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 	public class BaseDownloader : IDownloader, IDisposable
 	{
 		public DownloadValidation DownloadValidation;
-		public IRedialer Redialer;
+		public IRedialer Redialer { get; set; }
 
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(BaseDownloader));
 		protected int ThreadNum;

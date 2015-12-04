@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -5,6 +6,7 @@ using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Core.Scheduler.Component;
 using Java2Dotnet.Spider.Core.Utils;
+using Java2Dotnet.Spider.Extension.Utils;
 using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Redial;
 using Newtonsoft.Json;
@@ -33,12 +35,16 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public override void Init(ISpider spider)
 		{
-			Redialer.Default.WaitforRedialFinish();
-			using (var redis = _pool.GetClient())
+			FileLockerRedialer.Default.WaitforRedialFinish();
+			AtomicExecutor.Execute("scheduler-init", () =>
 			{
-				redis.Password = _password;
-				redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
-			}
+				using (var redis = _pool.GetSafeGetClient())
+				{
+					redis.Password = _password;
+
+					redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
+				}
+			});
 		}
 
 		private RedisScheduler(RedisManagerPool pool, string password)
@@ -51,12 +57,15 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public void ResetDuplicateCheck(ISpider spider)
 		{
-			Redialer.Default.WaitforRedialFinish();
-			using (var redis = _pool.GetClient())
+			FileLockerRedialer.Default.WaitforRedialFinish();
+			AtomicExecutor.Execute("redis-scheduler-reset", () =>
 			{
-				redis.Password = _password;
-				redis.Remove(GetSetKey(spider));
-			}
+				using (var redis = _pool.GetSafeGetClient())
+				{
+					redis.Password = _password;
+					redis.Remove(GetSetKey(spider));
+				}
+			});
 		}
 
 		private string GetSetKey(ISpider spider)
@@ -71,26 +80,36 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public bool IsDuplicate(Request request, ISpider spider)
 		{
-			Redialer.Default.WaitforRedialFinish();
-			using (var redis = _pool.GetClient())
+			using (var redis = _pool.GetSafeGetClient())
 			{
 				redis.Password = _password;
-				bool isDuplicate = redis.SetContainsItem(GetSetKey(spider), request.Url);
-				if (!isDuplicate)
+				while (true)
 				{
-					redis.AddItemToSet(GetSetKey(spider), request.Url);
+					try
+					{
+						bool isDuplicate = redis.SetContainsItem(GetSetKey(spider), request.Url);
+						if (!isDuplicate)
+						{
+							redis.AddItemToSet(GetSetKey(spider), request.Url);
+						}
+						return isDuplicate;
+					}
+					catch (Exception)
+					{
+						Logger.Warn("RedisScheduler.IsDuplicate execute failed.");
+						// ignored
+					}
 				}
-				return isDuplicate;
 			}
 		}
 
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		protected override void PushWhenNoDuplicate(Request request, ISpider spider)
 		{
-			Redialer.Default.WaitforRedialFinish();
-			using (var redis = _pool.GetClient())
+			using (var redis = _pool.GetSafeGetClient())
 			{
 				redis.Password = _password;
+
 				redis.AddItemToSortedSet(GetQueueKey(spider), request.Url);
 
 				// 没有必要判断浪费性能了, 这里不可能为空。最少会有一个层级数据 Grade
@@ -99,7 +118,9 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 				string field = Encrypt.Md5Encrypt(request.Url);
 				string value = JsonConvert.SerializeObject(request);
 
+
 				redis.SetEntryInHash(ItemPrefix + spider.Identify, field, value);
+
 				var value1 = redis.GetValueFromHash(ItemPrefix + spider.Identify, field);
 
 				// 验证数据是否存入成功
@@ -116,59 +137,72 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public override Request Poll(ISpider spider)
 		{
-			Redialer.Default.WaitforRedialFinish();
-			using (var redis = _pool.GetClient())
+			FileLockerRedialer.Default.WaitforRedialFinish();
+			return AtomicExecutor.Execute("redis-scheduler-poll", () =>
 			{
-				redis.Password = _password;
-				string url = redis.PopItemWithLowestScoreFromSortedSet(GetQueueKey(spider));
-				if (url == null)
+				return SafeExecutor.Execute(30, () =>
 				{
-					return null;
-				}
+					using (var redis = _pool.GetSafeGetClient())
+					{
+						redis.Password = _password;
+						string url = redis.PopItemWithLowestScoreFromSortedSet(GetQueueKey(spider));
+						if (url == null)
+						{
+							return null;
+						}
 
-				string hashId = ItemPrefix + spider.Identify;
-				string field = Encrypt.Md5Encrypt(url);
+						string hashId = ItemPrefix + spider.Identify;
+						string field = Encrypt.Md5Encrypt(url);
 
-				string json = null;
-				//redis 有可能取数据失败
+						string json = null;
+						//redis 有可能取数据失败
 
-				for (int i = 0; i < 10 && string.IsNullOrEmpty(json = redis.GetValueFromHash(hashId, field)); ++i)
-				{
-					Thread.Sleep(150);
-				}
+						for (int i = 0; i < 10 && string.IsNullOrEmpty(json = redis.GetValueFromHash(hashId, field)); ++i)
+						{
+							Thread.Sleep(150);
+						}
 
-				if (!string.IsNullOrEmpty(json))
-				{
-					return JsonConvert.DeserializeObject<Request>(json);
-				}
+						if (!string.IsNullOrEmpty(json))
+						{
+							return JsonConvert.DeserializeObject<Request>(json);
+						}
 
-				// 严格意义上说不会走到这里, 一定会有JSON数据,详情看Push方法
-				// 是否应该设为1级？
-				Request request = new Request(url, 1, null);
-				return request;
-			}
+						// 严格意义上说不会走到这里, 一定会有JSON数据,详情看Push方法
+						// 是否应该设为1级？
+						Request request = new Request(url, 1, null);
+						return request;
+					}
+				});
+			});
 		}
 
 		public int GetLeftRequestsCount(ISpider spider)
 		{
-			Redialer.Default.WaitforRedialFinish();
-			using (var redis = _pool.GetClient())
+			FileLockerRedialer.Default.WaitforRedialFinish();
+			return AtomicExecutor.Execute("redis-scheduler-getleftcount", () =>
 			{
-				redis.Password = _password;
-				long size = redis.GetSortedSetCount(GetQueueKey(spider));
-				return (int)size;
-			}
+				using (var redis = _pool.GetSafeGetClient())
+				{
+					redis.Password = _password;
+
+					long size = redis.GetSortedSetCount(GetQueueKey(spider));
+					return (int)size;
+				}
+			});
 		}
 
 		public int GetTotalRequestsCount(ISpider spider)
 		{
-			Redialer.Default.WaitforRedialFinish();
-			using (var redis = _pool.GetClient())
+			FileLockerRedialer.Default.WaitforRedialFinish();
+			return AtomicExecutor.Execute("redis-scheduler-gettotalcount", () =>
 			{
-				redis.Password = _password;
-				long size = redis.GetSetCount(GetSetKey(spider));
-				return (int)size;
-			}
+				using (var redis = _pool.GetSafeGetClient())
+				{
+					redis.Password = _password;
+					long size = redis.GetSetCount(GetSetKey(spider));
+					return (int)size;
+				}
+			});
 		}
 	}
 }

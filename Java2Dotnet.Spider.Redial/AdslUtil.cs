@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 
 namespace Java2Dotnet.Spider.Redial
 {
@@ -33,7 +34,9 @@ namespace Java2Dotnet.Spider.Redial
 			};
 			p.Start();
 			p.StandardInput.WriteLine(cmdArgs);
+			Thread.Sleep(2000);
 			p.StandardInput.WriteLine("exit");
+			Thread.Sleep(1000);
 		}
 	}
 }

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.Scheduler;
+using Java2Dotnet.Spider.Extension.Utils;
 using ServiceStack.Redis;
 
 namespace Java2Dotnet.Spider.Extension
@@ -42,7 +43,7 @@ namespace Java2Dotnet.Spider.Extension
 
 		private void Prepare()
 		{
-			using (var redis = Pool.GetClient())
+			using (var redis = Pool.GetSafeGetClient())
 			{
 				IDisposable locker = null;
 				try
@@ -67,6 +68,7 @@ namespace Java2Dotnet.Spider.Extension
 					Console.WriteLine("Init spider with site.");
 					_spider = InitSpider(site);
 					_spider.SetScheduler(Scheduler);
+					Scheduler.Redialer = _spider.GetDownloader().Redialer;
 					_spider.InitComponent();
 				}
 				catch (Exception e)

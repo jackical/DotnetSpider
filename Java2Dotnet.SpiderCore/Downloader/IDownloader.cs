@@ -1,3 +1,5 @@
+using Java2Dotnet.Spider.Core.Redial;
+
 namespace Java2Dotnet.Spider.Core.Downloader
 {
 	/// <summary>
@@ -16,5 +18,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 		Page Download(Request request, ISpider spider);
 
 		void SetThreadNum(int threadNum);
+
+		IRedialer Redialer { get; set; }
 	}
 }
