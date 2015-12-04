@@ -90,7 +90,7 @@ namespace Java2Dotnet.Spider.Core
 		private static readonly object ErroLogFileLocker = new object();
 		private static readonly Regex IdentifyRegex = new Regex(@"^[\d\w\s-/]+$");
 		private bool _isInit;
-		private static object _consoleLocker=new object();
+		private static readonly object _consoleLocker=new object();
 
 		/// <summary>
 		/// Create a spider with pageProcessor.
@@ -409,12 +409,10 @@ namespace Java2Dotnet.Spider.Core
 									Console.WriteLine(
 										$"Left: {monitor.GetLeftRequestsCount(this)} Total: {monitor.GetTotalRequestsCount(this)} AliveThread: {ThreadPool.GetThreadAlive()} ThreadNum: {ThreadPool.GetThreadNum()}");
 									Console.ResetColor();
-									Thread.Sleep(800);
 								}
 							}
 							catch
 							{
-								Thread.Sleep(800);
 								// ignored
 							}
 						}
