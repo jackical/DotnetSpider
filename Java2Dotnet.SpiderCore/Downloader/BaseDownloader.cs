@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using Java2Dotnet.Spider.Core.Redial;
+using Java2Dotnet.Spider.Lib.Redial;
+using Java2Dotnet.Spider.Redial;
 using log4net;
 
 namespace Java2Dotnet.Spider.Core.Downloader
@@ -8,12 +8,9 @@ namespace Java2Dotnet.Spider.Core.Downloader
 	public class BaseDownloader : IDownloader, IDisposable
 	{
 		public DownloadValidation DownloadValidation;
-		public IRedialer Redialer { get; set; }
 
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(BaseDownloader));
 		protected int ThreadNum;
-
-		private static readonly object Locker = new object();
 
 		public virtual Page Download(Request request, ISpider spider)
 		{
@@ -48,8 +45,8 @@ namespace Java2Dotnet.Spider.Core.Downloader
 						}
 					case DownloadValidationResult.FailedAndNeedRedial:
 						{
-							Redialer?.Redial();
-							throw new SpiderExceptoin("Customize validate failed.");
+							RedialManager.Default?.Redial();
+							throw new NeedRedialException();
 						}
 					case DownloadValidationResult.Success:
 						{

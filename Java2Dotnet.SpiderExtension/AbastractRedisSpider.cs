@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.Scheduler;
 using Java2Dotnet.Spider.Extension.Utils;
@@ -68,7 +64,7 @@ namespace Java2Dotnet.Spider.Extension
 					Console.WriteLine("Init spider with site.");
 					_spider = InitSpider(site);
 					_spider.SetScheduler(Scheduler);
-					Scheduler.Redialer = _spider.GetDownloader().Redialer;
+					 
 					_spider.InitComponent();
 				}
 				catch (Exception e)

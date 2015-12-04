@@ -8,6 +8,7 @@ using Java2Dotnet.Spider.Core.Downloader;
 using Java2Dotnet.Spider.Core.Selector;
 using OpenQA.Selenium;
 using Java2Dotnet.Spider.Lib;
+using Java2Dotnet.Spider.Redial;
 
 namespace Java2Dotnet.Spider.WebDriver
 {
@@ -38,7 +39,7 @@ namespace Java2Dotnet.Spider.WebDriver
 						IntPtr maindHwnd = WindowsFormUtil.FindWindow(null, "plugin-container.exe - 应用程序错误");
 						if (maindHwnd != IntPtr.Zero)
 						{
-							WindowsFormUtil.SendMessage(maindHwnd, WindowsFormUtil.WM_CLOSE, 0, 0);
+							WindowsFormUtil.SendMessage(maindHwnd, WindowsFormUtil.WmClose, 0, 0);
 						}
 						Thread.Sleep(500);
 					}
@@ -98,7 +99,7 @@ namespace Java2Dotnet.Spider.WebDriver
 				}
 
 				// 统一拨号换IP
-				Redialer?.WaitforRedialFinish();
+				RedialManager.Default?.WaitforRedialFinish(); 
 
 				driverService.WebDriver.Navigate().GoToUrl(realUrl);
 

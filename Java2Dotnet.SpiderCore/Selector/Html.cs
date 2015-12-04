@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using HtmlAgilityPack;
 using Java2Dotnet.Spider.Core.Utils;
-using log4net;
 
 namespace Java2Dotnet.Spider.Core.Selector
 {

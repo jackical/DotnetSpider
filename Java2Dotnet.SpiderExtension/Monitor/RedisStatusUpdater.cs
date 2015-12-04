@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Java2Dotnet.Spider.Extension.Scheduler;
 using Java2Dotnet.Spider.Extension.Utils;
+using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Redial;
 using Newtonsoft.Json;
 using ServiceStack.Redis;
@@ -52,30 +53,33 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 
 		public void UpdateStatus()
 		{
-			FileLockerRedialer.Default.WaitforRedialFinish();
-			using (var redis = _pool?.GetSafeGetClient())
+			RedialManager.Default?.WaitforRedialFinish();
+			AtomicExecutor.Execute("rdsu", () =>
 			{
-				if (redis == null)
+				using (var redis = _pool?.GetSafeGetClient())
 				{
-					return;
+					if (redis == null)
+					{
+						return;
+					}
+					redis.Password = _password;
+					object status = new
+					{
+						_spiderStatus.Name,
+						_spiderStatus.ErrorPageCount,
+						_spiderStatus.LeftPageCount,
+						_spiderStatus.PagePerSecond,
+						_spiderStatus.StartTime,
+						_spiderStatus.EndTime,
+						_spiderStatus.Status,
+						_spiderStatus.SuccessPageCount,
+						_spiderStatus.ThreadCount,
+						_spiderStatus.TotalPageCount,
+						_spiderStatus.AliveThreadCount
+					};
+					redis.SetEntryInHash(RedisScheduler.TaskStatus, _spider.Identify, JsonConvert.SerializeObject(status));
 				}
-				redis.Password = _password;
-				object status = new
-				{
-					_spiderStatus.Name,
-					_spiderStatus.ErrorPageCount,
-					_spiderStatus.LeftPageCount,
-					_spiderStatus.PagePerSecond,
-					_spiderStatus.StartTime,
-					_spiderStatus.EndTime,
-					_spiderStatus.Status,
-					_spiderStatus.SuccessPageCount,
-					_spiderStatus.ThreadCount,
-					_spiderStatus.TotalPageCount,
-					_spiderStatus.AliveThreadCount
-				};
-				redis.SetEntryInHash(RedisScheduler.TaskStatus, _spider.Identify, JsonConvert.SerializeObject(status));
-			}
+			});
 		}
 	}
 }

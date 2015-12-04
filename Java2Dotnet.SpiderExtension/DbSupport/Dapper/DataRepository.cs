@@ -50,7 +50,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 			}
 			var sql = SqlGenerator.GetInsert(false);
 
-			FileLockerRedialer.Default.WaitforRedialFinish();
+			RedialManager.Default?.WaitforRedialFinish();
 			AtomicExecutor.Execute("db-insert", () =>
 			{
 				using (IDbConnection conn = GetConnection())
@@ -74,7 +74,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 
 			var sql = SqlGenerator.GetSelect(filters);
 
-			FileLockerRedialer.Default.WaitforRedialFinish();
+			RedialManager.Default?.WaitforRedialFinish();
 			return AtomicExecutor.Execute("getwhere-insert", () =>
 			{
 				using (IDbConnection conn = GetConnection())
@@ -99,7 +99,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 			}
 			var sql = SqlGenerator.GetUpdate();
 
-			FileLockerRedialer.Default.WaitforRedialFinish();
+			RedialManager.Default?.WaitforRedialFinish();
 			AtomicExecutor.Execute("db-update", () =>
 			{
 				using (IDbConnection conn = GetConnection())
@@ -116,7 +116,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 		/// <returns></returns>
 		public int Execute(string sql)
 		{
-			FileLockerRedialer.Default.WaitforRedialFinish();
+			RedialManager.Default?.WaitforRedialFinish();
 			return AtomicExecutor.Execute("db-execute", () =>
 			{
 				using (IDbConnection conn = GetConnection())
@@ -131,7 +131,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 
 		public void CreateTable()
 		{
-			FileLockerRedialer.Default.WaitforRedialFinish();
+			RedialManager.Default?.WaitforRedialFinish();
 			AtomicExecutor.Execute("db-createtable", () =>
 			{
 				using (IDbConnection conn = GetConnection())
@@ -143,7 +143,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 
 		public void CreateSheme()
 		{
-			FileLockerRedialer.Default.WaitforRedialFinish();
+			RedialManager.Default?.WaitforRedialFinish();
 			AtomicExecutor.Execute("db-createsheme", () =>
 			{
 				using (IDbConnection conn = GetConnection())

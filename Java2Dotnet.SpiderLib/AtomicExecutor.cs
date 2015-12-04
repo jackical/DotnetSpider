@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Java2Dotnet.Spider.Lib
 {
-	public class AtomicExecutor
+	public static class AtomicExecutor
 	{
 		private static readonly string AtomicActionFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpdier", "AtomicAction");
 		[DllImport("kernel32.dll")]
@@ -48,13 +45,14 @@ namespace Java2Dotnet.Spider.Lib
 					}
 					Thread.Sleep(1000);
 				}
+				// ReSharper disable once FunctionNeverReturns
 			});
 		}
 
 		public static void Execute(string name, Action action)
 		{
 			Stream stream = null;
-			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid());
+			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
 			try
 			{
 				stream = File.Open(id, FileMode.Create, FileAccess.Write);
@@ -68,10 +66,43 @@ namespace Java2Dotnet.Spider.Lib
 			}
 		}
 
+		public static void Execute(string name, Action<object> action,object obj)
+		{
+			Stream stream = null;
+			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
+			try
+			{
+				stream = File.Open(id, FileMode.Create, FileAccess.Write);
+
+				action(obj);
+			}
+			finally
+			{
+				stream?.Close();
+				File.Delete(id);
+			}
+		}
+
+		public static T Execute<T>(string name, Func<object,T> func,object obj)
+		{
+			Stream stream = null;
+			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
+			try
+			{
+				stream = File.Open(id, FileMode.Create, FileAccess.Write);
+
+				return func(obj);
+			}
+			finally
+			{
+				stream?.Close();
+				File.Delete(id);
+			}
+		}
 		public static T Execute<T>(string name, Func<T> func)
 		{
 			Stream stream = null;
-			string id = Path.Combine(AtomicActionFolder, name + Guid.NewGuid().ToString());
+			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
 			try
 			{
 				stream = File.Open(id, FileMode.Create, FileAccess.Write);

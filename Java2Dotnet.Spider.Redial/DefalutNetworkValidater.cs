@@ -1,11 +1,11 @@
 ﻿using System.Net.NetworkInformation;
 using System.Threading;
 
-namespace Java2Dotnet.Spider.Lib
+namespace Java2Dotnet.Spider.Redial
 {
-	public class NetworkUtil
+	public class DefalutNetworkValidater : INetworkValidater
 	{
-		public static void WaitForIntert()
+		public void Wait()
 		{
 			while (true)
 			{
@@ -18,7 +18,7 @@ namespace Java2Dotnet.Spider.Lib
 					{
 						return;
 					}
-					Thread.Sleep(500);
+					Thread.Sleep(100);
 				}
 				catch
 				{

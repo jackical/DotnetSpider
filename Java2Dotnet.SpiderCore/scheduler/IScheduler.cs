@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace Java2Dotnet.Spider.Core.Scheduler 
 {
 	/// <summary>

@@ -2,17 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Utils;
-using Java2Dotnet.Spider.Extension.DbSupport;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper.Attributes;
 using Java2Dotnet.Spider.Lib;
-using Java2Dotnet.Spider.Redial;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
 {

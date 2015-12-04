@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Java2Dotnet.Spider.Redial
 {
@@ -19,28 +15,24 @@ namespace Java2Dotnet.Spider.Redial
 		public VpsNetworkValidater(int networkCount = 2)
 		{
 			_networkCount = networkCount;
+
+			// add static router 
 		}
 
 		public void Wait()
 		{
 			while (true)
 			{
-				try
+				if (GetIp4Count() == _networkCount)
 				{
-					if (GetIp4Count() == _networkCount)
-					{
-						break;
-					}
+					break;
+				}
 
-					Thread.Sleep(100);
-				}
-				catch
-				{
-				}
+				Thread.Sleep(200);
 			}
 		}
 
-		public static int GetIp4Count()
+		private int GetIp4Count()
 		{
 			string hostName = Dns.GetHostName();
 			IPAddress[] addressList = Dns.GetHostAddresses(hostName);

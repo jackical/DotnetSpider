@@ -7,9 +7,9 @@ using System.Threading;
 using Java2Dotnet.Spider.Core.Downloader;
 using Java2Dotnet.Spider.Core.Pipeline;
 using Java2Dotnet.Spider.Core.Processor;
-using Java2Dotnet.Spider.Core.Redial;
 using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Core.Utils;
+using Java2Dotnet.Spider.Lib.Redial;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Java2Dotnet.Spider.Core.Test
@@ -123,7 +123,7 @@ namespace Java2Dotnet.Spider.Core.Test
 				throw new NotImplementedException();
 			}
 
-			public IRedialer Redialer { get; set; }
+			public IRedialManager RedialManager { get; set; }
 		}
 	}
 }
