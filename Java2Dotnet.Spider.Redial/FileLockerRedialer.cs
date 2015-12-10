@@ -4,12 +4,9 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using Java2Dotnet.Spider.Core.Downloader;
 using Java2Dotnet.Spider.Core.Redial;
 using log4net;
-using ServiceStack.Redis;
 
 namespace Java2Dotnet.Spider.Redial
 {

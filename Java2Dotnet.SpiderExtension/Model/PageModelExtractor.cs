@@ -29,10 +29,19 @@ namespace Java2Dotnet.Spider.Extension.Model
 		private readonly static log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(PageModelExtractor));
 		private static readonly Regex UrlRegex = new Regex(@"((http|https|ftp):(\/\/|\\\\)((\w)+[.]){1£¬}(net|com|cn|org|cc|tv|[0-9]{1£¬3})(((\/[\~]*|\\[\~]*)(\w)+)|[.](\w)+)*(((([?](\w)+){1}[=]*))*((\w)+){1}([\&](\w)+[\=](\w)+)*)*)");
 		private readonly bool _isGeneric;
+		private readonly MethodInfo _addMethod;
 
 		private PageModelExtractor(Type type)
 		{
 			_isGeneric = typeof(IEnumerable).IsAssignableFrom(type);
+			if (_isGeneric)
+			{
+				_addMethod = type.GetMethod("Add");
+				if (_addMethod == null)
+				{
+					throw new SpiderExceptoin("Add method is not exist.");
+				}
+			}
 			_modelType = type;
 			_actualType = _isGeneric ? type.GenericTypeArguments[0] : type;
 		}
@@ -292,7 +301,8 @@ namespace Java2Dotnet.Spider.Extension.Model
 						var obj = ProcessSingle(page, item, false);
 						if (obj != null)
 						{
-							result.Add(obj);
+							//result.Add(obj);
+							_addMethod.Invoke(result, obj);
 						}
 					}
 					return result;
