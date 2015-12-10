@@ -1,7 +1,4 @@
-using System.Runtime.CompilerServices;
-using Java2Dotnet.Spider.Core.Redial;
 using Java2Dotnet.Spider.Core.Scheduler.Component;
-using Java2Dotnet.Spider.Lib;
 using log4net;
 
 namespace Java2Dotnet.Spider.Core.Scheduler
@@ -11,9 +8,7 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 	/// </summary>
 	public abstract class DuplicateRemovedScheduler : IScheduler
 	{
-		public IRedialer Redialer { get; set; }
-
-		protected static ILog Logger = LogManager.GetLogger(typeof(DuplicateRemovedScheduler));
+		protected static readonly ILog Logger = LogManager.GetLogger(typeof(DuplicateRemovedScheduler));
 
 		protected IDuplicateRemover DuplicateRemover { get; set; } = new HashSetDuplicateRemover();
 
@@ -21,16 +16,11 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public void Push(Request request, ISpider spider)
 		{
-			Redialer?.WaitforRedialFinish();
-
-			AtomicExecutor.Execute("scheduler-push", () =>
+			if (!DuplicateRemover.IsDuplicate(request, spider) || ShouldReserved(request))
 			{
-				if (!DuplicateRemover.IsDuplicate(request, spider) || ShouldReserved(request))
-				{
-					//_logger.InfoFormat("Push to queue {0}", request.Url);
-					PushWhenNoDuplicate(request, spider);
-				}
-			});
+				//_logger.InfoFormat("Push to queue {0}", request.Url);
+				PushWhenNoDuplicate(request, spider);
+			}
 		}
 
 		public virtual void Init(ISpider spider)

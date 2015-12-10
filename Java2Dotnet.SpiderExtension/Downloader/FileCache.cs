@@ -4,10 +4,9 @@ using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Downloader;
 using Java2Dotnet.Spider.Core.Pipeline;
 using Java2Dotnet.Spider.Core.Processor;
-using Java2Dotnet.Spider.Core.Redial;
 using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Core.Utils;
-using log4net;
+using Java2Dotnet.Spider.Lib.Redial;
 
 namespace Java2Dotnet.Spider.Extension.Downloader
 {
@@ -20,12 +19,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 		private IDownloader _downloaderWhenFileMiss;
 		private readonly IPageProcessor _pageProcessor;
 
-		public FileCache(string startUrl, string urlPattern)
-			: this(startUrl, urlPattern, "/data/dotnetspider/temp/")
-		{
-		}
-
-		public FileCache(string startUrl, string urlPattern, string path)
+		public FileCache(string startUrl, string urlPattern, string path = "/data/dotnetspider/temp/")
 		{
 			_pageProcessor = new SimplePageProcessor(startUrl, urlPattern);
 			SetPath(path);
@@ -76,7 +70,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 		{
 		}
 
-		public IRedialer Redialer { get; set; }
+		public IRedialManager RedialManager { get; set; }
 
 		private string GetHtml(StreamReader bufferedReader)
 		{

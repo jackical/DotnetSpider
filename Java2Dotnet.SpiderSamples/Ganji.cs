@@ -8,7 +8,6 @@ using Java2Dotnet.Spider.Extension.DbSupport.Dapper.Attributes;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
 using Java2Dotnet.Spider.Extension.Pipeline;
-using Java2Dotnet.Spider.Extension.Scheduler;
 
 namespace Java2Dotnet.Spider.Samples
 {

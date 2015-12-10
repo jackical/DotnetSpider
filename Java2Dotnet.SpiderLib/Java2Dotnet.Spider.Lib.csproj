@@ -47,13 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdslUtil.cs" />
+    <Compile Include="CmdUtil.cs" />
+    <Compile Include="Redial\IRedialer.cs" />
+    <Compile Include="Redial\NeedRedialException.cs" />
+    <Compile Include="Redial\RedialResult.cs" />
     <Compile Include="SafeExecutor.cs" />
     <Compile Include="AtomicExecutor.cs" />
     <Compile Include="BlockingQueue.cs" />
     <Compile Include="BloomFilter.cs" />
     <Compile Include="DateTimeUtil.cs" />
-    <Compile Include="DictoryExtension.cs" />
-    <Compile Include="NetworkUtil.cs" />
+    <Compile Include="DirectoryExtension.cs" />
     <Compile Include="ObjectUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtension.cs" />

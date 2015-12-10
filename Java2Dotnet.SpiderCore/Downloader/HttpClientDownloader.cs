@@ -13,6 +13,7 @@ using Java2Dotnet.Spider.Core.Proxy;
 using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Lib;
+using Java2Dotnet.Spider.Redial;
 
 namespace Java2Dotnet.Spider.Core.Downloader
 {
@@ -22,7 +23,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 	[Synchronization]
 	public class HttpClientDownloader : BaseDownloader
 	{
-		private static AutomicLong _exceptionCount = new AutomicLong(0);
+		//private static AutomicLong _exceptionCount = new AutomicLong(0);
 
 		public override Page Download(Request request, ISpider spider)
 		{
@@ -42,63 +43,62 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			int statusCode = 0;
 
 			HttpWebResponse response = null;
-			HttpWebRequest httpWebRequest = null;
 			try
 			{
-				int retryNum = 3;
-				for (int i = 0; i < retryNum; ++i)
+				try
 				{
-					try
+					RedialManager.Default?.WaitforRedialFinish();
+					var httpWebRequest = GetHttpWebRequest(request, site, headers);
+					response = AtomicExecutor.Execute("downloader-download", h =>
 					{
-						Redialer?.WaitforRedialFinish();
-						httpWebRequest = GetHttpWebRequest(request, site, headers);
-						response = AtomicExecutor.Execute("http-downloader-download", () =>
-						{
-							return (HttpWebResponse)httpWebRequest.GetResponse();
-						});
+						HttpWebRequest tmpHttpWebRequest = h as HttpWebRequest;
+						return (HttpWebResponse)tmpHttpWebRequest?.GetResponse();
+					}, httpWebRequest);
 
-						statusCode = (int)response.StatusCode;
-						request.PutExtra(Request.StatusCode, statusCode);
-						if (StatusAccept(acceptStatCode, statusCode))
-						{
-							Page page = HandleResponse(request, charset, response, statusCode);
+					statusCode = (int)response.StatusCode;
+					request.PutExtra(Request.StatusCode, statusCode);
+					if (StatusAccept(acceptStatCode, statusCode))
+					{
+						Page page = HandleResponse(request, charset, response, statusCode);
 
-							ValidatePage(page);
+						// 这里只要是遇上登录的, 则在拨号成功之后, 全部抛异常在Spider中加入Scheduler调度
+						// 因此如果使用多线程遇上多个Warning Custom Validate Failed不需要紧张, 可以考虑用自定义Exception分开
+						ValidatePage(page);
 
-							// 结束后要置空, 这个值存到Redis会导置无限循环跑单个任务
-							request.PutExtra(Request.CycleTriedTimes, null);
+						// 结束后要置空, 这个值存到Redis会导置无限循环跑单个任务
+						request.PutExtra(Request.CycleTriedTimes, null);
 
-							httpWebRequest.ServicePoint.ConnectionLimit = int.MaxValue;
-							OnSuccess(request);
+						httpWebRequest.ServicePoint.ConnectionLimit = int.MaxValue;
+						OnSuccess(request);
 
-							return page;
-						}
-						else
-						{
-							throw new SpiderExceptoin("Download failed.");
-						}
+						return page;
 					}
-					catch (Exception)
+					else
 					{
-						Thread.Sleep(500);
-						// ignored
+						throw new SpiderExceptoin("Download failed.");
 					}
 				}
+				catch (Exception)
+				{
+					Thread.Sleep(500);
+					// ignored
+				}
+
 
 				//正常结果在上面已经Return了, 到此处必然是下载失败的值.
 				throw new SpiderExceptoin("Download failed.");
 			}
-			catch (Exception)
-			{
-				_exceptionCount.Inc();
+			//catch (Exception)
+			//{
+			//	_exceptionCount.Inc();
 
-				if (_exceptionCount.Value > 15)
-				{
-					_exceptionCount.Set(0);
-					Redialer?.Redial();
-				}
-				throw new SpiderExceptoin("Download failed.");
-			}
+			//	if (_exceptionCount.Value > 15)
+			//	{
+			//		_exceptionCount.Set(0);
+			//		Redialer?.Redial();
+			//	}
+			//	throw new SpiderExceptoin("Download failed.");
+			//}
 			finally
 			{
 				// 先Close Response, 避免前面语句异常导致没有关闭.

@@ -7,7 +7,6 @@ using Java2Dotnet.Spider.Core.Processor;
 using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Formatter;
-using ServiceStack;
 
 namespace Java2Dotnet.Spider.Extension.Processor
 {

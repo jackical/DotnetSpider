@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using Java2Dotnet.Spider.Core;
-using Java2Dotnet.Spider.Core.Pipeline;
 using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper.Attributes;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
 using Java2Dotnet.Spider.Extension.Pipeline;
-using Java2Dotnet.Spider.Extension.Scheduler;
 
 namespace Java2Dotnet.Spider.Samples.Samples
 {

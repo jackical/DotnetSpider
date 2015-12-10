@@ -74,7 +74,6 @@
     <Compile Include="Proxy\HttpHost.cs" />
     <Compile Include="Proxy\Proxy.cs" />
     <Compile Include="Proxy\ProxyPool.cs" />
-    <Compile Include="Redial\IRedial.cs" />
     <Compile Include="Scheduler\QueueScheduler.cs" />
     <Compile Include="Selector\AndSelector.cs" />
     <Compile Include="Selector\BaseElementSelector.cs" />
@@ -145,6 +144,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Java2Dotnet.Spider.Redial\Java2Dotnet.Spider.Redial.csproj">
+      <Project>{D1AC9B1C-BF83-47C8-B831-D32076A0701B}</Project>
+      <Name>Java2Dotnet.Spider.Redial</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Java2Dotnet.SpiderLib\Java2Dotnet.Spider.Lib.csproj">
       <Project>{7ea772d4-3a2b-4c2a-9537-97f4ebc180c2}</Project>
       <Name>Java2Dotnet.Spider.Lib</Name>

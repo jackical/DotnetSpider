@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using log4net;
 
 namespace Java2Dotnet.Spider.Core.Pipeline

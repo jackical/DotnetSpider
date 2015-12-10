@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Java2Dotnet.Spider.Lib
 {
-	public static class DictoryExtension
+	public static class DirectoryExtension
 	{
 		public static DirectoryInfo CopyTo(this DirectoryInfo directoryInfo, string target)
 		{

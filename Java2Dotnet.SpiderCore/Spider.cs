@@ -16,6 +16,7 @@ using Java2Dotnet.Spider.Core.Processor;
 using Java2Dotnet.Spider.Core.Proxy;
 using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Core.Utils;
+using Java2Dotnet.Spider.Lib.Redial;
 using log4net;
 using Newtonsoft.Json;
 
@@ -622,6 +623,14 @@ namespace Java2Dotnet.Spider.Core
 					page.SetRawText(_subHtmlRegex.Match(page.GetRawText()).Value);
 				}
 			}
+			catch (NeedRedialException)
+			{
+				if (_site.CycleRetryTimes > 0)
+				{
+					page = AddToCycleRetry(request, _site);
+				}
+				Logger.Info("Download page " + request.Url + " failed.");
+			}
 			catch (Exception e)
 			{
 				if (_site.CycleRetryTimes > 0)
@@ -629,7 +638,7 @@ namespace Java2Dotnet.Spider.Core
 					page = AddToCycleRetry(request, _site);
 				}
 
-				Logger.Warn("Download page " + request.Url + " failed.");
+				Logger.Warn("Download page " + request.Url + " failed.", e);
 			}
 
 			//watch.Stop();
