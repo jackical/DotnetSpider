@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdslRedialer.cs" />
+    <Compile Include="AtomicRedialExecutor.cs" />
     <Compile Include="BaseAdslRedialer.cs" />
     <Compile Include="BaseRedialManager.cs" />
     <Compile Include="DefalutNetworkValidater.cs" />
@@ -74,7 +75,7 @@
     <Compile Include="INetworkValidater.cs" />
     <Compile Include="IRedialer.cs" />
     <Compile Include="RedialManager.cs" />
-    <Compile Include="SshAdslRedialer.cs" />
+    <Compile Include="H3CSshAdslRedialer.cs" />
     <Compile Include="RedisRedialManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VpsNetworkValidater.cs" />

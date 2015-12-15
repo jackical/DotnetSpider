@@ -1,21 +1,18 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Java2Dotnet.Spider.Lib.Redial;
 
-namespace Java2Dotnet.Spider.Lib
+namespace Java2Dotnet.Spider.Redial
 {
-	public static class AtomicExecutor
+	public static class AtomicRedialExecutor
 	{
-		private static readonly string AtomicActionFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpdier", "AtomicAction");
-		[DllImport("kernel32.dll")]
-		public static extern IntPtr _lopen(string lpPathName, int iReadWrite);
-		public const int OfReadwrite = 2;
-		public const int OfShareDenyNone = 0x40;
-		public static readonly IntPtr HfileError = new IntPtr(-1);
+		public static IRedialManager RedialManager = FileLockerRedialManager.Default;
 
-		static AtomicExecutor()
+		private static readonly string AtomicActionFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpdier", "AtomicAction");
+
+		static AtomicRedialExecutor()
 		{
 			var di = new DirectoryInfo(AtomicActionFolder);
 			if (!di.Exists)
@@ -51,6 +48,7 @@ namespace Java2Dotnet.Spider.Lib
 
 		public static void Execute(string name, Action action)
 		{
+			RedialManager.WaitforRedialFinish();
 			Stream stream = null;
 			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
 			try
@@ -66,8 +64,9 @@ namespace Java2Dotnet.Spider.Lib
 			}
 		}
 
-		public static void Execute(string name, Action<object> action,object obj)
+		public static void Execute(string name, Action<object> action, object obj)
 		{
+			RedialManager.WaitforRedialFinish();
 			Stream stream = null;
 			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
 			try
@@ -83,8 +82,9 @@ namespace Java2Dotnet.Spider.Lib
 			}
 		}
 
-		public static T Execute<T>(string name, Func<object,T> func,object obj)
+		public static T Execute<T>(string name, Func<object, T> func, object obj)
 		{
+			RedialManager.WaitforRedialFinish();
 			Stream stream = null;
 			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
 			try
@@ -102,6 +102,7 @@ namespace Java2Dotnet.Spider.Lib
 
 		public static T Execute<T>(string name, Func<T> func)
 		{
+			RedialManager.WaitforRedialFinish();
 			Stream stream = null;
 			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
 			try
