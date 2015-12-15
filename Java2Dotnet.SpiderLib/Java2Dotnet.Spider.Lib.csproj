@@ -53,7 +53,6 @@
     <Compile Include="Redial\NeedRedialException.cs" />
     <Compile Include="Redial\RedialResult.cs" />
     <Compile Include="SafeExecutor.cs" />
-    <Compile Include="AtomicExecutor.cs" />
     <Compile Include="BlockingQueue.cs" />
     <Compile Include="BloomFilter.cs" />
     <Compile Include="DateTimeUtil.cs" />
