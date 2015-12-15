@@ -12,7 +12,6 @@ using HtmlAgilityPack;
 using Java2Dotnet.Spider.Core.Proxy;
 using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Core.Utils;
-using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Redial;
 
 namespace Java2Dotnet.Spider.Core.Downloader
@@ -47,9 +46,8 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			{
 				try
 				{
-					RedialManager.Default?.WaitforRedialFinish();
 					var httpWebRequest = GetHttpWebRequest(request, site, headers);
-					response = AtomicExecutor.Execute("downloader-download", h =>
+					response = AtomicRedialExecutor.Execute("downloader-download", h =>
 					{
 						HttpWebRequest tmpHttpWebRequest = h as HttpWebRequest;
 						return (HttpWebResponse)tmpHttpWebRequest?.GetResponse();

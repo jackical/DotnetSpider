@@ -50,8 +50,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 			}
 			var sql = SqlGenerator.GetInsert(false);
 
-			RedialManager.Default?.WaitforRedialFinish();
-			AtomicExecutor.Execute("db-insert", () =>
+			AtomicRedialExecutor.Execute("db-insert", () =>
 			{
 				using (IDbConnection conn = GetConnection())
 				{
@@ -74,8 +73,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 
 			var sql = SqlGenerator.GetSelect(filters);
 
-			RedialManager.Default?.WaitforRedialFinish();
-			return AtomicExecutor.Execute("getwhere-insert", () =>
+			return AtomicRedialExecutor.Execute("getwhere-insert", () =>
 			{
 				using (IDbConnection conn = GetConnection())
 				{
@@ -99,8 +97,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 			}
 			var sql = SqlGenerator.GetUpdate();
 
-			RedialManager.Default?.WaitforRedialFinish();
-			AtomicExecutor.Execute("db-update", () =>
+			AtomicRedialExecutor.Execute("db-update", () =>
 			{
 				using (IDbConnection conn = GetConnection())
 				{
@@ -116,8 +113,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 		/// <returns></returns>
 		public int Execute(string sql)
 		{
-			RedialManager.Default?.WaitforRedialFinish();
-			return AtomicExecutor.Execute("db-execute", () =>
+			return AtomicRedialExecutor.Execute("db-execute", () =>
 			{
 				using (IDbConnection conn = GetConnection())
 				{
@@ -131,8 +127,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 
 		public void CreateTable()
 		{
-			RedialManager.Default?.WaitforRedialFinish();
-			AtomicExecutor.Execute("db-createtable", () =>
+			AtomicRedialExecutor.Execute("db-createtable", () =>
 			{
 				using (IDbConnection conn = GetConnection())
 				{
@@ -143,8 +138,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 
 		public void CreateSheme()
 		{
-			RedialManager.Default?.WaitforRedialFinish();
-			AtomicExecutor.Execute("db-createsheme", () =>
+			AtomicRedialExecutor.Execute("db-createsheme", () =>
 			{
 				using (IDbConnection conn = GetConnection())
 				{

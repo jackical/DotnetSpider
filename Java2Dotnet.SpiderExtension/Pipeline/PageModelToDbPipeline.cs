@@ -8,7 +8,7 @@ using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper.Attributes;
-using Java2Dotnet.Spider.Lib;
+using Java2Dotnet.Spider.Redial;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
 {
@@ -103,26 +103,29 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 				{
 					case OperateType.Insert:
 						{
-							for (int i = 0; i < 100; i++)
+							AtomicRedialExecutor.Execute("db-insert", () =>
 							{
-								try
+								for (int i = 0; i < 100; i++)
 								{
-									dataRepository?.Insert(pair.Value);
-									break;
+									try
+									{
+										dataRepository?.Insert(pair.Value);
+										break;
+									}
+									catch (Exception e)
+									{
+										Logger.Warn($"Try to save data to DB failed. Times: {i + 1}", e);
+										Thread.Sleep(2000);
+										// ignored
+									}
 								}
-								catch (Exception e)
-								{
-									Logger.Warn($"Try to save data to DB failed. Times: {i + 1}", e);
-									Thread.Sleep(2000);
-									// ignored
-								}
-							}
+							});
 
 							break;
 						}
 					case OperateType.Update:
 						{
-							AtomicExecutor.Execute("db-update", () =>
+							AtomicRedialExecutor.Execute("db-update", () =>
 							{
 								dataRepository?.Update(pair.Value);
 							});
