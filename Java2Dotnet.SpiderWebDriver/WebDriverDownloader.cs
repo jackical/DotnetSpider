@@ -98,10 +98,10 @@ namespace Java2Dotnet.Spider.WebDriver
 					realUrl = UrlFormatFunc(realUrl);
 				}
 
-				// 统一拨号换IP
-				RedialManager.Default?.WaitforRedialFinish(); 
-
-				driverService.WebDriver.Navigate().GoToUrl(realUrl);
+				AtomicRedialExecutor.Execute("webdriverdownloader-download", () =>
+				{
+					driverService.WebDriver.Navigate().GoToUrl(realUrl);
+				});
 
 				Thread.Sleep(_webDriverWaitTime);
 

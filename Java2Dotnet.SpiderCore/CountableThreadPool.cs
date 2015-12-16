@@ -27,10 +27,12 @@ namespace Java2Dotnet.Spider.Core
 		public CountableThreadPool(int threadNum = 5)
 		{
 			_maxDegreeOfParallelism = threadNum;
-			_maxTaskCount = _maxDegreeOfParallelism + threadNum;
+			//_maxTaskCount = _maxDegreeOfParallelism + threadNum;
+			_maxTaskCount = threadNum;
 
-			LimitedConcurrencyLevelTaskScheduler lcts = new LimitedConcurrencyLevelTaskScheduler(threadNum);
-			_factory = new TaskFactory(lcts);
+			//LimitedConcurrencyLevelTaskScheduler lcts = new LimitedConcurrencyLevelTaskScheduler(threadNum);
+			//_factory = new TaskFactory(lcts);
+			_factory = new TaskFactory();
 
 			Task.Factory.StartNew(() =>
 			{

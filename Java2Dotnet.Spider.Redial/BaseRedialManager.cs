@@ -16,7 +16,7 @@ namespace Java2Dotnet.Spider.Redial
 		public abstract RedialResult Redial();
 
 		public INetworkValidater NetworkValidater { get; set; } = new DefalutNetworkValidater();
-		public IRedialer Redialer { get; set; }=new AdslRedialer();
+		public IRedialer Redialer { get; set; } = new H3CSshAdslRedialer();
 
 		/// <summary>
 		/// 代码还在测试时大部分在Office里是不能也没有必要拨号（企业网）

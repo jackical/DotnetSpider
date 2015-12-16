@@ -302,7 +302,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 						if (obj != null)
 						{
 							//result.Add(obj);
-							_addMethod.Invoke(result, obj);
+							_addMethod.Invoke(result, new object[] { obj });
 						}
 					}
 					return result;
