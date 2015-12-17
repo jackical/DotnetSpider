@@ -58,6 +58,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -72,7 +73,9 @@
     <Compile Include="BaseRedialManager.cs" />
     <Compile Include="DefalutNetworkValidater.cs" />
     <Compile Include="FileLockerRedialManager.cs" />
+    <Compile Include="IIpChecker.cs" />
     <Compile Include="INetworkValidater.cs" />
+    <Compile Include="Ip138Checker.cs" />
     <Compile Include="IRedialer.cs" />
     <Compile Include="RedialManager.cs" />
     <Compile Include="H3CSshAdslRedialer.cs" />

@@ -90,7 +90,8 @@ namespace Java2Dotnet.Spider.WebDriver
 				//中文乱码URL
 				Uri uri = new Uri(request.Url);
 				string query = uri.Query;
-				string realUrl = uri.Scheme + "://" + uri.DnsSafeHost + uri.AbsolutePath + (string.IsNullOrEmpty(query) ? ""
+				string realUrl = uri.Scheme + "://" + uri.DnsSafeHost + uri.AbsolutePath + (string.IsNullOrEmpty(query)
+					? ""
 					: ("?" + HttpUtility.UrlPathEncode(uri.Query.Substring(1, uri.Query.Length - 1))));
 
 				if (UrlFormatFunc != null)
@@ -119,6 +120,11 @@ namespace Java2Dotnet.Spider.WebDriver
 				request.PutExtra(Request.CycleTriedTimes, null);
 
 				return page;
+			}
+			catch (Exception e)
+			{
+				HandleDownloadException(e);
+				throw;
 			}
 			finally
 			{

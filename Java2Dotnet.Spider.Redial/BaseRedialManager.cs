@@ -15,8 +15,15 @@ namespace Java2Dotnet.Spider.Redial
 		public abstract void WaitforRedialFinish();
 		public abstract RedialResult Redial();
 
+		public IIpChecker IpChecker { get; set; }
+
 		public INetworkValidater NetworkValidater { get; set; } = new DefalutNetworkValidater();
 		public IRedialer Redialer { get; set; } = new H3CSshAdslRedialer();
+
+		/// <summary>
+		/// Redial interval, default is 5 minitues.
+		/// </summary>
+		public int RedialInterval { get; set; } = 5;
 
 		/// <summary>
 		/// 代码还在测试时大部分在Office里是不能也没有必要拨号（企业网）

@@ -47,6 +47,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 				try
 				{
 					var httpWebRequest = GetHttpWebRequest(request, site, headers);
+
 					response = AtomicRedialExecutor.Execute("downloader-download", h =>
 					{
 						HttpWebRequest tmpHttpWebRequest = h as HttpWebRequest;
@@ -76,12 +77,10 @@ namespace Java2Dotnet.Spider.Core.Downloader
 						throw new SpiderExceptoin("Download failed.");
 					}
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
-					Thread.Sleep(500);
-					// ignored
+					HandleDownloadException(e);
 				}
-
 
 				//正常结果在上面已经Return了, 到此处必然是下载失败的值.
 				throw new SpiderExceptoin("Download failed.");
