@@ -144,6 +144,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			HttpWebRequest httpWebRequest = SelectRequestMethod(request);
 
 			httpWebRequest.UserAgent = site.UserAgent ?? "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0Mozilla/5.0 (Windows NT 10.0; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0";
+			httpWebRequest.Accept = site.Accept ?? "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 
 			if (site.IsUseGzip)
 			{

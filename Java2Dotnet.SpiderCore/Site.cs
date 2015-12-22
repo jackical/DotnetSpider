@@ -78,6 +78,11 @@ namespace Java2Dotnet.Spider.Core
 		public string UserAgent { get; set; }
 
 		/// <summary>
+		/// User agent
+		/// </summary>
+		public string Accept { get; set; }
+
+		/// <summary>
 		/// Get cookies
 		/// </summary>
 		public Dictionary<string, string> GetCookies()
