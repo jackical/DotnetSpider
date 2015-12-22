@@ -34,7 +34,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 			return this;
 		}
 
-		private ModelPageProcessor(Site site)
+		protected ModelPageProcessor(Site site)
 		{
 			Site = site;
 		}
