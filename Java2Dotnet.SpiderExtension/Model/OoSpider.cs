@@ -36,7 +36,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 	public class OoSpider : Core.Spider
 	{
 		private readonly ModelPageProcessor _modelPageProcessor;
-		private readonly ModelPipeline _modelPipeline;
+		private ModelPipeline _modelPipeline;
 		//private readonly IList<Type> _pageModelTypes = new List<Type>();
 
 		private OoSpider(string identify, ModelPageProcessor modelPageProcessor)
@@ -55,6 +55,11 @@ namespace Java2Dotnet.Spider.Extension.Model
 		private OoSpider(string identify, Site site, IPageModelPipeline[] pageModelPipeline, params Type[] modelTypes)
 			: this(identify, ModelPageProcessor.Create(site, modelTypes))
 		{
+			Init(pageModelPipeline, modelTypes);
+		}
+
+		private void Init(IPageModelPipeline[] pageModelPipeline, Type[] modelTypes)
+		{
 			_modelPipeline = new ModelPipeline();
 
 			AddPipeline(_modelPipeline);
@@ -70,6 +75,19 @@ namespace Java2Dotnet.Spider.Extension.Model
 				}
 				//_pageModelTypes.Add(modelType);
 			}
+		}
+
+		/// <summary>
+		/// Create a spider
+		/// </summary>
+		/// <param name="identify"></param>
+		/// <param name="pageModelPipeline"></param>
+		/// <param name="processor"></param>
+		/// <param name="modelTypes"></param>
+		public OoSpider(string identify, IPageModelPipeline[] pageModelPipeline, ModelPageProcessor processor, params Type[] modelTypes)
+			: this(identify, processor)
+		{
+			Init(pageModelPipeline, modelTypes);
 		}
 
 		public ModelPipeline ModelPipeline => _modelPipeline;

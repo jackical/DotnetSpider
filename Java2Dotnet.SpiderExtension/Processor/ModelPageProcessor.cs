@@ -39,7 +39,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 			Site = site;
 		}
 
-		public void Process(Page page)
+		public virtual void Process(Page page)
 		{
 			foreach (PageModelExtractor pageModelExtractor in _pageModelExtractorList)
 			{
