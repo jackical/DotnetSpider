@@ -55,7 +55,8 @@ namespace Java2Dotnet.Spider.Extension
 
 					Console.WriteLine("Prepare site with paramete: " + needInitStartRequest);
 
-					Site site = PrepareSite(needInitStartRequest);
+					Site site = needInitStartRequest ? PrepareSite() : new Site();
+
 					if (needInitStartRequest)
 					{
 						redis.SetValue(Name, "finished");
@@ -64,7 +65,7 @@ namespace Java2Dotnet.Spider.Extension
 					Console.WriteLine("Init spider with site.");
 					_spider = InitSpider(site);
 					_spider.SetScheduler(Scheduler);
-					 
+
 					_spider.InitComponent();
 				}
 				catch (Exception e)
@@ -79,7 +80,7 @@ namespace Java2Dotnet.Spider.Extension
 			}
 		}
 
-		protected abstract Site PrepareSite(bool needInitStartRequest);
+		protected abstract Site PrepareSite();
 
 		protected abstract Core.Spider InitSpider(Site site);
 		public virtual string RedisHost { get; } = "localhost";
