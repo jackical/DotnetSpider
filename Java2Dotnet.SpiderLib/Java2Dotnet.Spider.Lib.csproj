@@ -47,11 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdslUtil.cs" />
-    <Compile Include="CmdUtil.cs" />
-    <Compile Include="Redial\IRedialer.cs" />
-    <Compile Include="Redial\NeedRedialException.cs" />
-    <Compile Include="Redial\RedialResult.cs" />
     <Compile Include="SafeExecutor.cs" />
     <Compile Include="BlockingQueue.cs" />
     <Compile Include="BloomFilter.cs" />

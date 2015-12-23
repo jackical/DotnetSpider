@@ -1,4 +1,4 @@
-﻿namespace Java2Dotnet.Spider.Lib
+﻿namespace Java2Dotnet.Spider.Redial
 {
 	public static class AdslUtil
 	{

@@ -1,5 +1,4 @@
 ﻿using System;
-using Java2Dotnet.Spider.Lib.Redial;
 using Java2Dotnet.Spider.Redial;
 using log4net;
 

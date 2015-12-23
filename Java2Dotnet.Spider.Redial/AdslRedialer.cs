@@ -1,6 +1,4 @@
-﻿using Java2Dotnet.Spider.Lib;
-
-namespace Java2Dotnet.Spider.Redial
+﻿namespace Java2Dotnet.Spider.Redial
 {
 	public class AdslRedialer : BaseAdslRedialer
 	{

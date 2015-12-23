@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using Java2Dotnet.Spider.Lib.Redial;
 
 namespace Java2Dotnet.Spider.Redial
 {

@@ -27,6 +27,17 @@ namespace Java2Dotnet.Spider.Extension.Processor
 			return modelPageProcessor;
 		}
 
+		public static T Create<T>(Site site, params Type[] types) where T : ModelPageProcessor
+		{
+			T t = (T)Activator.CreateInstance(typeof(T), new { site });
+
+			foreach (Type type in types)
+			{
+				t.AddPageModel(type);
+			}
+			return t;
+		}
+
 		public ModelPageProcessor AddPageModel(Type type)
 		{
 			PageModelExtractor pageModelExtractor = PageModelExtractor.Create(type);

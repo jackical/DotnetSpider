@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading;
-using Java2Dotnet.Spider.Lib.Redial;
 using ServiceStack.Redis;
 
 namespace Java2Dotnet.Spider.Redial

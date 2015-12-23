@@ -122,6 +122,12 @@ namespace Java2Dotnet.Spider.Extension.Model
 			return new OoSpider(identify, site, pageModelPipeline, pageModels);
 		}
 
+		public static OoSpider Create<T>(string identify, Site site, IPageModelPipeline[] pageModelPipeline, params Type[] pageModels) where T : ModelPageProcessor
+		{
+			var processor = ModelPageProcessor.Create<T>(site, pageModels);
+			return new OoSpider(identify, pageModelPipeline, processor, pageModels);
+		}
+
 		public OoSpider AddPageModel(IPageModelPipeline pageModelPipeline, params Type[] pageModels)
 		{
 			foreach (Type pageModel in pageModels)

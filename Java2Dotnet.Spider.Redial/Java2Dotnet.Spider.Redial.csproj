@@ -68,9 +68,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdslRedialer.cs" />
+    <Compile Include="AdslUtil.cs" />
     <Compile Include="AtomicRedialExecutor.cs" />
     <Compile Include="BaseAdslRedialer.cs" />
     <Compile Include="BaseRedialManager.cs" />
+    <Compile Include="CmdUtil.cs" />
     <Compile Include="DefalutNetworkValidater.cs" />
     <Compile Include="FileLockerRedialManager.cs" />
     <Compile Include="IIpChecker.cs" />
@@ -79,6 +81,9 @@
     <Compile Include="IRedialer.cs" />
     <Compile Include="RedialManager.cs" />
     <Compile Include="H3CSshAdslRedialer.cs" />
+    <Compile Include="IRedialManager.cs" />
+    <Compile Include="NeedRedialException.cs" />
+    <Compile Include="RedialResult.cs" />
     <Compile Include="RedisRedialManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VpsNetworkValidater.cs" />
@@ -86,12 +91,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Java2Dotnet.SpiderLib\Java2Dotnet.Spider.Lib.csproj">
-      <Project>{7ea772d4-3a2b-4c2a-9537-97f4ebc180c2}</Project>
-      <Name>Java2Dotnet.Spider.Lib</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

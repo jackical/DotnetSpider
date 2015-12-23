@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Java2Dotnet.Spider.Lib.Redial;
 
 namespace Java2Dotnet.Spider.Redial
 {

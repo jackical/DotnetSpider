@@ -16,7 +16,7 @@ using Java2Dotnet.Spider.Core.Processor;
 using Java2Dotnet.Spider.Core.Proxy;
 using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Core.Utils;
-using Java2Dotnet.Spider.Lib.Redial;
+using Java2Dotnet.Spider.Redial;
 using log4net;
 using Newtonsoft.Json;
 

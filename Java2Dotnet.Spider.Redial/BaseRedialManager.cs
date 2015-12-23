@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Java2Dotnet.Spider.Lib.Redial;
 using log4net;
 
 namespace Java2Dotnet.Spider.Redial
