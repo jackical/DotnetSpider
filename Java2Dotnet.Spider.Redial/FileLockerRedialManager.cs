@@ -97,6 +97,11 @@ namespace Java2Dotnet.Spider.Redial
 					Logger.Warn("Redial finished.");
 					return RedialResult.Sucess;
 				}
+				catch (IOException)
+				{
+					// 有极小可能同时调用File.Open时抛出异常
+					return Redial();
+				}
 				catch (Exception)
 				{
 					return RedialResult.Failed;
