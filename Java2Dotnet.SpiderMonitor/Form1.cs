@@ -79,7 +79,7 @@ namespace Java2Dotnet.Spider.Monitor
 		private void RefreshTask()
 		{
 			listBox1.Items.Clear();
-			IDictionary<string, double> taskList = _manager.GetTaskList(0, 10);
+			IDictionary<string, double> taskList = _manager.GetTaskList(0, 1000);
 			foreach (var task in taskList)
 			{
 				listBox1.Items.Add(task.Key);
@@ -142,8 +142,11 @@ namespace Java2Dotnet.Spider.Monitor
 
 		private void btnClearDb_Click(object sender, EventArgs e)
 		{
-			_manager.ClearDb();
-			RefreshTask();
+			if (MessageBox.Show(this, @"确定要清空数据库吗?", @"警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+			{
+				_manager.ClearDb();
+				RefreshTask();
+			}
 		}
 	}
 }

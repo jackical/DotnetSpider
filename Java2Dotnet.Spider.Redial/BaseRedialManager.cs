@@ -9,7 +9,7 @@ namespace Java2Dotnet.Spider.Redial
 	public abstract class BaseRedialManager : IRedialManager
 	{
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(BaseRedialManager));
-		private static readonly string AtomicActionFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpdier", "AtomicAction");
+		private static readonly string AtomicActionFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpider", "AtomicAction");
 
 		public abstract void WaitforRedialFinish();
 		public abstract RedialResult Redial();
@@ -35,6 +35,8 @@ namespace Java2Dotnet.Spider.Redial
 			Redialer?.Redial();
 
 			NetworkValidater?.Wait();
+
+			Thread.Sleep(2000);
 		}
 
 		protected void WaitAtomicAction()

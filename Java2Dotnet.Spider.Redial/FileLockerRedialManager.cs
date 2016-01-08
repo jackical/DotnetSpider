@@ -26,7 +26,7 @@ namespace Java2Dotnet.Spider.Redial
 
 		private FileLockerRedialManager()
 		{
-			var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpdier");
+			var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpider");
 
 			DirectoryInfo di = new DirectoryInfo(folder);
 			if (!di.Exists)

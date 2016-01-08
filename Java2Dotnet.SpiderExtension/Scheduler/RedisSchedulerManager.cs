@@ -31,17 +31,23 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			using (var redis = _pool.GetSafeGetClient())
 			{
 				redis.Password = _password;
-				string json = redis?.GetValueFromHash(RedisScheduler.TaskStatus, taskIdentify);
-				if (!string.IsNullOrEmpty(json))
+				//string json = redis?.GetValueFromHash(RedisScheduler.TaskStatus, taskIdentify);
+				//if (!string.IsNullOrEmpty(json))
 				{
 					redis.Remove(GetQueueKey(taskIdentify));
 					redis.Remove(GetSetKey(taskIdentify));
 					redis.RemoveEntryFromHash(RedisScheduler.TaskStatus, taskIdentify);
 					redis.RemoveEntryFromHash(RedisScheduler.ItemPrefix + taskIdentify, taskIdentify);
-
+					redis.Remove(GetLockerKey(taskIdentify));
 					redis.RemoveItemFromSortedSet(RedisScheduler.TaskList, taskIdentify);
 				}
 			}
+		}
+
+
+		private string GetLockerKey(string identify)
+		{
+			return "locker-" + identify;
 		}
 
 		private string GetSetKey(string identify)

@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Java2Dotnet.Spider.Extension.Scheduler;
 using Java2Dotnet.Spider.Extension.Utils;
-using Java2Dotnet.Spider.Redial;
 using Newtonsoft.Json;
 using ServiceStack.Redis;
 
@@ -52,7 +51,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 
 		public void UpdateStatus()
 		{
-			AtomicRedialExecutor.Execute("rdsu", () =>
+			try
 			{
 				using (var redis = _pool?.GetSafeGetClient())
 				{
@@ -77,7 +76,11 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 					};
 					redis.SetEntryInHash(RedisScheduler.TaskStatus, _spider.Identify, JsonConvert.SerializeObject(status));
 				}
-			});
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
 		}
 	}
 }

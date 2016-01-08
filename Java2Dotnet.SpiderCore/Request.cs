@@ -66,8 +66,8 @@ namespace Java2Dotnet.Spider.Core
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public Request PutExtra(string key, dynamic value)
 		{
-            if (key == null)
-                return this;
+			if (key == null)
+				return this;
 			if (Extras == null)
 			{
 				Extras = new Dictionary<string, dynamic>();
@@ -143,10 +143,10 @@ namespace Java2Dotnet.Spider.Core
 				extras.Add(entry.Key, entry.Value);
 			}
 			Request newObj = new Request(Url, GetExtra(Deep), extras)
-            {
-                Method=Method,
-                Priority=Priority
-            };
+			{
+				Method = Method,
+				Priority = Priority
+			};
 			return newObj;
 		}
 	}

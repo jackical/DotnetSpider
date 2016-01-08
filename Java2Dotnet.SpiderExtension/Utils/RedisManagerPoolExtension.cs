@@ -14,8 +14,9 @@ namespace Java2Dotnet.Spider.Extension.Utils
 				{
 					return pool.GetClient();
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
+					Console.WriteLine("Error: Get redis client failed.");
 					Thread.Sleep(500);
 				}
 			}

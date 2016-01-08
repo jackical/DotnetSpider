@@ -166,6 +166,11 @@ namespace Java2Dotnet.Spider.Core
 			return this;
 		}
 
+		public virtual List<Request> CalculateNewRequests(Request request)
+		{
+			return new List<Request> { request };
+		}
+
 		public string Identify
 		{
 			get
@@ -612,33 +617,40 @@ namespace Java2Dotnet.Spider.Core
 
 			//Stopwatch watch = new Stopwatch();
 			//watch.Start();
-			try
-			{
-				// 下载页面
-				page = Downloader.Download(request, this);
 
-				// 处理HTML截取
-				if (_subHtmlRegex != null)
-				{
-					page.SetRawText(_subHtmlRegex.Match(page.GetRawText()).Value);
-				}
-			}
-			catch (NeedRedialException)
+			while (true)
 			{
-				if (_site.CycleRetryTimes > 0)
+				try
 				{
-					page = AddToCycleRetry(request, _site);
-				}
-				Logger.Info("Download page " + request.Url + " failed.");
-			}
-			catch (Exception e)
-			{
-				if (_site.CycleRetryTimes > 0)
-				{
-					page = AddToCycleRetry(request, _site);
-				}
+					// 下载页面
+					page = Downloader.Download(request, this);
 
-				Logger.Warn("Download page " + request.Url + " failed.", e);
+					// 处理HTML截取
+					if (_subHtmlRegex != null)
+					{
+						page.SetRawText(_subHtmlRegex.Match(page.GetRawText()).Value);
+					}
+					break;
+				}
+				catch (NeedRedialException e)
+				{
+					//if (_site.CycleRetryTimes > 0)
+					//{
+					//	page = AddToCycleRetry(request, _site);
+					//}
+					//Logger.Info("Download page " + request.Url + " failed.");
+					Logger.Warn("NeedRedialException");
+				}
+				catch (Exception e)
+				{
+					if (_site.CycleRetryTimes > 0)
+					{
+						page = AddToCycleRetry(request, _site);
+					}
+
+					Logger.Warn("Download page " + request.Url + " failed.", e);
+					break;
+				}
 			}
 
 			//watch.Stop();

@@ -9,7 +9,7 @@ namespace Java2Dotnet.Spider.Redial
 	{
 		public static IRedialManager RedialManager = FileLockerRedialManager.Default;
 
-		private static readonly string AtomicActionFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpdier", "AtomicAction");
+		private static readonly string AtomicActionFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpider", "AtomicAction");
 
 		static AtomicRedialExecutor()
 		{

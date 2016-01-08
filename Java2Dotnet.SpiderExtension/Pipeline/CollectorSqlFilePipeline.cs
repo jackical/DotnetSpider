@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Java2Dotnet.Spider.Core;
@@ -15,7 +14,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 
 		public CollectorMySqlFilePipeline()
 		{
-			_folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpiderData");
+			_folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpider","Data");
 
 			if (!Directory.Exists(_folderPath))
 			{
