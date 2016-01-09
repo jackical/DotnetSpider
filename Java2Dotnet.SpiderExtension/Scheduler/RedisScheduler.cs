@@ -5,11 +5,11 @@ using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Core.Scheduler.Component;
 using Java2Dotnet.Spider.Core.Utils;
-using Java2Dotnet.Spider.Extension.Utils;
 using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Redial;
 using Newtonsoft.Json;
 using ServiceStack.Redis;
+using SafeRedisManagerPool = Java2Dotnet.Spider.Extension.Utils.SafeRedisManagerPool;
 
 namespace Java2Dotnet.Spider.Extension.Scheduler
 {
@@ -18,8 +18,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 	/// </summary>
 	public class RedisScheduler : DuplicateRemovedScheduler, IMonitorableScheduler, IDuplicateRemover
 	{
-		private readonly RedisManagerPool _pool;
-		private readonly string _password;
+		private readonly SafeRedisManagerPool _pool;
 
 		public static readonly string QueuePrefix = "queue-";
 		public static readonly string TaskStatus = "task-status";
@@ -28,7 +27,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		public static readonly string ItemPrefix = "item-";
 
 		public RedisScheduler(string host, string password)
-			: this(new RedisManagerPool(new List<string> { host }, new RedisPoolConfig { MaxPoolSize = 100 }), password)
+			: this(new SafeRedisManagerPool(new List<string> { host }, new RedisPoolConfig { MaxPoolSize = 100 }, password))
 		{
 		}
 
@@ -38,16 +37,13 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			{
 				using (var redis = _pool.GetSafeGetClient())
 				{
-					redis.Password = _password;
-
 					redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
 				}
 			});
 		}
 
-		private RedisScheduler(RedisManagerPool pool, string password)
+		private RedisScheduler(SafeRedisManagerPool pool)
 		{
-			_password = password;
 			_pool = pool;
 
 			DuplicateRemover = this;
@@ -59,7 +55,6 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			{
 				using (var redis = _pool.GetSafeGetClient())
 				{
-					redis.Password = _password;
 					redis.Remove(GetSetKey(spider));
 				}
 			});
@@ -81,7 +76,6 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			{
 				using (var redis = _pool.GetSafeGetClient())
 				{
-					redis.Password = _password;
 					while (true)
 					{
 						try
@@ -110,8 +104,6 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			{
 				using (var redis = _pool.GetSafeGetClient())
 				{
-					redis.Password = _password;
-
 					redis.AddItemToSortedSet(GetQueueKey(spider), request.Url);
 
 					// 没有必要判断浪费性能了, 这里不可能为空。最少会有一个层级数据 Grade
@@ -145,7 +137,6 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 				{
 					using (var redis = _pool.GetSafeGetClient())
 					{
-						redis.Password = _password;
 						string url = redis.PopItemWithLowestScoreFromSortedSet(GetQueueKey(spider));
 						if (url == null)
 						{
@@ -183,8 +174,6 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			{
 				using (var redis = _pool.GetSafeGetClient())
 				{
-					redis.Password = _password;
-
 					long size = redis.GetSortedSetCount(GetQueueKey(spider));
 					return (int)size;
 				}
@@ -197,7 +186,6 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			{
 				using (var redis = _pool.GetSafeGetClient())
 				{
-					redis.Password = _password;
 					long size = redis.GetSetCount(GetSetKey(spider));
 					return (int)size;
 				}

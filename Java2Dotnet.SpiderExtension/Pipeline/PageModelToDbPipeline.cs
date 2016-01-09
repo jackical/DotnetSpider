@@ -53,17 +53,10 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 					}
 					else
 					{
-						if (type.GetCustomAttribute(typeof(StoredAs)) != null)
-						{
-							dataRepository = new DataRepository(type);
-							dataRepository.CreateSheme();
-							dataRepository.CreateTable();
-							_cache.TryAdd(type, dataRepository);
-						}
-						else
-						{
-							throw new SpiderExceptoin("Didn't define TableName( StoreAs attribute) in the Type: " + type.FullName);
-						}
+						dataRepository = new DataRepository(type);
+						dataRepository.CreateSheme();
+						dataRepository.CreateTable();
+						_cache.TryAdd(type, dataRepository);
 					}
 				}
 				else
@@ -79,17 +72,10 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 						}
 						else
 						{
-							if (type.GetCustomAttribute(typeof(StoredAs)) != null)
-							{
-								dataRepository = new DataRepository(type);
-								dataRepository.CreateSheme();
-								dataRepository.CreateTable();
-								_cache.TryAdd(type, dataRepository);
-							}
-							else
-							{
-								throw new SpiderExceptoin("Didn't define TableName( StoreAs attribute) in the Type: " + type.FullName);
-							}
+							dataRepository = new DataRepository(type);
+							dataRepository.CreateSheme();
+							dataRepository.CreateTable();
+							_cache.TryAdd(type, dataRepository);
 						}
 
 						for (int i = 0; i < list.Count; ++i)

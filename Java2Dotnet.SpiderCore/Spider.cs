@@ -210,13 +210,17 @@ namespace Java2Dotnet.Spider.Core
 		{
 			CheckIfRunning();
 			IScheduler oldScheduler = Scheduler;
-			Scheduler = scheduler;
-			if (oldScheduler != null)
+
+			if (!oldScheduler.Equals(scheduler))
 			{
-				Request request;
-				while ((request = oldScheduler.Poll(this)) != null)
+				Scheduler = scheduler;
+				if (oldScheduler != null)
 				{
-					Scheduler.Push(request, this);
+					Request request;
+					while ((request = oldScheduler.Poll(this)) != null)
+					{
+						Scheduler.Push(request, this);
+					}
 				}
 			}
 			return this;

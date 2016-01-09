@@ -12,7 +12,7 @@ namespace Java2Dotnet.Spider.Redial
 	public class RedisRedialManager : BaseRedialManager, IDisposable
 	{
 		private static RedisRedialManager _instanse;
-		private readonly RedisManagerPool _pool;
+		private readonly SafeRedisManagerPool _pool;
 		private const string RedialStatusKey = "REDIAL_STATUS";
 
 		public string RedisHost { get; set; } = "localhost";
@@ -27,7 +27,7 @@ namespace Java2Dotnet.Spider.Redial
 				RedisHost = tmpRedisHost;
 			}
 
-			_pool = new RedisManagerPool(new List<string> { RedisHost }, new RedisPoolConfig { MaxPoolSize = 1000 });
+			_pool = new SafeRedisManagerPool(new List<string> { RedisHost }, new RedisPoolConfig { MaxPoolSize = 1000 }, "");
 
 			var redialSetting = GetRedialStatus();
 			if (redialSetting == null)

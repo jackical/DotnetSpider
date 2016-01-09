@@ -5,26 +5,24 @@ using System.Threading.Tasks;
 using Java2Dotnet.Spider.Extension.Scheduler;
 using Java2Dotnet.Spider.Extension.Utils;
 using Newtonsoft.Json;
-using ServiceStack.Redis;
 
 namespace Java2Dotnet.Spider.Extension.Monitor
 {
 	public class RedisStatusUpdater
 	{
-		private static RedisManagerPool _pool;
+		private static SafeRedisManagerPool _pool;
 		private readonly ISpiderStatus _spiderStatus;
 		private readonly Core.Spider _spider;
-		private readonly string _password;
 
 		public RedisStatusUpdater(Core.Spider spider, ISpiderStatus spiderStatus)
 		{
 			_spider = spider;
 			_spiderStatus = spiderStatus;
 			string host = ConfigurationManager.AppSettings["redisServer"];
-			_password = ConfigurationManager.AppSettings["redisPassword"];
+			var password = ConfigurationManager.AppSettings["redisPassword"];
 			if (!string.IsNullOrEmpty(host))
 			{
-				_pool = new RedisManagerPool(host);
+				_pool = new SafeRedisManagerPool(host, password);
 			}
 		}
 
@@ -59,7 +57,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 					{
 						return;
 					}
-					redis.Password = _password;
+
 					object status = new
 					{
 						_spiderStatus.Name,

@@ -151,7 +151,7 @@
     <Compile Include="Scheduler\SpiderStatus.cs" />
     <Compile Include="Utils\DoubleKeyDictionary.cs" />
     <Compile Include="Utils\Operator.cs" />
-    <Compile Include="Utils\RedisManagerPoolExtension.cs" />
+    <Compile Include="Utils\SafeRedisManagerPool.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Pipeline\ISubPipeline.cs" />

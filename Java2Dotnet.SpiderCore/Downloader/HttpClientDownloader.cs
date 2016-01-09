@@ -6,7 +6,6 @@ using System.IO.Compression;
 using System.Net;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
-using System.Threading;
 using System.Web;
 using HtmlAgilityPack;
 using Java2Dotnet.Spider.Core.Proxy;

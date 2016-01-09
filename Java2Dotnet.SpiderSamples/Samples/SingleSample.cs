@@ -12,8 +12,7 @@ using Java2Dotnet.Spider.Extension.Pipeline;
 namespace Java2Dotnet.Spider.Samples.Samples
 {
 	[ExtractBy(Value = "//*[@id=\"tab_top50\"]/div[1]/ul/li", Count = 1)]
-	[Scheme("Test")]
-	[StoredAs("SingleTest")]
+	[Scheme("Test", "SingleTest")]
 	public class SingleSample
 	{
 		public static void RunTask()

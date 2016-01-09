@@ -4,8 +4,7 @@ using Java2Dotnet.Spider.Extension.Model.Attribute;
 namespace Java2Dotnet.Spider.Samples
 {
 	[ExtractBy(Value = "//*[@id=\"listofficial\"]/div[1]/div")]
-	[Scheme("youku")]
-	[StoredAs("video3")]
+	[Scheme("youku", "video3")]
 	public class VideoEntity
 	{
 		[KeyProperty]

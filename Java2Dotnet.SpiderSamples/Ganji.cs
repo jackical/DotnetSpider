@@ -16,8 +16,7 @@ namespace Java2Dotnet.Spider.Samples
 
 	//////*[@id="list-job-id"]/div[9]/dl[1]
 	[ExtractBy(Value = "//*[@id=\"list-job-id\"]/div[9]/dl")]
-	[Scheme("ganji")]
-	[StoredAs("post")]
+	[Scheme("ganji", "post")]
 	public class Ganji : SpiderEntity
 	{
 		public static void RunTask()

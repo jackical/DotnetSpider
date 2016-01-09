@@ -13,8 +13,7 @@ namespace Java2Dotnet.Spider.Samples
 {
 
 	[ExtractBy(Value = "//*[@id=\"tab_top50\"]/div[1]/ul/li", Count = 15)]
-	[Scheme("aiqiyi")]
-	[StoredAs("movies")]
+	[Scheme("aiqiyi", "movies")]
 	public class walter : SpiderEntity
 	{
 		public static void RunTask()

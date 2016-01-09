@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.Scheduler;
 using Java2Dotnet.Spider.Extension.Utils;
@@ -9,10 +10,11 @@ namespace Java2Dotnet.Spider.Extension
 {
 	public abstract class AbastractRedisSpider : IRedisSpider
 	{
-		private RedisManagerPool _pool;
+		private SafeRedisManagerPool _pool;
 		private RedisScheduler _scheduler;
 
-		protected RedisManagerPool Pool => _pool ?? (_pool = new RedisManagerPool(new List<string> { RedisHost }, new RedisPoolConfig { MaxPoolSize = 100 }));
+		protected SafeRedisManagerPool Pool => _pool ?? (_pool = new SafeRedisManagerPool(RedisHost, RedisPassword));
+
 
 		protected RedisScheduler Scheduler
 		{
@@ -46,7 +48,6 @@ namespace Java2Dotnet.Spider.Extension
 				{
 					string key = "locker-" + Name;
 					// 取得锁
-					redis.Password = RedisPassword;
 					Console.WriteLine("Lock: " + key);
 					locker = redis.AcquireLock(key, TimeSpan.FromMinutes(10));
 

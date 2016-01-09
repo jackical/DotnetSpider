@@ -15,8 +15,7 @@ namespace Java2Dotnet.Spider.Extension.Test
 	public class PageExtract2MultiTypesTests
 	{
 		[ExtractBy(Value = "//*[@id='nav_menu']/a[1]")]
-		[Scheme("cnblogs")]
-		[StoredAs("yuanzi")]
+		[Scheme("cnblogs", "yuanzi")]
 		public class Yuanzi : SpiderEntity
 		{
 			[ExtractBy(Value = ".")]
@@ -25,8 +24,7 @@ namespace Java2Dotnet.Spider.Extension.Test
 		}
 
 		[ExtractBy(Value = "//*[@id='nav_menu']/a[2]")]
-		[Scheme("cnblogs")]
-		[StoredAs("jinghua")]
+		[Scheme("cnblogs", "jinghua")]
 		public class Jinghua : SpiderEntity
 		{
 			[ExtractBy(Value = ".")]

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Java2Dotnet.Spider.Core.Utils;
 
 namespace Java2Dotnet.Spider.Core
 {

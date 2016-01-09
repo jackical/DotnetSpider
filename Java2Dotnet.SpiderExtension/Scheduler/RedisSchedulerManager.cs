@@ -8,20 +8,17 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 {
 	public class RedisSchedulerManager : ISchedulerManager
 	{
-		private readonly RedisManagerPool _pool;
-		private readonly string _password;
+		private readonly SafeRedisManagerPool _pool;
 
 		public RedisSchedulerManager(string host, string password)
 		{
-			_pool = new RedisManagerPool(host);
-			_password = password;
+			_pool = new SafeRedisManagerPool(host, password);
 		}
 
 		public IDictionary<string, double> GetTaskList(int startIndex, int count)
 		{
 			using (var redis = _pool.GetSafeGetClient())
 			{
-				redis.Password = _password;
 				return redis.GetRangeWithScoresFromSortedSetDesc(RedisScheduler.TaskList, startIndex, startIndex + count);
 			}
 		}
@@ -30,7 +27,6 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			using (var redis = _pool.GetSafeGetClient())
 			{
-				redis.Password = _password;
 				//string json = redis?.GetValueFromHash(RedisScheduler.TaskStatus, taskIdentify);
 				//if (!string.IsNullOrEmpty(json))
 				{
@@ -64,7 +60,6 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			using (var redis = _pool.GetSafeGetClient())
 			{
-				redis.Password = _password;
 				string json = redis?.GetValueFromHash(RedisScheduler.TaskStatus, taskIdentify);
 				if (!string.IsNullOrEmpty(json))
 				{
@@ -78,7 +73,6 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			using (var redis = _pool.GetSafeGetClient())
 			{
-				redis.Password = _password;
 				redis.FlushDb();
 			}
 		}
