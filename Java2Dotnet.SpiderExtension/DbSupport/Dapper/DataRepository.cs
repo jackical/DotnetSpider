@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using Dapper;
-using Java2Dotnet.Spider.Redial;
-using Java2Dotnet.Spider.Lib;
 
 namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 {

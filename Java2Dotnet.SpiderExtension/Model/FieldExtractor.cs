@@ -10,11 +10,11 @@ namespace Java2Dotnet.Spider.Extension.Model
 	/// </summary>
 	public class FieldExtractor : Extractor
 	{
-		public FieldExtractor(PropertyInfo field, ISelector selector, ExtractSource source, bool notNull, bool multi, Stoper stoper = null)
+		public FieldExtractor(PropertyInfo field, ISelector selector, ExtractSource source, bool notNull, bool multi, Stopper stopper = null)
 			: base(selector, source, notNull)
 		{
 			Field = field;
-			Stoper = stoper;
+			Stopper = stopper;
 			Multi = multi;
 		}
 
@@ -22,7 +22,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 		public IObjectFormatter ObjectFormatter { get; set; }
 
-		public Stoper Stoper { get; set; }
+		public Stopper Stopper { get; set; }
 
 		public bool Download { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -28,6 +29,7 @@ namespace Java2Dotnet.Spider.Redial
 					break;
 				}
 
+				Console.WriteLine("VPS Waiter is waiting...");
 				Thread.Sleep(200);
 			}
 		}

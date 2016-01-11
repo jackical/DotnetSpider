@@ -1,4 +1,6 @@
-﻿namespace Java2Dotnet.Spider.Redial
+﻿using System;
+
+namespace Java2Dotnet.Spider.Redial
 {
 	public class AdslRedialer : BaseAdslRedialer
 	{
@@ -12,6 +14,7 @@
 
 		public override void Redial()
 		{
+			Console.WriteLine($"Try to redial: {Interface} {User} {Password}");
 			AdslUtil.Connect(Interface, User, Password);
 		}
 	}

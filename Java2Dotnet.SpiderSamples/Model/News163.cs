@@ -10,7 +10,7 @@ using Java2Dotnet.Spider.Extension.Scheduler;
 
 namespace Java2Dotnet.Spider.Samples.Model
 {
-	[TargetUrl(Value = new[] { "http://news.163.com/\\d+/\\d+/\\d+/\\w+*.html" })]
+	[TargetUrl(new[] { "http://news.163.com/\\d+/\\d+/\\d+/\\w+*.html" })]
 	public class News163 : IMultiPageModel
 	{
 		[ExtractByUrl("http://news\\.163\\.com/\\d+/\\d+/\\d+/([^_]*).*\\.html")]

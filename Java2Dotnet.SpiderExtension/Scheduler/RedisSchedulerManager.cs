@@ -2,7 +2,6 @@
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.Utils;
 using Newtonsoft.Json;
-using ServiceStack.Redis;
 
 namespace Java2Dotnet.Spider.Extension.Scheduler
 {

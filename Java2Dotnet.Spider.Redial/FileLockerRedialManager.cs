@@ -11,6 +11,7 @@ namespace Java2Dotnet.Spider.Redial
 	{
 		private readonly string _lockerFilePath;
 		private static FileLockerRedialManager _instanse;
+		private readonly int RedialTimeout = 60 * 1000 / 50;
 
 		public static FileLockerRedialManager Default
 		{
@@ -45,7 +46,7 @@ namespace Java2Dotnet.Spider.Redial
 
 			if (File.Exists(_lockerFilePath))
 			{
-				while (true)
+				for (int i = 0; i < RedialTimeout; ++i)
 				{
 					Thread.Sleep(50);
 					if (!File.Exists(_lockerFilePath))

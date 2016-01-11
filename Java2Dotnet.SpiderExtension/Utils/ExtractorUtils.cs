@@ -16,19 +16,19 @@ namespace Java2Dotnet.Spider.Extension.Utils
 			ISelector selector;
 			switch (extractBy.Type)
 			{
-				case ExtractBy.ExtracType.Css:
+				case ExtractType.Css:
 					selector = new CssSelector(value);
 					break;
-				case ExtractBy.ExtracType.Regex:
+				case ExtractType.Regex:
 					selector = new RegexSelector(value);
 					break;
-				case ExtractBy.ExtracType.XPath:
+				case ExtractType.XPath:
 					selector = GetXpathSelector(value);
 					break;
-				case ExtractBy.ExtracType.JsonPath:
+				case ExtractType.JsonPath:
 					selector = new JsonPathSelector(value);
 					break;
-				case ExtractBy.ExtracType.Enviroment:
+				case ExtractType.Enviroment:
 					selector = new EnviromentSelector(value);
 					break;
 				default:

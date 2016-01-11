@@ -126,8 +126,8 @@ namespace Java2Dotnet.Spider.Extension.Model
 		{
 			//check custom formatter
 			Attribute.Formatter formatter = field.GetCustomAttribute<Attribute.Formatter>();
-			Stoper stoper = field.GetCustomAttribute<Stoper>();
-			fieldExtractor.Stoper = stoper;
+			Stopper stopper = field.GetCustomAttribute<Stopper>();
+			fieldExtractor.Stopper = stopper;
 
 			IObjectFormatter objectFormatter;
 			if (formatter?.FormatterType != null)
@@ -228,7 +228,14 @@ namespace Java2Dotnet.Spider.Extension.Model
 					_targetUrlPatterns.Add(new Regex("(.*)"));
 				}
 
-				_targetUrlRegionSelector = new XPathSelector(string.IsNullOrEmpty(targetUrlAttribute.SourceRegion) ? "." : targetUrlAttribute.SourceRegion);
+				if (targetUrlAttribute.ExtractType == ExtractType.XPath)
+				{
+					_targetUrlRegionSelector = new XPathSelector(string.IsNullOrEmpty(targetUrlAttribute.SourceRegion) ? "." : targetUrlAttribute.SourceRegion);
+				}
+				else if (targetUrlAttribute.ExtractType == ExtractType.JsonPath)
+				{
+					_targetUrlRegionSelector = new JsonPathSelector(string.IsNullOrEmpty(targetUrlAttribute.SourceRegion) ? "$." : targetUrlAttribute.SourceRegion);
+				}
 
 				TargetUrlFormatter formatter = _actualType.GetCustomAttribute<TargetUrlFormatter>();
 
@@ -394,11 +401,11 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 						IList<dynamic> converted = Convert(value, fieldExtractor.ObjectFormatter);
 
-						if (fieldExtractor.Stoper != null)
+						if (fieldExtractor.Stopper != null)
 						{
 							foreach (string d in converted)
 							{
-								if (fieldExtractor.Stoper.NeedStop(d) && !page.MissTargetUrls)
+								if (fieldExtractor.Stopper.NeedStop(d) && !page.MissTargetUrls)
 								{
 									page.MissTargetUrls = true;
 									break;
@@ -516,9 +523,9 @@ namespace Java2Dotnet.Spider.Extension.Model
 							return null;
 						}
 
-						if (fieldExtractor.Stoper != null && !page.MissTargetUrls)
+						if (fieldExtractor.Stopper != null && !page.MissTargetUrls)
 						{
-							page.MissTargetUrls = fieldExtractor.Stoper.NeedStop(converted);
+							page.MissTargetUrls = fieldExtractor.Stopper.NeedStop(converted);
 						}
 
 						fieldExtractor.Field.SetValue(instance, converted);

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Java2Dotnet.Spider.Core;
+using Java2Dotnet.Spider.Extension.Monitor;
 using Java2Dotnet.Spider.Extension.Scheduler;
 using Java2Dotnet.Spider.Extension.Utils;
-using ServiceStack.Redis;
 
 namespace Java2Dotnet.Spider.Extension
 {
@@ -14,7 +12,6 @@ namespace Java2Dotnet.Spider.Extension
 		private RedisScheduler _scheduler;
 
 		protected SafeRedisManagerPool Pool => _pool ?? (_pool = new SafeRedisManagerPool(RedisHost, RedisPassword));
-
 
 		protected RedisScheduler Scheduler
 		{
@@ -56,7 +53,10 @@ namespace Java2Dotnet.Spider.Extension
 
 					Console.WriteLine("Prepare site with paramete: " + needInitStartRequest);
 
-					Site site = needInitStartRequest ? PrepareSite() : new Site();
+					if (needInitStartRequest)
+					{
+						PrepareSite();
+					}
 
 					if (needInitStartRequest)
 					{
@@ -64,9 +64,10 @@ namespace Java2Dotnet.Spider.Extension
 					}
 
 					Console.WriteLine("Init spider with site.");
-					_spider = InitSpider(site);
+					_spider = InitSpider(Site);
 					_spider.SetScheduler(Scheduler);
-
+					_spider.SaveStatusInRedis = true;
+					SpiderMonitor.Instance.Register(_spider);
 					_spider.InitComponent();
 				}
 				catch (Exception e)
@@ -81,7 +82,9 @@ namespace Java2Dotnet.Spider.Extension
 			}
 		}
 
-		protected abstract Site PrepareSite();
+		protected abstract void PrepareSite();
+
+		protected abstract Site Site { get; }
 
 		protected abstract Core.Spider InitSpider(Site site);
 		public virtual string RedisHost { get; } = "localhost";

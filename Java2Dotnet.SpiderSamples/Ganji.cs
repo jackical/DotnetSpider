@@ -12,7 +12,7 @@ using Java2Dotnet.Spider.Extension.Pipeline;
 namespace Java2Dotnet.Spider.Samples
 {
 	////*[@id="list-job-id"]/div[15]/ul
-	[TargetUrl(Value = new[] { "zpdianhuaxiaoshou/o[0-9]+/" }, SourceRegion = "//*[@id=\"list-job-id\"]/div[15]/ul")]
+	[TargetUrl(new[] { "zpdianhuaxiaoshou/o[0-9]+/" }, "//*[@id=\"list-job-id\"]/div[15]/ul")]
 
 	//////*[@id="list-job-id"]/div[9]/dl[1]
 	[ExtractBy(Value = "//*[@id=\"list-job-id\"]/div[9]/dl")]
@@ -60,7 +60,7 @@ namespace Java2Dotnet.Spider.Samples
 		[StoredAs("uuid", StoredAs.ValueType.Varchar, false, 20)]
 		public string Uuid => Encrypt.Md5Encrypt(Title + Company);
 
-		[ExtractBy(Value = "url", Type = ExtractBy.ExtracType.Enviroment)]
+		[ExtractBy(Value = "url", Type = ExtractType.Enviroment)]
 		[StoredAs("url", StoredAs.ValueType.Text)]
 		public string Url { get; set; }
 

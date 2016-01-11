@@ -6,7 +6,7 @@ using Java2Dotnet.Spider.Extension.Model.Attribute;
 
 namespace Java2Dotnet.Spider.Samples.Model
 {
-	[TargetUrl(Value = new[] { "http://www.oschina.net/question/\\d+_\\d+*" })]
+	[TargetUrl(new[] { "http://www.oschina.net/question/\\d+_\\d+*" })]
 	[HelpUrl(Value = new[] { "http://www.oschina.net/question/*" })]
 	[ExtractBy(Value = "//*[@id=\"OSC_Content\"]/div[1]/div[1]/div[4]/ul/li")]
 	public class OschinaAnswer : IAfterExtractor

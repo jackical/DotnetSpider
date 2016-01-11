@@ -59,6 +59,8 @@ namespace Java2Dotnet.Spider.Core.Downloader
 					{
 						Page page = HandleResponse(request, charset, response, statusCode);
 
+						//page.SetRawText(File.ReadAllText(@"C:\Users\Lewis\Desktop\taobao.html"));
+
 						// 这里只要是遇上登录的, 则在拨号成功之后, 全部抛异常在Spider中加入Scheduler调度
 						// 因此如果使用多线程遇上多个Warning Custom Validate Failed不需要紧张, 可以考虑用自定义Exception分开
 						ValidatePage(page);

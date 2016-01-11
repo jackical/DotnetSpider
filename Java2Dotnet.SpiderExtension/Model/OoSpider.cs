@@ -92,6 +92,11 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 		public ModelPipeline ModelPipeline => _modelPipeline;
 
+		public void SetCustomizeTargetUrls(Func<Page, IList<string>> getCustomizeTargetUrls)
+		{
+			_modelPageProcessor.GetCustomizeTargetUrls = getCustomizeTargetUrls;
+		}
+
 		protected override List<ICollectorPipeline> GetCollectorPipeline(params Type[] types)
 		{
 			return types.Select(type => new PageModelCollectorPipeline(type)).Cast<ICollectorPipeline>().ToList();

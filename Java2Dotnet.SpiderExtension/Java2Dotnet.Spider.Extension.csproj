@@ -121,6 +121,7 @@
     <Compile Include="Model\Attribute\Download.cs" />
     <Compile Include="Model\Attribute\Stoper.cs" />
     <Compile Include="Model\Attribute\Table.cs" />
+    <Compile Include="Model\ExtractType.cs" />
     <Compile Include="Model\ICustomize.cs" />
     <Compile Include="Model\SpiderEntity.cs" />
     <Compile Include="Model\ExtractSource.cs" />
@@ -143,7 +144,7 @@
     <Compile Include="Monitor\ISpiderStatus.cs" />
     <Compile Include="MultiPageModel.cs" />
     <Compile Include="Pipeline\CollectorPageModelPipeline.cs" />
-    <Compile Include="Pipeline\CollectorSqlFilePipeline.cs" />
+    <Compile Include="Pipeline\CollectorMySqlFilePipeline.cs" />
     <Compile Include="Pipeline\ImagePipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduler\ISchedulerManager.cs" />

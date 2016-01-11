@@ -5,9 +5,7 @@ namespace Java2Dotnet.Spider.Extension.Model.Attribute
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
 	public class ExtractBy : System.Attribute
 	{
-		private ExtracType _type = ExtracType.XPath;
-
-		public enum ExtracType { XPath, Regex, Css, JsonPath, Enviroment }
+		private ExtractType _type = ExtractType.XPath;
 
 		//public ExtractBy(string value, Type type = Type.XPath, bool notNull = false, Source source = Source.SelectedHtml, bool multi = false)
 		//{
@@ -26,7 +24,7 @@ namespace Java2Dotnet.Spider.Extension.Model.Attribute
 		/// <summary>
 		/// Extractor type, support XPath, CSS Selector and regex.
 		/// </summary>
-		public ExtracType Type
+		public ExtractType Type
 		{
 			get
 			{
@@ -37,11 +35,11 @@ namespace Java2Dotnet.Spider.Extension.Model.Attribute
 				if (_type != value)
 				{
 					_type = value;
-					if (value == ExtracType.Enviroment)
+					if (value == ExtractType.Enviroment)
 					{
 						Source = ExtractSource.Enviroment;
 					}
-					if (value == ExtracType.JsonPath)
+					if (value == ExtractType.JsonPath)
 					{
 						Source = ExtractSource.Json;
 					}

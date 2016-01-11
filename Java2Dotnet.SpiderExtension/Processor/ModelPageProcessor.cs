@@ -17,6 +17,8 @@ namespace Java2Dotnet.Spider.Extension.Processor
 	{
 		private readonly IList<PageModelExtractor> _pageModelExtractorList = new List<PageModelExtractor>();
 
+		public Func<Page, IList<string>> GetCustomizeTargetUrls;
+
 		public static ModelPageProcessor Create(Site site, params Type[] types)
 		{
 			ModelPageProcessor modelPageProcessor = new ModelPageProcessor(site);
@@ -29,7 +31,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 
 		public static T Create<T>(Site site, params Type[] types) where T : ModelPageProcessor
 		{
-			T t = (T)Activator.CreateInstance(typeof(T), new { site });
+			T t = (T)Activator.CreateInstance(typeof(T), new object[] { site });
 
 			foreach (Type type in types)
 			{
@@ -64,7 +66,14 @@ namespace Java2Dotnet.Spider.Extension.Processor
 				PostProcessPageModel(process);
 				page.PutField(pageModelExtractor.GetActualType().FullName, process);
 
-				ExtractLinks(page, pageModelExtractor.GetTargetUrlRegionSelector(), pageModelExtractor.GetTargetUrlPatterns(), pageModelExtractor.GetTargetUrlFormatter());
+				if (GetCustomizeTargetUrls == null)
+				{
+					ExtractLinks(page, pageModelExtractor.GetTargetUrlRegionSelector(), pageModelExtractor.GetTargetUrlPatterns(), pageModelExtractor.GetTargetUrlFormatter());
+				}
+				else
+				{
+					page.AddTargetRequests(GetCustomizeTargetUrls(page));
+				}
 			}
 			if (page.GetResultItems().GetAll().Count == 0)
 			{

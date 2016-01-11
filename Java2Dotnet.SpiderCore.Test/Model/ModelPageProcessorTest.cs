@@ -8,14 +8,14 @@ namespace Java2Dotnet.Spider.Core.Test.Model
 	[TestClass]
 	public class ModelPageProcessorTest
 	{
-		[TargetUrl(Value = new string[] { "http://codecraft.us/foo" })]
+		[TargetUrl(new [] { "http://codecraft.us/foo" })]
 		public class ModelFoo
 		{
 			[ExtractBy(Value = "//div/@foo", NotNull = true)]
 			public string Foo { get; set; }
 		}
 
-		[TargetUrl(Value = new string[] { "http://codecraft.us/bar" })]
+		[TargetUrl(new [] { "http://codecraft.us/bar" })]
 		public class ModelBar
 		{
 			[ExtractBy(Value = "//div/@bar", NotNull = true)]

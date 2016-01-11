@@ -7,13 +7,13 @@ using Java2Dotnet.Spider.Extension.Pipeline;
 
 namespace Java2Dotnet.Spider.Samples.Model
 {
-	[TargetUrl(Value = new[] { "http://my.oschina.net/flashsword/blog" })]
+	[TargetUrl(new[] { "http://my.oschina.net/flashsword/blog" })]
 	public class OschinaBlog
 	{
 		[ExtractBy(Value = "//title/text()")]
 		public string Title { get; set; }
 
-		[ExtractBy(Value = "div.BlogContent", Type = ExtractBy.ExtracType.Css)]
+		[ExtractBy(Value = "div.BlogContent", Type = ExtractType.Css)]
 		public string Content { get; set; }
 
 		[ExtractBy(Value = "//div[@class='BlogTags']/a/text()")]

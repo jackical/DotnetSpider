@@ -7,7 +7,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 	{
 		[StoredAs("id", StoredAs.ValueType.Long, true)]
 		[KeyProperty(Identity = true)]
-		[ExtractBy(Value = "Id", Type = ExtractBy.ExtracType.Enviroment)]
+		[ExtractBy(Value = "Id", Type = ExtractType.Enviroment)]
 		public long Id { get; set; }
 
 		public virtual void Customize()
