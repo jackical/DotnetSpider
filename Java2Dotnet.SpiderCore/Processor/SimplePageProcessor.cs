@@ -27,10 +27,10 @@ namespace Java2Dotnet.Spider.Core.Processor
 			//add urls to fetch
 			page.AddTargetRequests(requests);
 			//extract by XPath
-			page.PutField("title", page.GetHtml().XPath("//title"));
-			page.PutField("html", page.GetHtml().ToString());
+			page.AddResultItem("title", page.GetHtml().XPath("//title"));
+			page.AddResultItem("html", page.GetHtml().ToString());
 			//extract by Readability
-			page.PutField("content", page.GetHtml().SmartContent());
+			page.AddResultItem("content", page.GetHtml().SmartContent());
 		}
 
 		/// <summary>

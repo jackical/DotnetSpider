@@ -123,7 +123,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 		private HttpWebRequest GeneratorCookie(HttpWebRequest httpWebRequest, Request request, Site site)
 		{
 			string domain = request.Url.Host;
-		 
+
 			CookieContainer cookieContainer = new CookieContainer();
 
 			foreach (var cookie in site.AllCookies)
@@ -231,10 +231,10 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			}
 			content = HttpUtility.UrlDecode(HttpUtility.HtmlDecode(content), charset);
 			Page page = new Page(request);
-			page.SetRawText(content);
-			page.SetTargetUrl(response.ResponseUri.ToString());
-			page.SetUrl(request.Url.ToString());
-			page.SetStatusCode(statusCode);
+			page.RawText = content;
+			page.TargetUrl = response.ResponseUri.ToString();
+			page.Url = request.Url.ToString();
+			page.StatusCode = statusCode;
 			return page;
 		}
 

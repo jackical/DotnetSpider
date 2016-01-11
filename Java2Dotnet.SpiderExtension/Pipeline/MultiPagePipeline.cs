@@ -22,7 +22,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 
 		public void Process(ResultItems resultItems, ISpider spider)
 		{
-			IDictionary resultItemsAll = resultItems.GetAll();
+			IDictionary resultItemsAll = resultItems.Results;
 			List<object> deleteList = new List<object>();
 			foreach (DictionaryEntry entry in resultItemsAll)
 			{

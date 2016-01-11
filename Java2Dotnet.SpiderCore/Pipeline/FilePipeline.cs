@@ -36,7 +36,7 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 				{
 					printWriter.WriteLine("url:\t" + resultItems.Request.Url);
 
-					foreach (DictionaryEntry entry in resultItems.GetAll())
+					foreach (var entry in resultItems.Results)
 					{
 						var value = entry.Value as IList;
 						if (value != null)

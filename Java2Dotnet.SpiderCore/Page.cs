@@ -7,35 +7,15 @@ namespace Java2Dotnet.Spider.Core
 {
 	/// <summary>
 	/// Object storing extracted result and urls to fetch. 
-	/// Not thread safe 
-	/// Main method：                                                
-	/// {@link #GetUrl()} get url of current page                   
-	/// {@link #GetHtml()}  get content of current page                  
-	/// {@link #PutField(String, Object)}  save extracted result             
-	/// {@link #GetResultItems()} get extract results to be used in {@link us.codecraft.webmagic.pipeline.Pipeline} 
-	/// {@link #AddTargetRequests(java.util.List)} {@link #addTargetRequest(String)} add urls to fetch                  
 	/// </summary>
 	public class Page
 	{
 		public const string Images = "580c9065-0f44-47e9-94ea-b172d5a730c0";
+
 		private readonly Request _request;
-
 		private readonly ResultItems _resultItems = new ResultItems();
-
 		private Html _html;
-
 		private Json _json;
-
-		private string _rawText;
-
-		private string _url;
-
-		private string _targetUrl;
-
-		private int _statusCode;
-
-		private bool _needCycleRetry;
-
 		private readonly HashSet<Request> _targetRequests = new HashSet<Request>();
 
 		public Page(Request request)
@@ -44,10 +24,9 @@ namespace Java2Dotnet.Spider.Core
 			_resultItems.Request = request;
 		}
 
-		public Page SetSkip(bool skip)
+		public bool IsSkip
 		{
-			_resultItems.IsSkip = skip;
-			return this;
+			set { _resultItems.IsSkip = value; }
 		}
 
 		/// <summary>
@@ -55,9 +34,9 @@ namespace Java2Dotnet.Spider.Core
 		/// </summary>
 		/// <param name="key"></param>
 		/// <param name="field"></param>
-		public void PutField(string key, dynamic field)
+		public void AddResultItem(string key, dynamic field)
 		{
-			_resultItems.Put(key, field);
+			_resultItems.AddResultItem(key, field);
 		}
 
 		/// <summary>
@@ -66,7 +45,7 @@ namespace Java2Dotnet.Spider.Core
 		/// <returns></returns>
 		public Html GetHtml()
 		{
-			return _html ?? (_html = new Html(_rawText, _request.Url));
+			return _html ?? (_html = new Html(RawText, _request.Url));
 		}
 
 		/// <summary>
@@ -75,7 +54,7 @@ namespace Java2Dotnet.Spider.Core
 		/// <returns></returns>
 		public Json GetJson()
 		{
-			return _json ?? (_json = new Json(_rawText));
+			return _json ?? (_json = new Json(RawText));
 		}
 
 		public void SetHtml(Html html)
@@ -101,8 +80,8 @@ namespace Java2Dotnet.Spider.Core
 				{
 					continue;
 				}
-				string s1 = UrlUtils.CanonicalizeUrl(s, _url.ToString());
-				_targetRequests.Add(new Request(s1, _request.NextDepth(), _request?.Extras));
+				string s1 = UrlUtils.CanonicalizeUrl(s, Url);
+				_targetRequests.Add(new Request(s1, _request.NextDepth, _request?.Extras));
 			}
 		}
 
@@ -120,8 +99,8 @@ namespace Java2Dotnet.Spider.Core
 				{
 					continue;
 				}
-				string s1 = UrlUtils.CanonicalizeUrl(s, _url.ToString());
-				Request request = new Request(s1, _request.NextDepth(), _request?.Extras) { Priority = priority };
+				string s1 = UrlUtils.CanonicalizeUrl(s, Url);
+				Request request = new Request(s1, _request.NextDepth, _request?.Extras) { Priority = priority };
 				_targetRequests.Add(request);
 			}
 		}
@@ -139,8 +118,8 @@ namespace Java2Dotnet.Spider.Core
 				return;
 			}
 
-			requestString = UrlUtils.CanonicalizeUrl(requestString, _url.ToString());
-			_targetRequests.Add(new Request(requestString, _request.NextDepth(), _request?.Extras));
+			requestString = UrlUtils.CanonicalizeUrl(requestString, Url);
+			_targetRequests.Add(new Request(requestString, _request.NextDepth, _request?.Extras));
 		}
 
 		/// <summary>
@@ -153,53 +132,26 @@ namespace Java2Dotnet.Spider.Core
 		}
 
 		/// <summary>
-		/// Get url of current page
+		/// Url of current page
 		/// </summary>
 		/// <returns></returns>
-		public string GetUrl()
-		{
-			return _url;
-		}
+		public string Url { get; set; }
 
 		/// <summary>
 		/// Get url of current page
 		/// </summary>
 		/// <returns></returns>
-		public string GetTargetUrl()
-		{
-			return _targetUrl;
-		}
-
-		public void SetUrl(string url)
-		{
-			_url = url;
-		}
+		public string TargetUrl { get; set; }
 
 		public string Title { get; set; }
-
-		public void SetTargetUrl(string url)
-		{
-			_targetUrl = url;
-		}
 
 		/// <summary>
 		/// Get request of current page
 		/// </summary>
 		/// <returns></returns>
-		public Request GetRequest()
-		{
-			return _request;
-		}
+		public Request Request => _request;
 
-		public bool IsNeedCycleRetry()
-		{
-			return _needCycleRetry;
-		}
-
-		public void SetNeedCycleRetry(bool needCycleRetry)
-		{
-			_needCycleRetry = needCycleRetry;
-		}
+		public bool IsNeedCycleRetry { get; set; }
 
 		//public void SetRequest(Request request)
 		//{
@@ -207,32 +159,12 @@ namespace Java2Dotnet.Spider.Core
 		//	_resultItems.Request = request;
 		//}
 
-		public ResultItems GetResultItems()
-		{
-			return _resultItems;
-		}
+		public ResultItems ResultItems => _resultItems;
 
-		public int GetStatusCode()
-		{
-			return _statusCode;
-		}
+		public int StatusCode { get; set; }
 
-		public void SetStatusCode(int statusCode)
-		{
-			_statusCode = statusCode;
-		}
-
-		public string GetRawText()
-		{
-			return _rawText;
-		}
-
-		public Page SetRawText(string rawText)
-		{
-			_rawText = rawText;
-			return this;
-		}
-
+		public string RawText { get; set; }
+ 
 		public bool MissTargetUrls { get; set; }
 
 		public override string ToString()
@@ -240,9 +172,9 @@ namespace Java2Dotnet.Spider.Core
 			return "Page{" +
 					"request=" + _request +
 					", resultItems=" + _resultItems +
-					", rawText='" + _rawText + '\'' +
-					", url=" + _url +
-					", statusCode=" + _statusCode +
+					", rawText='" + RawText + '\'' +
+					", url=" + Url +
+					", statusCode=" + StatusCode +
 					", targetRequests=" + _targetRequests +
 					'}';
 		}

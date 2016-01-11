@@ -25,11 +25,11 @@ namespace Java2Dotnet.Spider.Extension.Configurable
 					IList<string> results = page.GetHtml().SelectDocumentForList(extractRule.Selector);
 					if (extractRule.IsNotNull && results.Count == 0)
 					{
-						page.SetSkip(true);
+						page.IsSkip = true;
 					}
 					else
 					{
-						page.GetResultItems().Put(extractRule.FieldName, results);
+						page.ResultItems.AddResultItem(extractRule.FieldName, results);
 					}
 				}
 				else
@@ -37,11 +37,11 @@ namespace Java2Dotnet.Spider.Extension.Configurable
 					string result = page.GetHtml().SelectDocument(extractRule.Selector);
 					if (extractRule.IsNotNull && result == null)
 					{
-						page.SetSkip(true);
+						page.IsSkip = true;
 					}
 					else
 					{
-						page.GetResultItems().Put(extractRule.FieldName, result);
+						page.ResultItems.AddResultItem(extractRule.FieldName, result);
 					}
 				}
 			}

@@ -47,7 +47,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 				{
 					string html = GetHtml(bufferedReader);
 					page = new Page(request);
-					page.SetUrl(request.Url.ToString());
+					page.Url = request.Url.ToString();
 					page.SetHtml(Html.Create(html));
 				}
 			}
@@ -108,7 +108,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 				using (StreamWriter writer = new StreamWriter(fileInfo.OpenWrite(), Encoding.UTF8))
 				{
 					writer.WriteLine("url:\t" + resultItems.Request.Url);
-					writer.WriteLine("html:\t" + resultItems.Get("html"));
+					writer.WriteLine("html:\t" + resultItems.GetResultItem("html"));
 				}
 			}
 			catch (IOException e)

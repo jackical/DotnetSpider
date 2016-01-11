@@ -40,10 +40,7 @@ namespace Java2Dotnet.Spider.Core
 			PutExtra(Deep, grade);
 		}
 
-		public int NextDepth()
-		{
-			return GetExtra(Deep) + 1;
-		}
+		public int NextDepth => GetExtra(Deep) + 1;
 
 		/// <summary>
 		/// Set the priority of request for sorting. 

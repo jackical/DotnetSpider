@@ -95,9 +95,9 @@ namespace Java2Dotnet.Spider.WebDriver
 				AfterNavigateFunc?.Invoke(driverService.WebDriver);
 
 				Page page = new Page(request);
-				page.SetRawText(driverService.WebDriver.PageSource);
-				page.SetUrl(request.Url.ToString());
-				page.SetTargetUrl(driverService.WebDriver.Url);
+				page.RawText = driverService.WebDriver.PageSource;
+				page.Url = request.Url.ToString();
+				page.TargetUrl = driverService.WebDriver.Url;
 				page.Title = driverService.WebDriver.Title;
 
 				ValidatePage(page);

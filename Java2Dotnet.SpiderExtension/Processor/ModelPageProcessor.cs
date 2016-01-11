@@ -64,7 +64,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 					continue;
 				}
 				PostProcessPageModel(process);
-				page.PutField(pageModelExtractor.GetActualType().FullName, process);
+				page.AddResultItem(pageModelExtractor.GetActualType().FullName, process);
 
 				if (GetCustomizeTargetUrls == null)
 				{
@@ -75,9 +75,9 @@ namespace Java2Dotnet.Spider.Extension.Processor
 					page.AddTargetRequests(GetCustomizeTargetUrls(page));
 				}
 			}
-			if (page.GetResultItems().GetAll().Count == 0)
+			if (page.ResultItems.Results.Count == 0)
 			{
-				page.GetResultItems().IsSkip = true;
+				page.ResultItems.IsSkip = true;
 			}
 		}
 
@@ -115,7 +115,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 				{
 					if (targetUrlPattern.IsMatch(link))
 					{
-						page.AddTargetRequest(new Request(link, page.GetRequest().NextDepth(), page.GetRequest().Extras));
+						page.AddTargetRequest(new Request(link, page.Request.NextDepth, page.Request.Extras));
 					}
 				}
 			}

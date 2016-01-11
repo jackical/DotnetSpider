@@ -46,7 +46,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 				Dictionary<Type, List<dynamic>> resultDictionary = new Dictionary<Type, List<dynamic>>();
 				foreach (var resultItems in resultItemsList)
 				{
-					dynamic data = resultItems.Get(pipelineEntry.Key.FullName);
+					dynamic data = resultItems.GetResultItem(pipelineEntry.Key.FullName);
 					Type type = data.GetType();
 
 					if (pipelineEntry.Value.IsGeneric)

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Java2Dotnet.Spider.Core.Pipeline
 {
@@ -10,7 +11,7 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 	{
 		public void Process(ResultItems resultItems, ISpider spider)
 		{
-			foreach (DictionaryEntry entry in resultItems.GetAll())
+			foreach (var entry in resultItems.Results)
 			{
 				System.Console.WriteLine(entry.Key + ":\t" + entry.Value);
 			}

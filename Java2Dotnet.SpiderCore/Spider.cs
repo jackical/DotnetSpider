@@ -23,7 +23,6 @@ using Newtonsoft.Json;
 namespace Java2Dotnet.Spider.Core
 {
 	/// <summary>
-	/// 
 	/// A spider contains four modules: Downloader, Scheduler, PageProcessor and
 	/// Pipeline. 
 	/// Every module is a field of Spider.  
@@ -45,14 +44,9 @@ namespace Java2Dotnet.Spider.Core
 	/// </summary>
 	public class Spider : ISpider
 	{
-		public event FlushCachedPipeline FlushEvent;
-
-		[DllImport("User32.dll ", EntryPoint = "FindWindow")]
-		private static extern int FindWindow(string lpClassName, string lpWindowName);
-		[DllImport("user32.dll ", EntryPoint = "GetSystemMenu")]
-		private extern static IntPtr GetSystemMenu(IntPtr hWnd, IntPtr bRevert);
-		[DllImport("user32.dll ", EntryPoint = "RemoveMenu")]
-		private extern static int RemoveMenu(IntPtr hMenu, int nPos, int flags);
+		public event FlushCachedPipeline FlushCachedPipelinEvent;
+		public int ThreadNum { get; set; } = 1;
+		public int Deep { get; set; } = int.MaxValue;
 
 		protected readonly string RootDirectory;
 
@@ -61,24 +55,18 @@ namespace Java2Dotnet.Spider.Core
 		protected IPageProcessor PageProcessor { get; set; }
 		protected List<Request> StartRequests { get; set; }
 		protected IScheduler Scheduler { get; set; } = new QueueDuplicateRemovedScheduler();
-		public int ThreadNum { get; set; } = 1;
-		public int Deep { get; set; } = int.MaxValue;
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(Spider));
-
 		protected readonly static int StatInit = 0;
 		protected readonly static int StatRunning = 1;
 		protected readonly static int StatStopped = 2;
 		protected static readonly int StatFinished = 3;
-		protected static readonly int WaitInterval = 50;
-
+		protected static readonly int WaitInterval = 4;
 		protected readonly AutomicLong Stat = new AutomicLong(StatInit);
-
 		protected bool ExitWhenComplete { get; set; } = true;
 		protected bool SpawnUrl { get; set; } = true;
-		protected bool DestroyWhenExit { get; set; } = true;
+		//protected bool DestroyWhenExit { get; set; } = true;
 		protected CountableThreadPool ThreadPool { get; set; }
 
-		private bool _registConsoleCtrlHandler;
 		private IList<ISpiderListener> _spiderListeners;
 		private readonly AutomicLong _pageCount = new AutomicLong(0);
 		private DateTime _startTime = DateTime.MinValue;
@@ -237,7 +225,7 @@ namespace Java2Dotnet.Spider.Core
 			CachedPipeline cachedPipeline = pipeline as CachedPipeline;
 			if (cachedPipeline != null)
 			{
-				FlushEvent += cachedPipeline.Flush;
+				FlushCachedPipelinEvent += cachedPipeline.Flush;
 			}
 			Pipelines.Add(pipeline);
 			return this;
@@ -327,30 +315,6 @@ namespace Java2Dotnet.Spider.Core
 				{
 					Logger.InfoFormat("Push Zero Request to Scheduler.");
 				}
-			}
-
-			if (!_registConsoleCtrlHandler)
-			{
-				try
-				{
-					// 在非控制台程序下调用会出异常
-					Console.Title = Identify;
-				}
-				catch (Exception)
-				{
-					// ignored
-				}
-
-				Console.CancelKeyPress += Console_CancelKeyPress;
-				_registConsoleCtrlHandler = true;
-
-				//根据控制台标题找控制台
-				int windowHandler = FindWindow(null, Identify);
-				//找关闭按钮
-				IntPtr closeMenu = GetSystemMenu((IntPtr)windowHandler, IntPtr.Zero);
-				int SC_CLOSE = 0xF060;
-				//关闭按钮禁用
-				RemoveMenu(closeMenu, SC_CLOSE, 0x0);
 			}
 
 			_isInit = true;
@@ -469,10 +433,10 @@ namespace Java2Dotnet.Spider.Core
 			ThreadPool.WaitToEnd();
 
 			// release some resources
-			if (DestroyWhenExit)
-			{
-				Close();
-			}
+			//if (DestroyWhenExit)
+			//{
+			//	Close();
+			//}
 
 			_endTime = DateTime.Now;
 
@@ -488,7 +452,7 @@ namespace Java2Dotnet.Spider.Core
 
 		protected void OnClose()
 		{
-			FlushEvent?.Invoke(this);
+			FlushCachedPipelinEvent?.Invoke(this);
 
 			if (_spiderListeners != null && _spiderListeners.Count > 0)
 			{
@@ -497,6 +461,8 @@ namespace Java2Dotnet.Spider.Core
 					spiderListener.OnClose();
 				}
 			}
+
+			Close();
 		}
 
 		protected void OnError(Request request)
@@ -609,7 +575,7 @@ namespace Java2Dotnet.Spider.Core
 				request.Priority = 0;
 				page.AddTargetRequest(request.PutExtra(Request.CycleTriedTimes, cycleTriedTimes));
 			}
-			page.SetNeedCycleRetry(true);
+			page.IsNeedCycleRetry = true;
 			return page;
 		}
 
@@ -632,7 +598,7 @@ namespace Java2Dotnet.Spider.Core
 					// 处理HTML截取
 					if (_subHtmlRegex != null)
 					{
-						page.SetRawText(_subHtmlRegex.Match(page.GetRawText()).Value);
+						page.RawText = _subHtmlRegex.Match(page.RawText).Value;
 					}
 					break;
 				}
@@ -669,7 +635,7 @@ namespace Java2Dotnet.Spider.Core
 			}
 			// for cycle retry, 这个下载出错时, 会把自身Request扔回TargetUrls中做重复任务。所以此时，targetRequests只有本身
 			// 而不需要考虑 MissTargetUrls的情况
-			if (page.IsNeedCycleRetry())
+			if (page.IsNeedCycleRetry)
 			{
 				ExtractAndAddRequests(page, true);
 				Sleep(_site.SleepTime);
@@ -703,11 +669,11 @@ namespace Java2Dotnet.Spider.Core
 			//watch.Start();
 
 			// Pipeline是做最后的数据保存等工作, 是不允许出任何差错的, 如果出错,数据存一半肯定也是脏数据, 因此直接挂掉Spider比较好。
-			if (!page.GetResultItems().IsSkip)
+			if (!page.ResultItems.IsSkip)
 			{
 				foreach (IPipeline pipeline in Pipelines)
 				{
-					pipeline.Process(page.GetResultItems(), this);
+					pipeline.Process(page.ResultItems, this);
 				}
 				//cts?.Cancel();
 			}
@@ -729,7 +695,7 @@ namespace Java2Dotnet.Spider.Core
 
 		protected void ExtractAndAddRequests(Page page, bool spawnUrl)
 		{
-			if (spawnUrl && page.GetRequest().NextDepth() < Deep && page.GetTargetRequests() != null && page.GetTargetRequests().Count > 0)
+			if (spawnUrl && page.Request.NextDepth < Deep && page.GetTargetRequests() != null && page.GetTargetRequests().Count > 0)
 			{
 				foreach (Request request in page.GetTargetRequests())
 				{
@@ -822,7 +788,7 @@ namespace Java2Dotnet.Spider.Core
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public Dictionary<Type, List<dynamic>> GetAll(Type[] types, params string[] urls)
 		{
-			DestroyWhenExit = false;
+			//DestroyWhenExit = false;
 			SpawnUrl = false;
 
 			foreach (Request request in UrlUtils.ConvertToRequests(urls, 1))
@@ -834,7 +800,7 @@ namespace Java2Dotnet.Spider.Core
 			Pipelines.AddRange(collectorPipelineList);
 			Run();
 			SpawnUrl = true;
-			DestroyWhenExit = true;
+			//DestroyWhenExit = true;
 
 			Dictionary<Type, List<dynamic>> result = new Dictionary<Type, List<dynamic>>();
 			foreach (var collectorPipeline in collectorPipelineList)

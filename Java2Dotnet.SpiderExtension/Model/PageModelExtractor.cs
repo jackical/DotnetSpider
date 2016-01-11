@@ -268,11 +268,11 @@ namespace Java2Dotnet.Spider.Extension.Model
 		public dynamic Process(Page page)
 		{
 			bool matched = false;
-			if (page.GetUrl() != null)
+			if (page.Url != null)
 			{
 				foreach (Regex targetPattern in _targetUrlPatterns)
 				{
-					string url = page.GetUrl().ToString();
+					string url = page.Url;
 					//check
 					if (targetPattern.IsMatch(url))
 					{
@@ -296,7 +296,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 			{
 				if (_isGeneric)
 				{
-					IList<string> list = _objectExtractor.Selector.SelectList(page.GetRawText());
+					IList<string> list = _objectExtractor.Selector.SelectList(page.RawText);
 					if (_objectExtractor.Count < long.MaxValue)
 					{
 						list = list.Take((int)_objectExtractor.Count).ToList();
@@ -316,7 +316,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 				}
 				else
 				{
-					string select = _objectExtractor.Selector.Select(page.GetRawText());
+					string select = _objectExtractor.Selector.Select(page.RawText);
 					object o = ProcessSingle(page, select, false);
 					return o;
 				}
@@ -343,7 +343,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).GetAll() : fieldExtractor.Selector.SelectList(content);
 							break;
 						case ExtractSource.Url:
-							value = fieldExtractor.Selector.SelectList(page.GetUrl().ToString());
+							value = fieldExtractor.Selector.SelectList(page.Url);
 							break;
 						case ExtractSource.Enviroment:
 							{
@@ -429,7 +429,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 									urlList.Add(url);
 								}
 							}
-							page.PutField(Page.Images, urlList);
+							page.AddResultItem(Page.Images, urlList);
 						}
 
 						foreach (var v in converted)
@@ -454,7 +454,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 									urlList.Add(url);
 								}
 							}
-							page.PutField(Page.Images, urlList);
+							page.AddResultItem(Page.Images, urlList);
 						}
 					}
 				}
@@ -473,7 +473,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).Value : fieldExtractor.Selector.Select(content);
 							break;
 						case ExtractSource.Url:
-							value = fieldExtractor.Selector.Select(page.GetUrl().ToString());
+							value = fieldExtractor.Selector.Select(page.Url);
 							break;
 						case ExtractSource.Enviroment:
 							{
@@ -540,7 +540,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 						// 不需要判断为空, 前面已经判断过了
 						if (UrlRegex.IsMatch(value))
 						{
-							page.PutField(Page.Images, value);
+							page.AddResultItem(Page.Images, value);
 						}
 					}
 				}

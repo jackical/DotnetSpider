@@ -35,7 +35,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 
 			Dictionary<Type, List<dynamic>> resultDictionary = new Dictionary<Type, List<dynamic>>();
 
-			dynamic data = resultItems.Get(_actualType.FullName);
+			dynamic data = resultItems.GetResultItem(_actualType.FullName);
 
 			if (typeof(IEnumerable).IsAssignableFrom(_type))
 			{
