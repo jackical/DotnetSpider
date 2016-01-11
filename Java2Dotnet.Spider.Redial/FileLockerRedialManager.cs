@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Java2Dotnet.Spider.Redial
@@ -49,6 +50,7 @@ namespace Java2Dotnet.Spider.Redial
 				for (int i = 0; i < RedialTimeout; ++i)
 				{
 					Thread.Sleep(50);
+					Console.WriteLine("WaitforRedialFinish...");
 					if (!File.Exists(_lockerFilePath))
 					{
 						break;
@@ -57,6 +59,7 @@ namespace Java2Dotnet.Spider.Redial
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override RedialResult Redial()
 		{
 			if (Skip)

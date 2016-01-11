@@ -49,7 +49,7 @@ namespace Java2Dotnet.Spider.Redial
 					break;
 				}
 
-				Thread.Sleep(50);
+				Thread.Sleep(1);
 			}
 		}
 	}

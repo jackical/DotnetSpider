@@ -74,9 +74,9 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			return AtomicRedialExecutor.Execute("rds-isDuplicate", () =>
 			{
-				using (var redis = _pool.GetSafeGetClient())
+				while (true)
 				{
-					while (true)
+					using (var redis = _pool.GetSafeGetClient())
 					{
 						try
 						{
@@ -96,6 +96,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 				}
 			});
 		}
+
 
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		protected override void PushWhenNoDuplicate(Request request, ISpider spider)

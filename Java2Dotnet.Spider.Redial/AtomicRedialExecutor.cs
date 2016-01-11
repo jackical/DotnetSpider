@@ -101,8 +101,8 @@ namespace Java2Dotnet.Spider.Redial
 
 		public static T Execute<T>(string name, Func<T> func)
 		{
-			RedialManager.WaitforRedialFinish();
 			Stream stream = null;
+			RedialManager.WaitforRedialFinish();
 			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
 			try
 			{
