@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Java2Dotnet.Spider.Core.Utils;
+using System;
 
 namespace Java2Dotnet.Spider.Core.Processor
 {
@@ -14,7 +15,8 @@ namespace Java2Dotnet.Spider.Core.Processor
 		{
 			Site = new Site();
 			Site.AddStartUrl(startUrl);
-			Site.Domain = UrlUtils.GetDomain(startUrl);
+			Uri url = new Uri(startUrl);
+			Site.Domain = url.Host;
 			//compile "*" expression to regex
 			_urlPattern = "(" + urlPattern.Replace(".", "\\.").Replace("*", "[^\"'#]*") + ")";
 		}

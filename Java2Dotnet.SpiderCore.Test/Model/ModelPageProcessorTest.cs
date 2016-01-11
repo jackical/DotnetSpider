@@ -8,14 +8,14 @@ namespace Java2Dotnet.Spider.Core.Test.Model
 	[TestClass]
 	public class ModelPageProcessorTest
 	{
-		[TargetUrl(new [] { "http://codecraft.us/foo" })]
+		[TargetUrl(new[] { "http://codecraft.us/foo" })]
 		public class ModelFoo
 		{
 			[ExtractBy(Value = "//div/@foo", NotNull = true)]
 			public string Foo { get; set; }
 		}
 
-		[TargetUrl(new [] { "http://codecraft.us/bar" })]
+		[TargetUrl(new[] { "http://codecraft.us/bar" })]
 		public class ModelBar
 		{
 			[ExtractBy(Value = "//div/@bar", NotNull = true)]
@@ -27,7 +27,7 @@ namespace Java2Dotnet.Spider.Core.Test.Model
 		{
 			Page page = new Page(new Request("http://codecraft.us/foo", 1, null));
 			page.SetRawText("<div foo='foo'></div>");
-			page.SetUrl(PlainText.Create("http://codecraft.us/foo"));
+			page.SetUrl("http://codecraft.us/foo");
 			ModelPageProcessor modelPageProcessor = ModelPageProcessor.Create(null, typeof(ModelFoo), typeof(ModelBar));
 			modelPageProcessor.Process(page);
 			Assert.IsFalse(page.GetResultItems().IsSkip);

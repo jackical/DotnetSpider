@@ -90,7 +90,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 
 			public void OnError(Request request)
 			{
-				_errorUrls.Add(request.Url);
+				_errorUrls.Add(request.Url.ToString());
 				_errorCount.Inc();
 			}
 

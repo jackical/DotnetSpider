@@ -28,9 +28,9 @@ namespace Java2Dotnet.Spider.Core
 
 		private string _rawText;
 
-		private ISelectable _url;
+		private string _url;
 
-		private ISelectable _targetUrl;
+		private string _targetUrl;
 
 		private int _statusCode;
 
@@ -102,7 +102,7 @@ namespace Java2Dotnet.Spider.Core
 					continue;
 				}
 				string s1 = UrlUtils.CanonicalizeUrl(s, _url.ToString());
-				_targetRequests.Add(new Request(s1, _request.NextDeep(), _request?.Extras));
+				_targetRequests.Add(new Request(s1, _request.NextDepth(), _request?.Extras));
 			}
 		}
 
@@ -112,7 +112,7 @@ namespace Java2Dotnet.Spider.Core
 		/// <param name="requests"></param>
 		/// <param name="priority"></param>
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void AddTargetRequests(IList<string> requests, long priority)
+		public void AddTargetRequests(IList<string> requests, int priority)
 		{
 			foreach (string s in requests)
 			{
@@ -121,7 +121,7 @@ namespace Java2Dotnet.Spider.Core
 					continue;
 				}
 				string s1 = UrlUtils.CanonicalizeUrl(s, _url.ToString());
-				Request request = new Request(s1, _request.NextDeep(), _request?.Extras) { Priority = priority };
+				Request request = new Request(s1, _request.NextDepth(), _request?.Extras) { Priority = priority };
 				_targetRequests.Add(request);
 			}
 		}
@@ -140,7 +140,7 @@ namespace Java2Dotnet.Spider.Core
 			}
 
 			requestString = UrlUtils.CanonicalizeUrl(requestString, _url.ToString());
-			_targetRequests.Add(new Request(requestString, _request.NextDeep(), _request?.Extras));
+			_targetRequests.Add(new Request(requestString, _request.NextDepth(), _request?.Extras));
 		}
 
 		/// <summary>
@@ -156,7 +156,7 @@ namespace Java2Dotnet.Spider.Core
 		/// Get url of current page
 		/// </summary>
 		/// <returns></returns>
-		public ISelectable GetUrl()
+		public string GetUrl()
 		{
 			return _url;
 		}
@@ -165,19 +165,19 @@ namespace Java2Dotnet.Spider.Core
 		/// Get url of current page
 		/// </summary>
 		/// <returns></returns>
-		public ISelectable GetTargetUrl()
+		public string GetTargetUrl()
 		{
 			return _targetUrl;
 		}
 
-		public void SetUrl(ISelectable url)
+		public void SetUrl(string url)
 		{
 			_url = url;
 		}
 
 		public string Title { get; set; }
 
-		public void SetTargetUrl(ISelectable url)
+		public void SetTargetUrl(string url)
 		{
 			_targetUrl = url;
 		}

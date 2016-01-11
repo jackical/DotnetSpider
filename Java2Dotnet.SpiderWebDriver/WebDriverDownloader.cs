@@ -69,26 +69,12 @@ namespace Java2Dotnet.Spider.WebDriver
 							throw new SpiderExceptoin("Login failed. Please check your login codes.");
 						}
 					}
-
-					IOptions manage = driverService.WebDriver.Manage();
-					if (site.GetCookies() != null && site.GetCookies().Count > 0)
-					{
-						foreach (KeyValuePair<String, String> cookieEntry in site.GetCookies())
-						{
-							Cookie cookie = new Cookie(cookieEntry.Key, cookieEntry.Value);
-							manage.Cookies.AddCookie(cookie);
-						}
-					}
-					//else
-					//{
-					//	manage.Cookies.DeleteAllCookies();
-					//}
 				}
 
 				//Logger.Info("Downloading page " + request.Url);
 
 				//中文乱码URL
-				Uri uri = new Uri(request.Url);
+				Uri uri = request.Url;
 				string query = uri.Query;
 				string realUrl = uri.Scheme + "://" + uri.DnsSafeHost + uri.AbsolutePath + (string.IsNullOrEmpty(query)
 					? ""
@@ -110,8 +96,8 @@ namespace Java2Dotnet.Spider.WebDriver
 
 				Page page = new Page(request);
 				page.SetRawText(driverService.WebDriver.PageSource);
-				page.SetUrl(new PlainText(request.Url));
-				page.SetTargetUrl(new PlainText(driverService.WebDriver.Url));
+				page.SetUrl(request.Url.ToString());
+				page.SetTargetUrl(driverService.WebDriver.Url);
 				page.Title = driverService.WebDriver.Title;
 
 				ValidatePage(page);

@@ -30,7 +30,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 			string path = BasePath + "/" + spider.Identify + "/";
 			try
 			{
-				FileInfo file = PrepareFile(path + Encrypt.Md5Encrypt(resultItems.Request.Url) + ".json");
+				FileInfo file = PrepareFile(path + Encrypt.Md5Encrypt(resultItems.Request.Url.ToString()) + ".json");
 				using (StreamWriter printWriter = new StreamWriter(file.OpenWrite(), Encoding.UTF8))
 				{
 					printWriter.WriteLine(JsonConvert.SerializeObject(resultItems.GetAll()));

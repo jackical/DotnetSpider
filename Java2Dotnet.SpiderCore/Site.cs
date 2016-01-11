@@ -14,67 +14,33 @@ namespace Java2Dotnet.Spider.Core
 	/// </summary>
 	public class Site
 	{
-		private readonly Dictionary<string, string> _defaultCookies = new Dictionary<string, string>();
-		private readonly Dictionary<string, Dictionary<string, string>> _cookies = new Dictionary<string, Dictionary<string, string>>();
+		private readonly Dictionary<string, string> _cookies = new Dictionary<string, string>();
+		//private readonly Dictionary<string, Dictionary<string, string>> _cookies = new Dictionary<string, Dictionary<string, string>>();
 		private readonly List<Request> _startRequests = new List<Request>();
 		private Dictionary<string, string> _headers;
-
+		private ProxyPool _httpProxyPool = new ProxyPool();
+		private string _domain;
 		public Dictionary<string, string> Headers
 		{
 			get { return _headers ?? (_headers = new Dictionary<string, string>()); }
 			set { _headers = value; }
 		}
 
-		private ProxyPool _httpProxyPool = new ProxyPool();
-
-		//public static Site NewSite()
-		//{
-		//	return new Site();
-		//}
-
 		/// <summary>
-		/// Add a cookie with domain {@link #getDomain()}
+		/// Add a cookie with domain
 		/// </summary>
-		/// <param name="name"></param>
+		/// <param name="key"></param>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public Site AddCookie(string name, string value)
+		public Site AddCookie(string key, string value)
 		{
-			if (_defaultCookies.ContainsKey(name))
+			if (_cookies.ContainsKey(key))
 			{
-				_defaultCookies[name] = value;
+				_cookies[key] = value;
 			}
 			else
 			{
-				_defaultCookies.Add(name, value);
-			}
-			return this;
-		}
-
-		/// <summary>
-		/// Add a cookie with specific domain.
-		/// </summary>
-		/// <param name="domain"></param>
-		/// <param name="name"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public Site AddCookie(string domain, string name, string value)
-		{
-			if (_cookies.ContainsKey(domain))
-			{
-				var cookie = _cookies[domain];
-				if (cookie.ContainsKey(name))
-				{
-					cookie[name] = value;
-				}
-				else
-				{
-					cookie.Add(name, value);
-				}
-			}
-			else
-			{
-				_cookies.Add(domain, new Dictionary<string, string> { { name, value } });
+				_cookies.Add(key, value);
 			}
 			return this;
 		}
@@ -90,27 +56,33 @@ namespace Java2Dotnet.Spider.Core
 		public string Accept { get; set; }
 
 		/// <summary>
-		/// Get cookies
-		/// </summary>
-		public Dictionary<string, string> GetCookies()
-		{
-			return _defaultCookies;
-		}
-
-		/// <summary>
 		/// Get cookies of all domains
 		/// </summary>
 		/// <returns></returns>
-		public Dictionary<string, Dictionary<string, string>> GetAllCookies()
-		{
-			return _cookies;
-		}
+		public Dictionary<string, string> AllCookies => _cookies;
 
 		/// <summary>
 		/// Set the domain of site.
 		/// </summary>
 		/// <returns></returns>
-		public string Domain { get; set; }
+		public string Domain
+		{
+			get
+			{
+				if (_domain == null && StartRequests != null && StartRequests.Count > 0)
+				{
+					_domain = StartRequests[0].Url.Host;
+				}
+				return _domain;
+			}
+			set
+			{
+				if (_domain != value)
+				{
+					_domain = value;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Set charset of page manually. 
@@ -131,40 +103,17 @@ namespace Java2Dotnet.Spider.Core
 		/// </summary>
 		public HashSet<int> AcceptStatCode { get; set; } = new HashSet<int> { 200 };
 
-		/// <summary>
-		/// Get start urls
-		/// </summary>
-		/// <returns></returns>
-		// @Deprecated
-		public IList<string> GetStartUrls()
-		{
-			return UrlUtils.ConvertToUrls(_startRequests);
-		}
-
-		public List<Request> GetStartRequests()
-		{
-			return _startRequests;
-		}
+		public List<Request> StartRequests => _startRequests;
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void ClearStartRequests()
 		{
-			//Request tmpTequest;
-			//while (_startRequests.TryTake(out tmpTequest))
-			//{
-			//	tmpTequest.Dispose();
-			//}
-			//while (_startRequests.TryTake(out tmpTequest))
-			//{
-			//	tmpTequest.Dispose();
-			//}
 			_startRequests.Clear();
 			GC.Collect();
 		}
 
 		/// <summary>
-		/// Add a url to start url. 
-		/// Because urls are more a Spider's property than Site, move it to {@link Spider#addUrl(string...)}}
+		/// Add a url to start request. 
 		/// </summary>
 		/// <param name="startUrl"></param>
 		/// <returns></returns>
@@ -174,8 +123,7 @@ namespace Java2Dotnet.Spider.Core
 		}
 
 		/// <summary>
-		/// Add a url to start url. 
-		/// Because urls are more a Spider's property than Site, move it to {@link Spider#addUrl(string...)}}
+		/// Add a url to start request. 
 		/// </summary>
 		/// <param name="startUrl"></param>
 		/// <param name="data"></param>
@@ -187,27 +135,26 @@ namespace Java2Dotnet.Spider.Core
 
 		public Site AddStartUrls(IList<string> startUrls)
 		{
-			Parallel.ForEach(startUrls, new ParallelOptions() { MaxDegreeOfParallelism = 10 }, url =>
+			foreach (var url in startUrls)
 			{
 				AddStartUrl(url);
-			});
+			}
 
 			return this;
 		}
 
 		public Site AddStartUrls(IDictionary<string, IDictionary<string, object>> startUrls)
 		{
-			Parallel.ForEach(startUrls, new ParallelOptions() { MaxDegreeOfParallelism = 10 }, url =>
+			foreach (var entry in startUrls)
 			{
-				AddStartUrl(url.Key, url.Value);
-			});
+				AddStartUrl(entry.Key, entry.Value);
+			}
 
 			return this;
 		}
 
 		/// <summary>
-		/// Add a url to start url. 
-		/// Because urls are more a Spider's property than Site, move it to {@link Spider#addRequest(Request...)}}
+		/// Add a request.
 		/// </summary>
 		/// <param name="startRequest"></param>
 		/// <returns></returns>
@@ -215,9 +162,9 @@ namespace Java2Dotnet.Spider.Core
 		public Site AddStartRequest(Request startRequest)
 		{
 			_startRequests.Add(startRequest);
-			if (Domain == null && startRequest.Url != null)
+			if (Domain == null)
 			{
-				Domain = UrlUtils.GetDomain(startRequest.Url);
+				Domain = startRequest.Url.Host;
 			}
 			return this;
 		}
@@ -236,7 +183,6 @@ namespace Java2Dotnet.Spider.Core
 
 		/// <summary>
 		/// Put an Http header for downloader. 
-		/// Use {@link #addCookie(string, string)} for cookie and {@link #setUserAgent(string)} for user-agent.
 		/// </summary>
 		public Site AddHeader(string key, string value)
 		{
@@ -286,7 +232,7 @@ namespace Java2Dotnet.Spider.Core
 			if (!AcceptStatCode?.Equals(site.AcceptStatCode) ?? site.AcceptStatCode != null)
 				return false;
 			if (!Encoding?.Equals(site.Encoding) ?? site.Encoding != null) return false;
-			if (!_defaultCookies?.Equals(site._defaultCookies) ?? site._defaultCookies != null)
+			if (!_cookies?.Equals(site._cookies) ?? site._cookies != null)
 				return false;
 			if (!Domain?.Equals(site.Domain) ?? site.Domain != null) return false;
 			if (!_headers?.Equals(site._headers) ?? site._headers != null) return false;
@@ -301,7 +247,7 @@ namespace Java2Dotnet.Spider.Core
 		{
 			int result = Domain?.GetHashCode() ?? 0;
 			result = 31 * result + (UserAgent?.GetHashCode() ?? 0);
-			result = 31 * result + (_defaultCookies?.GetHashCode() ?? 0);
+			result = 31 * result + (_cookies?.GetHashCode() ?? 0);
 			result = 31 * result + (Encoding?.GetHashCode() ?? 0);
 			result = 31 * result + (_startRequests?.GetHashCode() ?? 0);
 			result = 31 * result + SleepTime;
@@ -318,7 +264,7 @@ namespace Java2Dotnet.Spider.Core
 			return "Site{" +
 					"domain='" + Domain + '\'' +
 					", userAgent='" + UserAgent + '\'' +
-					", cookies=" + _defaultCookies +
+					", cookies=" + _cookies +
 					", charset='" + Encoding + '\'' +
 					", startRequests=" + _startRequests +
 					", sleepTime=" + SleepTime +
@@ -331,20 +277,17 @@ namespace Java2Dotnet.Spider.Core
 		}
 
 		/// <summary>
-		/// Set httpProxyPool, string[0]:ip, string[1]:port
+		/// add http proxy , string[0]:ip, string[1]:port
 		/// </summary>
 		/// <param name="httpProxyList"></param>
 		/// <returns></returns>
-		public Site SetHttpProxyPool(List<string[]> httpProxyList)
+		public Site AddHttpProxies(List<string[]> httpProxyList)
 		{
 			_httpProxyPool = new ProxyPool(httpProxyList);
 			return this;
 		}
 
-		public ProxyPool GetHttpProxyPool()
-		{
-			return _httpProxyPool;
-		}
+		public bool HttpProxyPoolEnable => _httpProxyPool.Enable;
 
 		public HttpHost GetHttpProxyFromPool()
 		{
@@ -356,6 +299,11 @@ namespace Java2Dotnet.Spider.Core
 			_httpProxyPool.ReturnProxy(proxy, statusCode);
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="reuseInterval">Re use interval time</param>
+		/// <returns></returns>
 		public Site SetProxyReuseInterval(int reuseInterval)
 		{
 			_httpProxyPool.SetReuseInterval(reuseInterval);

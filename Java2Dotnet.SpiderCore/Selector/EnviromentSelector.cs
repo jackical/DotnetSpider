@@ -25,7 +25,7 @@ namespace Java2Dotnet.Spider.Core.Selector
 
 			if (_field.ToLower() == "targeturl")
 			{
-				return page.GetTargetUrl().Value;
+				return page.GetTargetUrl();
 			}
 
 			return page.GetRequest().GetExtra(_field);

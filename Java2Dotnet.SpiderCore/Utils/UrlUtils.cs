@@ -73,7 +73,7 @@ namespace Java2Dotnet.Spider.Core.Utils
 
 		public static IList<string> ConvertToUrls(IEnumerable<Request> requests)
 		{
-			return requests.Select(request => request.Url).ToList();
+			return requests.Select(request => request.Url.ToString()).ToList();
 		}
 
 		public static Encoding GetEncoding(string contentType)

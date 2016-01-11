@@ -115,7 +115,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 				{
 					if (targetUrlPattern.IsMatch(link))
 					{
-						page.AddTargetRequest(new Request(link, page.GetRequest().NextDeep(), page.GetRequest().Extras));
+						page.AddTargetRequest(new Request(link, page.GetRequest().NextDepth(), page.GetRequest().Extras));
 					}
 				}
 			}

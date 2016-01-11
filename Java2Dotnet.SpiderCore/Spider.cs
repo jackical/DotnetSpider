@@ -123,7 +123,7 @@ namespace Java2Dotnet.Spider.Core
 			_waitCount = 0;
 			PageProcessor = pageProcessor;
 			_site = pageProcessor.Site;
-			StartRequests = pageProcessor.Site.GetStartRequests();
+			StartRequests = pageProcessor.Site.StartRequests;
 			if (string.IsNullOrWhiteSpace(identify))
 			{
 				_identify = Guid.NewGuid().ToString();
@@ -432,7 +432,7 @@ namespace Java2Dotnet.Spider.Core
 							{
 								ProcessRequest(request1, cts);
 								OnSuccess(request1);
-								Uri uri = new Uri(request1.Url);
+								Uri uri = request1.Url;
 								//Logger.Info($"Request: { HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
 
 								Console.WriteLine($"Request: {HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
@@ -447,7 +447,7 @@ namespace Java2Dotnet.Spider.Core
 							}
 							finally
 							{
-								if (_site.GetHttpProxyPool().Enable)
+								if (_site.HttpProxyPoolEnable)
 								{
 									_site.ReturnHttpProxyToPool((HttpHost)request1.GetExtra(Request.Proxy), (int)request1.GetExtra(Request.StatusCode));
 								}
@@ -729,7 +729,7 @@ namespace Java2Dotnet.Spider.Core
 
 		protected void ExtractAndAddRequests(Page page, bool spawnUrl)
 		{
-			if (spawnUrl && page.GetRequest().NextDeep() < Deep && page.GetTargetRequests() != null && page.GetTargetRequests().Count > 0)
+			if (spawnUrl && page.GetRequest().NextDepth() < Deep && page.GetTargetRequests() != null && page.GetTargetRequests().Count > 0)
 			{
 				foreach (Request request in page.GetTargetRequests())
 				{
@@ -740,10 +740,6 @@ namespace Java2Dotnet.Spider.Core
 
 		private void AddRequest(Request request)
 		{
-			if (_site.Domain == null && request?.Url != null)
-			{
-				_site.Domain = UrlUtils.GetDomain(request.Url);
-			}
 			Scheduler.Push(request, this);
 		}
 

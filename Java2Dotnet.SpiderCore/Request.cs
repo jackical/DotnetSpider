@@ -19,11 +19,15 @@ namespace Java2Dotnet.Spider.Core
 
 		private const string Deep = "deep";
 
-		private readonly string _url;
+		private readonly Uri _url;
 
-		public Request(string url, int grade, IDictionary<string, dynamic> extras)
+		public Request(string url, int grade, IDictionary<string, dynamic> extras) : this(new Uri(HttpUtility.HtmlDecode(url)), grade, extras)
 		{
-			_url = HttpUtility.HtmlDecode(url);
+		}
+
+		public Request(Uri url, int grade, IDictionary<string, dynamic> extras)
+		{
+			_url = url;
 
 			if (extras != null)
 			{
@@ -36,7 +40,7 @@ namespace Java2Dotnet.Spider.Core
 			PutExtra(Deep, grade);
 		}
 
-		public int NextDeep()
+		public int NextDepth()
 		{
 			return GetExtra(Deep) + 1;
 		}
@@ -46,7 +50,7 @@ namespace Java2Dotnet.Spider.Core
 		/// Need a scheduler supporting priority. 
 		/// </summary>
 		[Experimental]
-		public long Priority { get; set; }
+		public int Priority { get; set; }
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public dynamic GetExtra(string key)
@@ -95,7 +99,7 @@ namespace Java2Dotnet.Spider.Core
 		/// </summary>
 		public string Method { get; set; }
 
-		public string Url => _url;
+		public Uri Url => _url;
 
 		public override bool Equals(object o)
 		{
@@ -126,12 +130,7 @@ namespace Java2Dotnet.Spider.Core
 
 		public override string ToString()
 		{
-			return "Request{" +
-					"url='" + Url + '\'' +
-					", method='" + Method + '\'' +
-					", extras=" + Extras +
-					", priority=" + Priority +
-					'}';
+			return $"Request {{ url='{Url}', method='{Method}', extras='{Extras}', priority='{Priority}'";
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]

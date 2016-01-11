@@ -120,21 +120,18 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			return acceptStatCode.Contains(statusCode);
 		}
 
-		private HttpWebRequest GeneratorCookie(HttpWebRequest httpWebRequest, Site site)
+		private HttpWebRequest GeneratorCookie(HttpWebRequest httpWebRequest, Request request, Site site)
 		{
-			CookieContainer cookie = new CookieContainer();
-			foreach (var entry in site.GetAllCookies())
-			{
-				string domain = entry.Key;
-				var cookies = entry.Value;
-				Uri uri = new Uri(domain);
+			string domain = request.Url.Host;
+		 
+			CookieContainer cookieContainer = new CookieContainer();
 
-				foreach (var keypair in cookies)
-				{
-					cookie.Add(uri, new Cookie(keypair.Key, keypair.Value));
-				}
+			foreach (var cookie in site.AllCookies)
+			{
+				cookieContainer.Add(new Cookie(cookie.Key, cookie.Value));
 			}
-			httpWebRequest.CookieContainer = cookie;
+			httpWebRequest.CookieContainer = cookieContainer;
+
 			return httpWebRequest;
 		}
 
@@ -165,7 +162,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			}
 
 			// cookie
-			httpWebRequest = GeneratorCookie(httpWebRequest, site);
+			httpWebRequest = GeneratorCookie(httpWebRequest, request, site);
 
 			//check:
 			httpWebRequest.Timeout = site.Timeout;
@@ -173,7 +170,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			httpWebRequest.ReadWriteTimeout = site.Timeout;
 			httpWebRequest.AllowAutoRedirect = true;
 
-			if (site.GetHttpProxyPool().Enable)
+			if (site.HttpProxyPoolEnable)
 			{
 				HttpHost host = site.GetHttpProxyFromPool();
 				httpWebRequest.Proxy = new WebProxy(host.Host, host.Port);
@@ -235,8 +232,8 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			content = HttpUtility.UrlDecode(HttpUtility.HtmlDecode(content), charset);
 			Page page = new Page(request);
 			page.SetRawText(content);
-			page.SetTargetUrl(new PlainText(response.ResponseUri.ToString()));
-			page.SetUrl(new PlainText(request.Url));
+			page.SetTargetUrl(response.ResponseUri.ToString());
+			page.SetUrl(request.Url.ToString());
 			page.SetStatusCode(statusCode);
 			return page;
 		}

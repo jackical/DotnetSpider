@@ -80,10 +80,10 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 					{
 						try
 						{
-							bool isDuplicate = redis.SetContainsItem(GetSetKey(spider), request.Url);
+							bool isDuplicate = redis.SetContainsItem(GetSetKey(spider), request.Url.ToString());
 							if (!isDuplicate)
 							{
-								redis.AddItemToSet(GetSetKey(spider), request.Url);
+								redis.AddItemToSet(GetSetKey(spider), request.Url.ToString());
 							}
 							return isDuplicate;
 						}
@@ -105,12 +105,12 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			{
 				using (var redis = _pool.GetSafeGetClient())
 				{
-					redis.AddItemToSortedSet(GetQueueKey(spider), request.Url);
+					redis.AddItemToSortedSet(GetQueueKey(spider), request.Url.ToString());
 
 					// 没有必要判断浪费性能了, 这里不可能为空。最少会有一个层级数据 Grade
 					//if (request.Extras != null && request.Extras.Count > 0)
 					//{
-					string field = Encrypt.Md5Encrypt(request.Url);
+					string field = Encrypt.Md5Encrypt(request.Url.ToString());
 					string value = JsonConvert.SerializeObject(request);
 
 					redis.SetEntryInHash(ItemPrefix + spider.Identify, field, value);
