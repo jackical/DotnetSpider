@@ -34,7 +34,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 
 			ICollection<int> acceptStatCode = site.AcceptStatCode;
 			var charset = site.Encoding;
-			var headers = site.GetHeaders();
+			var headers = site.Headers;
 
 			//Logger.InfoFormat("Downloading page {0}", request.Url);
 

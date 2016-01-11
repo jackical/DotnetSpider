@@ -17,7 +17,14 @@ namespace Java2Dotnet.Spider.Core
 		private readonly Dictionary<string, string> _defaultCookies = new Dictionary<string, string>();
 		private readonly Dictionary<string, Dictionary<string, string>> _cookies = new Dictionary<string, Dictionary<string, string>>();
 		private readonly List<Request> _startRequests = new List<Request>();
-		private readonly Hashtable _headers = new Hashtable();
+		private Dictionary<string, string> _headers;
+
+		public Dictionary<string, string> Headers
+		{
+			get { return _headers ?? (_headers = new Dictionary<string, string>()); }
+			set { _headers = value; }
+		}
+
 		private ProxyPool _httpProxyPool = new ProxyPool();
 
 		//public static Site NewSite()
@@ -227,24 +234,19 @@ namespace Java2Dotnet.Spider.Core
 		/// <returns></returns>
 		public int RetryTimes { get; set; } = 5;
 
-		public IDictionary GetHeaders()
-		{
-			return _headers;
-		}
-
 		/// <summary>
 		/// Put an Http header for downloader. 
 		/// Use {@link #addCookie(string, string)} for cookie and {@link #setUserAgent(string)} for user-agent.
 		/// </summary>
 		public Site AddHeader(string key, string value)
 		{
-			if (_headers.Contains(key))
+			if (Headers.ContainsKey(key))
 			{
-				_headers[key] = value;
+				Headers[key] = value;
 			}
 			else
 			{
-				_headers.Add(key, value);
+				Headers.Add(key, value);
 			}
 			return this;
 		}

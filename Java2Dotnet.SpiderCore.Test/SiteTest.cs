@@ -38,8 +38,8 @@ namespace Java2Dotnet.Spider.Core.Test
 		public void TestAddHeaders()
 		{
 			Site.AddHeader(wName, wValue);
-			Assert.IsNotNull(Site.GetHeaders());
-			Assert.IsTrue(Site.GetHeaders().Count > 0);
+			Assert.IsNotNull(Site.Headers);
+			Assert.IsTrue(Site.Headers.Count > 0);
 		}
 	}
 }
