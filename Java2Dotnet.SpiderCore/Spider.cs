@@ -555,6 +555,11 @@ namespace Java2Dotnet.Spider.Core
 					// 下载页面
 					page = Downloader.Download(request, this);
 
+					if (page.IsSkip)
+					{
+						return;
+					}
+
 					// 处理HTML截取
 					if (SubDownloadedHtml != null)
 					{

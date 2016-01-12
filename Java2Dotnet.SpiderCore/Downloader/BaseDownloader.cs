@@ -51,6 +51,11 @@ namespace Java2Dotnet.Spider.Core.Downloader
 						{
 							break;
 						}
+					case DownloadValidationResult.Miss:
+						{
+							page.IsSkip = true;
+							break;
+						}
 				}
 			}
 		}

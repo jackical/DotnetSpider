@@ -65,7 +65,7 @@ namespace Java2Dotnet.Spider.Redial
 			finally
 			{
 				stream?.Close();
-				File.Delete(id);
+				SafeDeleteFile(id);
 			}
 		}
 
@@ -88,7 +88,7 @@ namespace Java2Dotnet.Spider.Redial
 			finally
 			{
 				stream?.Close();
-				File.Delete(id);
+				SafeDeleteFile(id);
 			}
 		}
 
@@ -111,7 +111,7 @@ namespace Java2Dotnet.Spider.Redial
 			finally
 			{
 				stream?.Close();
-				File.Delete(id);
+				SafeDeleteFile(id);
 			}
 		}
 
@@ -134,7 +134,34 @@ namespace Java2Dotnet.Spider.Redial
 			finally
 			{
 				stream?.Close();
-				File.Delete(id);
+				while (File.Exists(id))
+				{
+					try
+					{
+						File.Delete(id);
+						break;
+					}
+					catch (Exception)
+					{
+						// ignored
+					}
+				}
+			}
+		}
+
+		private static void SafeDeleteFile(string path)
+		{
+			while (File.Exists(path))
+			{
+				try
+				{
+					File.Delete(path);
+					break;
+				}
+				catch (Exception)
+				{
+					// ignored
+				}
 			}
 		}
 	}

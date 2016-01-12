@@ -6,7 +6,8 @@ namespace Java2Dotnet.Spider.Core.Downloader
 	{
 		Success,
 		FailedAndNeedRedial,
-		Failed
+		Failed,
+		Miss
 	}
 
 	public delegate DownloadValidationResult DownloadValidation(Page page);
