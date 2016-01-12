@@ -9,7 +9,6 @@ using System.Text;
 using System.Web;
 using HtmlAgilityPack;
 using Java2Dotnet.Spider.Core.Proxy;
-using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Redial;
 
@@ -43,48 +42,41 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			HttpWebResponse response = null;
 			try
 			{
-				try
+				var httpWebRequest = GetHttpWebRequest(request, site, headers);
+
+				response = AtomicRedialExecutor.Execute("downloader-download", h =>
 				{
-					var httpWebRequest = GetHttpWebRequest(request, site, headers);
+					HttpWebRequest tmpHttpWebRequest = h as HttpWebRequest;
+					return (HttpWebResponse)tmpHttpWebRequest?.GetResponse();
+				}, httpWebRequest);
 
-					response = AtomicRedialExecutor.Execute("downloader-download", h =>
-					{
-						HttpWebRequest tmpHttpWebRequest = h as HttpWebRequest;
-						return (HttpWebResponse)tmpHttpWebRequest?.GetResponse();
-					}, httpWebRequest);
+				statusCode = (int)response.StatusCode;
+				request.PutExtra(Request.StatusCode, statusCode);
+				if (StatusAccept(acceptStatCode, statusCode))
+				{
+					Page page = HandleResponse(request, charset, response, statusCode);
 
-					statusCode = (int)response.StatusCode;
-					request.PutExtra(Request.StatusCode, statusCode);
-					if (StatusAccept(acceptStatCode, statusCode))
-					{
-						Page page = HandleResponse(request, charset, response, statusCode);
+					//page.SetRawText(File.ReadAllText(@"C:\Users\Lewis\Desktop\taobao.html"));
 
-						//page.SetRawText(File.ReadAllText(@"C:\Users\Lewis\Desktop\taobao.html"));
+					// 这里只要是遇上登录的, 则在拨号成功之后, 全部抛异常在Spider中加入Scheduler调度
+					// 因此如果使用多线程遇上多个Warning Custom Validate Failed不需要紧张, 可以考虑用自定义Exception分开
+					ValidatePage(page);
 
-						// 这里只要是遇上登录的, 则在拨号成功之后, 全部抛异常在Spider中加入Scheduler调度
-						// 因此如果使用多线程遇上多个Warning Custom Validate Failed不需要紧张, 可以考虑用自定义Exception分开
-						ValidatePage(page);
+					// 结束后要置空, 这个值存到Redis会导置无限循环跑单个任务
+					request.PutExtra(Request.CycleTriedTimes, null);
 
-						// 结束后要置空, 这个值存到Redis会导置无限循环跑单个任务
-						request.PutExtra(Request.CycleTriedTimes, null);
+					httpWebRequest.ServicePoint.ConnectionLimit = int.MaxValue;
+					OnSuccess(request);
 
-						httpWebRequest.ServicePoint.ConnectionLimit = int.MaxValue;
-						OnSuccess(request);
-
-						return page;
-					}
-					else
-					{
-						throw new SpiderExceptoin("Download failed.");
-					}
+					return page;
 				}
-				catch (Exception e)
+				else
 				{
-					HandleDownloadException(e);
+					throw new SpiderExceptoin("Download failed.");
 				}
 
 				//正常结果在上面已经Return了, 到此处必然是下载失败的值.
-				throw new SpiderExceptoin("Download failed.");
+				//throw new SpiderExceptoin("Download failed.");
 			}
 			//catch (Exception)
 			//{

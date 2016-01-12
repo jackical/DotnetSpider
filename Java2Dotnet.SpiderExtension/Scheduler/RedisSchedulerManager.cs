@@ -32,17 +32,11 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 					redis.Remove(GetQueueKey(taskIdentify));
 					redis.Remove(GetSetKey(taskIdentify));
 					redis.RemoveEntryFromHash(RedisScheduler.TaskStatus, taskIdentify);
-					redis.RemoveEntryFromHash(RedisScheduler.ItemPrefix + taskIdentify, taskIdentify);
-					redis.Remove(GetLockerKey(taskIdentify));
+					redis.Remove(RedisScheduler.ItemPrefix + taskIdentify);
+					redis.Remove(taskIdentify);
 					redis.RemoveItemFromSortedSet(RedisScheduler.TaskList, taskIdentify);
 				}
 			}
-		}
-
-
-		private string GetLockerKey(string identify)
-		{
-			return "locker-" + identify;
 		}
 
 		private string GetSetKey(string identify)

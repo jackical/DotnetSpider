@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Pipeline;
+using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Extension;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
@@ -69,10 +70,10 @@ namespace Java2Dotnet.Spider.Samples.Model
 
 		public static void Run()
 		{
-			OoSpider.Create(new Site(), typeof(List<News163>)).AddUrl("http://news.163.com/13/0802/05/958I1E330001124J_2.html")
+			OoSpider.Create(new Site(), new RedisScheduler("localhost", ""), new CollectorPageModelPipeline(), typeof(List<News163>)).AddStartUrl("http://news.163.com/13/0802/05/958I1E330001124J_2.html")
 				.AddPipeline(new MultiPagePipeline())
 				.AddPipeline(new ConsolePipeline())
-				.SetScheduler(new RedisScheduler("localhost", "")).Run();
+				.Run();
 		}
 	}
 }

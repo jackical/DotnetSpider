@@ -10,6 +10,4 @@ namespace Java2Dotnet.Spider.Core.Downloader
 	}
 
 	public delegate DownloadValidationResult DownloadValidation(Page page);
-
-	public delegate DownloadValidationResult ExceptionHandler(Exception e);
 }

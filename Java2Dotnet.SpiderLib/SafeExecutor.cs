@@ -32,7 +32,7 @@ namespace Java2Dotnet.Spider.Lib
 				{
 					return func();
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
 					Thread.Sleep(500);
 					// ignored

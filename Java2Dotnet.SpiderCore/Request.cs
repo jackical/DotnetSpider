@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Web;
-using Java2Dotnet.Spider.Core.Utils;
 
 namespace Java2Dotnet.Spider.Core
 {
@@ -17,9 +16,12 @@ namespace Java2Dotnet.Spider.Core
 		public const string StatusCode = "02d71099-b897-49dd-a180-55345fe9abfc";
 		public const string Proxy = "6f09c4d6-167a-4272-8208-8a59bebdfe33";
 
-		private const string Deep = "deep";
+		public int Depth { get; set; }
+		public int NextDepth => Depth + 1;
 
-		private readonly Uri _url;
+		public Request()
+		{
+		}
 
 		public Request(string url, int grade, IDictionary<string, dynamic> extras) : this(new Uri(HttpUtility.HtmlDecode(url)), grade, extras)
 		{
@@ -27,7 +29,7 @@ namespace Java2Dotnet.Spider.Core
 
 		public Request(Uri url, int grade, IDictionary<string, dynamic> extras)
 		{
-			_url = url;
+			Url = url;
 
 			if (extras != null)
 			{
@@ -37,17 +39,26 @@ namespace Java2Dotnet.Spider.Core
 				}
 			}
 
-			PutExtra(Deep, grade);
+			Depth = grade;
 		}
-
-		public int NextDepth => GetExtra(Deep) + 1;
 
 		/// <summary>
 		/// Set the priority of request for sorting. 
 		/// Need a scheduler supporting priority. 
 		/// </summary>
-		[Experimental]
 		public int Priority { get; set; }
+
+		/// <summary>
+		/// Store additional information in extras.
+		/// </summary>
+		public Dictionary<string, dynamic> Extras { get; set; }
+
+		/// <summary>
+		/// The http method of the request. Get for default.
+		/// </summary>
+		public string Method { get; set; }
+
+		public Uri Url { get; set; }
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public dynamic GetExtra(string key)
@@ -86,18 +97,6 @@ namespace Java2Dotnet.Spider.Core
 			return this;
 		}
 
-		/// <summary>
-		/// Store additional information in extras.
-		/// </summary>
-		public Dictionary<string, dynamic> Extras { get; set; }
-
-		/// <summary>
-		/// The http method of the request. Get for default.
-		/// </summary>
-		public string Method { get; set; }
-
-		public Uri Url => _url;
-
 		public override bool Equals(object o)
 		{
 			if (this == o) return true;
@@ -127,7 +126,7 @@ namespace Java2Dotnet.Spider.Core
 
 		public override string ToString()
 		{
-			return $"Request {{ url='{Url}', method='{Method}', extras='{Extras}', priority='{Priority}'";
+			return $"Request {{ url='{Url}', method='{Method}', extras='{Extras}', priority='{Priority}'}}";
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
@@ -138,7 +137,7 @@ namespace Java2Dotnet.Spider.Core
 			{
 				extras.Add(entry.Key, entry.Value);
 			}
-			Request newObj = new Request(Url, GetExtra(Deep), extras)
+			Request newObj = new Request(Url, Depth, extras)
 			{
 				Method = Method,
 				Priority = Priority

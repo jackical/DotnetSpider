@@ -48,7 +48,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 					string html = GetHtml(bufferedReader);
 					page = new Page(request);
 					page.Url = request.Url.ToString();
-					page.SetHtml(Html.Create(html));
+					page.HtmlDocument = Html.Create(html);
 				}
 			}
 			catch (IOException e)

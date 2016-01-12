@@ -17,7 +17,7 @@ namespace Java2Dotnet.Spider.Samples.Model
 
 		public static void Run()
 		{
-			OoSpider.Create(new Site(), new ConsolePageModelPipeline(), typeof(QqMeishi)).AddUrl("http://meishi.qq.com/beijing/c/all").SetThreadNum(4).Run();
+			OoSpider.Create(new Site(), new ConsolePageModelPipeline(), typeof(QqMeishi)).AddStartUrl("http://meishi.qq.com/beijing/c/all").SetThreadNum(4).Run();
 		}
 	}
 }

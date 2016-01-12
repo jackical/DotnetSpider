@@ -334,10 +334,10 @@ namespace Java2Dotnet.Spider.Extension.Model
 					switch (fieldExtractor.Source)
 					{
 						case ExtractSource.RawHtml:
-							value = page.GetHtml().SelectDocumentForList(fieldExtractor.Selector);
+							value = page.HtmlDocument.SelectDocumentForList(fieldExtractor.Selector);
 							break;
 						case ExtractSource.Html:
-							value = isEntire ? page.GetHtml().SelectDocumentForList(fieldExtractor.Selector) : fieldExtractor.Selector.SelectList(content);
+							value = isEntire ? page.HtmlDocument.SelectDocumentForList(fieldExtractor.Selector) : fieldExtractor.Selector.SelectList(content);
 							break;
 						case ExtractSource.Json:
 							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).GetAll() : fieldExtractor.Selector.SelectList(content);
@@ -464,10 +464,10 @@ namespace Java2Dotnet.Spider.Extension.Model
 					switch (fieldExtractor.Source)
 					{
 						case ExtractSource.RawHtml:
-							value = page.GetHtml().SelectDocument(fieldExtractor.Selector);
+							value = page.HtmlDocument.SelectDocument(fieldExtractor.Selector);
 							break;
 						case ExtractSource.Html:
-							value = isEntire ? page.GetHtml().SelectDocument(fieldExtractor.Selector) : fieldExtractor.Selector.Select(content);
+							value = isEntire ? page.HtmlDocument.SelectDocument(fieldExtractor.Selector) : fieldExtractor.Selector.Select(content);
 							break;
 						case ExtractSource.Json:
 							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).Value : fieldExtractor.Selector.Select(content);

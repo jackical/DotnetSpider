@@ -83,7 +83,7 @@
     <Compile Include="RedialManager.cs" />
     <Compile Include="H3CSshAdslRedialer.cs" />
     <Compile Include="IRedialManager.cs" />
-    <Compile Include="NeedRedialException.cs" />
+    <Compile Include="RedialException.cs" />
     <Compile Include="RedialResult.cs" />
     <Compile Include="RedisRedialManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

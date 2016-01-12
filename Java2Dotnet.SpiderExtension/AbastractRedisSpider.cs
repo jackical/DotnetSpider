@@ -49,7 +49,7 @@ namespace Java2Dotnet.Spider.Extension
 					locker = redis.AcquireLock(key, TimeSpan.FromMinutes(10));
 
 					var lockerValue = redis.GetValue(Name);
-					bool needInitStartRequest = lockerValue != "finished";
+					bool needInitStartRequest = lockerValue != "init finished";
 
 					Console.WriteLine("Prepare site with paramete: " + needInitStartRequest);
 
@@ -58,17 +58,16 @@ namespace Java2Dotnet.Spider.Extension
 						PrepareSite();
 					}
 
-					if (needInitStartRequest)
-					{
-						redis.SetValue(Name, "finished");
-					}
-
 					Console.WriteLine("Init spider with site.");
 					_spider = InitSpider(Site);
-					_spider.SetScheduler(Scheduler);
-					_spider.SaveStatusInRedis = true;
+					_spider.SaveStatusToRedis = true;
 					SpiderMonitor.Instance.Register(_spider);
 					_spider.InitComponent();
+
+					if (needInitStartRequest)
+					{
+						redis.SetValue(Name, "init finished");
+					}
 				}
 				catch (Exception e)
 				{

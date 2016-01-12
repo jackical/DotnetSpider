@@ -37,7 +37,7 @@ namespace Java2Dotnet.Spider.Lib
 
 			LastDayofLastMonth = FirstDayofThisMonth.AddDays(-1);
 
-			FirstDayofThisWeek = now.AddDays(Convert.ToInt32(now.DayOfWeek.ToString("d")));
+			FirstDayofThisWeek = now.AddDays(Convert.ToInt32(now.DayOfWeek.ToString("d")) * -1);
 
 			FirstDayofLastWeek = FirstDayofThisWeek.AddDays(-7);
 

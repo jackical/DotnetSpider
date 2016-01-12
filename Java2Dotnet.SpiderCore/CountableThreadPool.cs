@@ -8,11 +8,7 @@ using System.Threading.Tasks;
 namespace Java2Dotnet.Spider.Core
 {
 	/// <summary>
-	/// Thread pool for workers. 
-	/// Use {@link java.util.concurrent.ExecutorService} as inner implement.  
-	/// New feature: 
-	/// 1. Block when thread pool is full to avoid poll many urls without process.
-	/// 2. Count of thread alive for monitor.
+	/// Thread pool. 
 	/// </summary>
 	public class CountableThreadPool
 	{

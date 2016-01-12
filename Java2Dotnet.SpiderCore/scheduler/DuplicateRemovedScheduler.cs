@@ -1,4 +1,5 @@
 using Java2Dotnet.Spider.Core.Scheduler.Component;
+using Java2Dotnet.Spider.Redial;
 using log4net;
 
 namespace Java2Dotnet.Spider.Core.Scheduler
@@ -16,11 +17,14 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public void Push(Request request, ISpider spider)
 		{
-			if (!DuplicateRemover.IsDuplicate(request, spider) || ShouldReserved(request))
+			AtomicRedialExecutor.Execute("rds-push", () =>
 			{
-				//_logger.InfoFormat("Push to queue {0}", request.Url);
-				PushWhenNoDuplicate(request, spider);
-			}
+				if (!DuplicateRemover.IsDuplicate(request, spider) || ShouldReserved(request))
+				{
+					//_logger.InfoFormat("Push to queue {0}", request.Url);
+					PushWhenNoDuplicate(request, spider);
+				}
+			});
 		}
 
 		public virtual void Init(ISpider spider)

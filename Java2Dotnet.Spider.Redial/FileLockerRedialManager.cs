@@ -50,7 +50,6 @@ namespace Java2Dotnet.Spider.Redial
 				for (int i = 0; i < RedialTimeout; ++i)
 				{
 					Thread.Sleep(50);
-					Console.WriteLine("WaitforRedialFinish...");
 					if (!File.Exists(_lockerFilePath))
 					{
 						break;

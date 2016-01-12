@@ -1,6 +1,8 @@
 ﻿using Java2Dotnet.Spider.Core;
+using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
+using Java2Dotnet.Spider.Extension.Pipeline;
 
 namespace Java2Dotnet.Spider.Samples.Model
 {
@@ -17,7 +19,7 @@ namespace Java2Dotnet.Spider.Samples.Model
 		{
 			var site = new Site();
 			site.AddStartUrl("http://flashsword20.iteye.com/blog");
-			OoSpider.Create(site, typeof(IteyeBlog)).Run();
+			OoSpider.Create(site, new QueueDuplicateRemovedScheduler(), new CollectorPageModelPipeline(), typeof(IteyeBlog)).Run();
 		}
 	}
 }

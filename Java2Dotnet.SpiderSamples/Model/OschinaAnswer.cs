@@ -3,6 +3,7 @@ using System.Text;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
+using Java2Dotnet.Spider.Extension.Pipeline;
 
 namespace Java2Dotnet.Spider.Samples.Model
 {
@@ -21,7 +22,7 @@ namespace Java2Dotnet.Spider.Samples.Model
 		{
 			Site site = new Site { Encoding = Encoding.UTF8 };
 			site.AddStartUrl("http://www.oschina.net/question/1995445_2136783");
-			OoSpider.Create(site, typeof(List<OschinaAnswer>)).Run();
+			OoSpider.Create(site, new CollectorPageModelPipeline(), typeof(List<OschinaAnswer>)).Run();
 		}
 
 		public void AfterProcess(Page page)

@@ -18,11 +18,10 @@ namespace Java2Dotnet.Spider.Samples.Samples
 		public static void RunTask()
 		{
 			OoSpider ooSpider = OoSpider.Create("aiqiyi_movies_" + DateTime.Now.ToLocalTime(),
-				new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new ConsolePageModelPipeline(), typeof(SingleSample));
+				new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new QueueDuplicateRemovedScheduler(), new ConsolePageModelPipeline(), typeof(SingleSample));
 			ooSpider.SetEmptySleepTime(15000);
 			ooSpider.SetThreadNum(1);
-			ooSpider.SetScheduler(new QueueDuplicateRemovedScheduler());
-			ooSpider.AddUrl("http://top.iqiyi.com/dianshiju.html#");
+			ooSpider.AddStartUrl("http://top.iqiyi.com/dianshiju.html#");
 			ooSpider.Run();
 		}
 

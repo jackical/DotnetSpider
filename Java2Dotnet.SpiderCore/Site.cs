@@ -1,11 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using Java2Dotnet.Spider.Core.Proxy;
-using Java2Dotnet.Spider.Core.Utils;
 
 namespace Java2Dotnet.Spider.Core
 {
@@ -20,29 +17,11 @@ namespace Java2Dotnet.Spider.Core
 		private Dictionary<string, string> _headers;
 		private ProxyPool _httpProxyPool = new ProxyPool();
 		private string _domain;
+
 		public Dictionary<string, string> Headers
 		{
 			get { return _headers ?? (_headers = new Dictionary<string, string>()); }
 			set { _headers = value; }
-		}
-
-		/// <summary>
-		/// Add a cookie with domain
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public Site AddCookie(string key, string value)
-		{
-			if (_cookies.ContainsKey(key))
-			{
-				_cookies[key] = value;
-			}
-			else
-			{
-				_cookies.Add(key, value);
-			}
-			return this;
 		}
 
 		/// <summary>
@@ -77,10 +56,7 @@ namespace Java2Dotnet.Spider.Core
 			}
 			set
 			{
-				if (_domain != value)
-				{
-					_domain = value;
-				}
+				_domain = value;
 			}
 		}
 
@@ -104,6 +80,53 @@ namespace Java2Dotnet.Spider.Core
 		public HashSet<int> AcceptStatCode { get; set; } = new HashSet<int> { 200 };
 
 		public List<Request> StartRequests => _startRequests;
+
+		/// <summary>
+		/// Set the interval between the processing of two pages. 
+		/// Time unit is micro seconds. 
+		/// </summary>
+		public int SleepTime { get; set; } = 500;
+
+		/// <summary>
+		/// Get or Set retry times immediately when download fail, 5 by default.
+		/// </summary>
+		/// <returns></returns>
+		public int RetryTimes { get; set; } = 5;
+
+		/// <summary>
+		/// When cycleRetryTimes is more than 0, it will add back to scheduler and try download again. 
+		/// </summary>
+		public int CycleRetryTimes { get; set; } = 20;
+
+		/// <summary>
+		/// Set or Get up httpProxy for this site
+		/// </summary>
+		public string HttpProxy { get; set; }
+
+		/// <summary>
+		/// Whether use gzip.  
+		/// Default is true, you can set it to false to disable gzip.
+		/// </summary>
+		public bool IsUseGzip { get; set; }
+
+		/// <summary>
+		/// Add a cookie with domain
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public Site AddCookie(string key, string value)
+		{
+			if (_cookies.ContainsKey(key))
+			{
+				_cookies[key] = value;
+			}
+			else
+			{
+				_cookies.Add(key, value);
+			}
+			return this;
+		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void ClearStartRequests()
@@ -170,18 +193,6 @@ namespace Java2Dotnet.Spider.Core
 		}
 
 		/// <summary>
-		/// Set the interval between the processing of two pages. 
-		/// Time unit is micro seconds. 
-		/// </summary>
-		public int SleepTime { get; set; } = 500;
-
-		/// <summary>
-		/// Get or Set retry times immediately when download fail, 5 by default.
-		/// </summary>
-		/// <returns></returns>
-		public int RetryTimes { get; set; } = 5;
-
-		/// <summary>
 		/// Put an Http header for downloader. 
 		/// </summary>
 		public Site AddHeader(string key, string value)
@@ -195,27 +206,6 @@ namespace Java2Dotnet.Spider.Core
 				Headers.Add(key, value);
 			}
 			return this;
-		}
-
-		/// <summary>
-		/// When cycleRetryTimes is more than 0, it will add back to scheduler and try download again. 
-		/// </summary>
-		public int CycleRetryTimes { get; set; } = 20;
-
-		/// <summary>
-		/// Set or Get up httpProxy for this site
-		/// </summary>
-		public string HttpProxy { get; set; }
-
-		/// <summary>
-		/// Whether use gzip.  
-		/// Default is true, you can set it to false to disable gzip.
-		/// </summary>
-		public bool IsUseGzip { get; set; }
-
-		public ISpider ToTask()
-		{
-			return new DefaultSpider(Domain, this);
 		}
 
 		public override bool Equals(object o)

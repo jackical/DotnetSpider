@@ -48,8 +48,14 @@ namespace Java2Dotnet.Spider.Redial
 		public static void Execute(string name, Action action)
 		{
 			RedialManager.WaitforRedialFinish();
+
 			Stream stream = null;
 			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
+			while (File.Exists(id))
+			{
+				id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
+				Thread.Sleep(50);
+			}
 			try
 			{
 				stream = File.Open(id, FileMode.Create, FileAccess.Write);
@@ -68,6 +74,11 @@ namespace Java2Dotnet.Spider.Redial
 			RedialManager.WaitforRedialFinish();
 			Stream stream = null;
 			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
+			while (File.Exists(id))
+			{
+				id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
+				Thread.Sleep(50);
+			}
 			try
 			{
 				stream = File.Open(id, FileMode.Create, FileAccess.Write);
@@ -86,6 +97,11 @@ namespace Java2Dotnet.Spider.Redial
 			RedialManager.WaitforRedialFinish();
 			Stream stream = null;
 			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
+			while (File.Exists(id))
+			{
+				id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
+				Thread.Sleep(50);
+			}
 			try
 			{
 				stream = File.Open(id, FileMode.Create, FileAccess.Write);
@@ -104,6 +120,11 @@ namespace Java2Dotnet.Spider.Redial
 			Stream stream = null;
 			RedialManager.WaitforRedialFinish();
 			string id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
+			while (File.Exists(id))
+			{
+				id = Path.Combine(AtomicActionFolder, name + "-" + Guid.NewGuid().ToString("N"));
+				Thread.Sleep(50);
+			}
 			try
 			{
 				stream = File.Open(id, FileMode.Create, FileAccess.Write);

@@ -22,7 +22,7 @@ namespace Java2Dotnet.Spider.Extension.Configurable
 			{
 				if (extractRule.IsMulti)
 				{
-					IList<string> results = page.GetHtml().SelectDocumentForList(extractRule.Selector);
+					IList<string> results = page.HtmlDocument.SelectDocumentForList(extractRule.Selector);
 					if (extractRule.IsNotNull && results.Count == 0)
 					{
 						page.IsSkip = true;
@@ -34,7 +34,7 @@ namespace Java2Dotnet.Spider.Extension.Configurable
 				}
 				else
 				{
-					string result = page.GetHtml().SelectDocument(extractRule.Selector);
+					string result = page.HtmlDocument.SelectDocument(extractRule.Selector);
 					if (extractRule.IsNotNull && result == null)
 					{
 						page.IsSkip = true;

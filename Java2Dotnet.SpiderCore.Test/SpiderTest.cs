@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -64,7 +63,7 @@ namespace Java2Dotnet.Spider.Core.Test
 
 		private void TestRound()
 		{
-			Spider spider = Spider.Create(new TestPageProcessor()).SetScheduler(new TestScheduler()).SetThreadNum(10);
+			Spider spider = Spider.Create(new TestPageProcessor(), new TestScheduler()).SetThreadNum(10);
 			spider.Run();
 		}
 
@@ -93,10 +92,6 @@ namespace Java2Dotnet.Spider.Core.Test
 					return null;
 				}
 				return new Request("test", 1, null);
-			}
-
-			public void Finish(ISpider spider)
-			{
 			}
 		}
 

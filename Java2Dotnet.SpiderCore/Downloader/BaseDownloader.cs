@@ -7,7 +7,6 @@ namespace Java2Dotnet.Spider.Core.Downloader
 	public class BaseDownloader : IDownloader, IDisposable
 	{
 		public DownloadValidation DownloadValidation;
-		public ExceptionHandler ExceptionHandler;
 
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(BaseDownloader));
 		protected int ThreadNum;
@@ -46,28 +45,10 @@ namespace Java2Dotnet.Spider.Core.Downloader
 					case DownloadValidationResult.FailedAndNeedRedial:
 						{
 							RedialManager.Default?.Redial();
-							throw new NeedRedialException();
+							throw new RedialException("Download failed and need Redial.");
 						}
 					case DownloadValidationResult.Success:
 						{
-							break;
-						}
-				}
-			}
-		}
-
-		protected void HandleDownloadException(Exception e)
-		{
-			//customer verify
-			if (ExceptionHandler != null)
-			{
-				var validatResult = ExceptionHandler(e);
-
-				switch (validatResult)
-				{
-					case DownloadValidationResult.FailedAndNeedRedial:
-						{
-							RedialManager.Default?.Redial();
 							break;
 						}
 				}

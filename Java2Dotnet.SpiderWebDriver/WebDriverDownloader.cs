@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Downloader;
-using Java2Dotnet.Spider.Core.Selector;
 using OpenQA.Selenium;
 using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Redial;
@@ -106,11 +104,6 @@ namespace Java2Dotnet.Spider.WebDriver
 				request.PutExtra(Request.CycleTriedTimes, null);
 
 				return page;
-			}
-			catch (Exception e)
-			{
-				HandleDownloadException(e);
-				throw;
 			}
 			finally
 			{

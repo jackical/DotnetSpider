@@ -90,7 +90,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 		/// <param name="formatter"></param>
 		private void ExtractLinks(Page page, ISelector urlRegionSelector, IList<Regex> urlPatterns, IObjectFormatter formatter = null)
 		{
-			var links = urlRegionSelector == null ? new List<string>() : page.GetHtml().SelectList(urlRegionSelector).Links().GetAll();
+			var links = urlRegionSelector == null ? new List<string>() : page.HtmlDocument.SelectList(urlRegionSelector).Links().GetAll();
 
 			// check: 仔细考虑是放在前面, 还是在后面做 formatter, 我倾向于在前面. 对targetUrl做formatter则表示Start Url也应该是要符合这个规则的。
 			if (formatter != null)

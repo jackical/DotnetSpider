@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-
 namespace Java2Dotnet.Spider.Core.Pipeline
 {
 	/// <summary>

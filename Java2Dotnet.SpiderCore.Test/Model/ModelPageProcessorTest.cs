@@ -1,5 +1,4 @@
-﻿using Java2Dotnet.Spider.Core.Selector;
-using Java2Dotnet.Spider.Extension.Model.Attribute;
+﻿using Java2Dotnet.Spider.Extension.Model.Attribute;
 using Java2Dotnet.Spider.Extension.Processor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

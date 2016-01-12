@@ -30,7 +30,7 @@ namespace Java2Dotnet.Spider.Core.Test.Example
 		public void TestOschinaBlog()
 		{
 			//results will be saved to "/data/webmagic/" in json format
-			OoSpider.Create(new Site(), new JsonFilePageModelPipeline("/data/webmagic/"), typeof(OschinaBlog)).AddUrl("http://my.oschina.net/flashsword/blog").Run();
+			OoSpider.Create(new Site(), new JsonFilePageModelPipeline("/data/webmagic/"), typeof(OschinaBlog)).AddStartUrl("http://my.oschina.net/flashsword/blog").Run();
 		}
 	}
 }

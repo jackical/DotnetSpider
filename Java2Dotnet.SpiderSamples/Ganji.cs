@@ -21,14 +21,11 @@ namespace Java2Dotnet.Spider.Samples
 	{
 		public static void RunTask()
 		{
-			OoSpider ooSpider = OoSpider.Create("ganji_posts_" + DateTime.Now.Date.ToString("yyyy-MM-dd"),
-				new Site { SleepTime = 1000, Encoding = Encoding.UTF8 },
-				new PageModelToDbPipeline(), typeof(List<Ganji>));
+			OoSpider ooSpider = OoSpider.Create("ganji_posts_" + DateTime.Now.Date.ToString("yyyy-MM-dd"), new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new QueueDuplicateRemovedScheduler(), new PageModelToDbPipeline(), typeof(List<Ganji>));
 			ooSpider.SetEmptySleepTime(15000);
 			ooSpider.SetThreadNum(1);
 			ooSpider.ModelPipeline.CachedSize = 2;
-			ooSpider.SetScheduler(new QueueDuplicateRemovedScheduler());
-			ooSpider.AddUrl("http://sh.ganji.com/zpdianhuaxiaoshou/o1/");
+			ooSpider.AddStartUrl("http://sh.ganji.com/zpdianhuaxiaoshou/o1/");
 			ooSpider.Run();
 		}
 
