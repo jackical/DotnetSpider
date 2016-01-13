@@ -44,7 +44,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			{
 				var httpWebRequest = GetHttpWebRequest(request, site, headers);
 
-				response = AtomicRedialExecutor.Execute("downloader-download", h =>
+				response = RedialManagerConfig.RedialManager.AtomicExecutor.Execute("downloader-download", h =>
 				{
 					HttpWebRequest tmpHttpWebRequest = h as HttpWebRequest;
 					return (HttpWebResponse)tmpHttpWebRequest?.GetResponse();

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Java2Dotnet.Spider.Core.Downloader
+﻿namespace Java2Dotnet.Spider.Core.Downloader
 {
 	public enum DownloadValidationResult
 	{

@@ -9,14 +9,13 @@ namespace Java2Dotnet.Spider.Extension.Utils
 	{
 		public string Password { get; set; }
 
-		public SafeRedisManagerPool(string host, string password) : base(host)
+		public SafeRedisManagerPool(string host, string password) : base(host, new RedisPoolConfig() { MaxPoolSize = 100 })
 		{
 			Password = password;
-
 			SetRedisResolver();
 		}
 
-		public SafeRedisManagerPool(IEnumerable<string> hosts, RedisPoolConfig config,string password) : base(hosts, config)
+		public SafeRedisManagerPool(IEnumerable<string> hosts, RedisPoolConfig config, string password) : base(hosts, config)
 		{
 			Password = password;
 
@@ -43,8 +42,9 @@ namespace Java2Dotnet.Spider.Extension.Utils
 		{
 			RedisResolver.ClientFactory = endpoint =>
 			{
-				endpoint.Password = Password;
-				return new RedisClient(endpoint);
+				var client = new RedisClient(endpoint);
+				client.Password = Password;
+				return client;
 			};
 		}
 	}

@@ -17,7 +17,7 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public void Push(Request request, ISpider spider)
 		{
-			AtomicRedialExecutor.Execute("rds-push", () =>
+			RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-push", () =>
 			{
 				if (!DuplicateRemover.IsDuplicate(request, spider) || ShouldReserved(request))
 				{

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using Java2Dotnet.Spider.Core;
@@ -19,7 +18,6 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 	public class RedisScheduler : DuplicateRemovedScheduler, IMonitorableScheduler, IDuplicateRemover
 	{
 		private readonly SafeRedisManagerPool _pool;
-
 		public static readonly string QueuePrefix = "queue-";
 		public static readonly string TaskStatus = "task-status";
 		public static readonly string SetPrefix = "set-";
@@ -33,7 +31,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public override void Init(ISpider spider)
 		{
-			AtomicRedialExecutor.Execute("rds-init", () =>
+			RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-init", () =>
 			{
 				using (var redis = _pool.GetSafeGetClient())
 				{
@@ -51,7 +49,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public void ResetDuplicateCheck(ISpider spider)
 		{
-			AtomicRedialExecutor.Execute("rds-reset", () =>
+			RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-reset", () =>
 			{
 				using (var redis = _pool.GetSafeGetClient())
 				{
@@ -120,7 +118,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public override Request Poll(ISpider spider)
 		{
-			return AtomicRedialExecutor.Execute("rds-poll", () =>
+			return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-poll", () =>
 			{
 				return SafeExecutor.Execute(30, () =>
 				{
@@ -159,7 +157,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public int GetLeftRequestsCount(ISpider spider)
 		{
-			return AtomicRedialExecutor.Execute("rds-getleftcount", () =>
+			return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-getleftcount", () =>
 			{
 				using (var redis = _pool.GetSafeGetClient())
 				{
@@ -171,11 +169,12 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public int GetTotalRequestsCount(ISpider spider)
 		{
-			return AtomicRedialExecutor.Execute("rds-gettotalcount", () =>
+			return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-gettotalcount", () =>
 			{
 				using (var redis = _pool.GetSafeGetClient())
 				{
 					long size = redis.GetSetCount(GetSetKey(spider));
+
 					return (int)size;
 				}
 			});

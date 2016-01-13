@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Mime;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Forms;
 using Java2Dotnet.Spider.Core.Downloader;
 using Java2Dotnet.Spider.Core.Pipeline;
@@ -44,7 +42,7 @@ namespace Java2Dotnet.Spider.Core
 		public Status StatusCode => Stat;
 		public IScheduler Scheduler { get; }
 		public IList<ISpiderListener> SpiderListeners { get; set; } = new List<ISpiderListener>();
-		public int ThreadAliveCount => ThreadPool.GetThreadAlive();
+		public int ThreadAliveCount => ThreadPool.ThreadAlive;
 
 		protected readonly string RootDirectory;
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(Spider));
@@ -320,6 +318,32 @@ namespace Java2Dotnet.Spider.Core
 					Logger.InfoFormat("Push Zero Request to Scheduler.");
 				}
 			}
+
+			Task.Factory.StartNew(() =>
+			{
+				if (ShowConsoleStatus)
+				{
+					IMonitorableScheduler monitor = (IMonitorableScheduler)Scheduler;
+					while (true)
+					{
+						try
+						{
+							if (Stat == Status.Running)
+							{
+								Console.ForegroundColor = ConsoleColor.DarkGreen;
+								Console.WriteLine($"Left: {monitor.GetLeftRequestsCount(this)} Total: {monitor.GetTotalRequestsCount(this)} AliveThread: {ThreadPool.ThreadAlive} ThreadNum: {ThreadPool.ThreadNum }");
+								Console.ResetColor();
+							}
+						}
+						catch
+						{
+							// ignored
+						}
+						Thread.Sleep(2000);
+					}
+				}
+			});
+
 			_init = true;
 		}
 
@@ -336,8 +360,6 @@ namespace Java2Dotnet.Spider.Core
 			Logger.Info("Spider " + Identify + " InitComponent...");
 			InitComponent();
 
-			IMonitorableScheduler monitor = (IMonitorableScheduler)Scheduler;
-
 			Logger.Info("Spider " + Identify + " Started!");
 
 			bool firstTask = false;
@@ -347,7 +369,7 @@ namespace Java2Dotnet.Spider.Core
 
 				if (request == null)
 				{
-					if (ThreadPool.GetThreadAlive() == 0 && IsExitWhenComplete)
+					if (ThreadPool.ThreadAlive == 0 && IsExitWhenComplete)
 					{
 						Stat = Status.Finished;
 						break;
@@ -370,20 +392,8 @@ namespace Java2Dotnet.Spider.Core
 
 					_waitCount = 0;
 
-					ThreadPool.Execute((obj, cts) =>
+					ThreadPool.Push((obj, cts) =>
 					{
-						if (ShowConsoleStatus)
-						{
-							try
-							{
-								Console.WriteLine($"Left: {monitor.GetLeftRequestsCount(this)} Total: {monitor.GetTotalRequestsCount(this)} AliveThread: {ThreadPool.GetThreadAlive()} ThreadNum: {ThreadPool.GetThreadNum()}");
-							}
-							catch
-							{
-								// ignored
-							}
-						}
-
 						var request1 = obj as Request;
 						if (request1 != null)
 						{
@@ -391,10 +401,10 @@ namespace Java2Dotnet.Spider.Core
 							{
 								ProcessRequest(request1, cts);
 								OnSuccess(request1);
-								Uri uri = request1.Url;
+								//Uri uri = request1.Url;
 								//Logger.Info($"Request: { HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
 
-								Console.WriteLine($"Request: {HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
+								//Console.WriteLine($"Request: {HttpUtility.HtmlDecode(HttpUtility.UrlDecode(uri.Query))} Sucess.");
 
 								return 1;
 							}
@@ -425,7 +435,7 @@ namespace Java2Dotnet.Spider.Core
 				}
 			}
 
-			ThreadPool.WaitToEnd();
+			ThreadPool.WaitToExit();
 
 			FinishedTime = DateTime.Now;
 

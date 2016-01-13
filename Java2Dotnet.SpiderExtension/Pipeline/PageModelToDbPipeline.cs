@@ -87,7 +87,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 				{
 					case OperateType.Insert:
 						{
-							AtomicRedialExecutor.Execute("db-insert", () =>
+							RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-insert", () =>
 							{
 								for (int i = 0; i < 100; i++)
 								{
@@ -109,7 +109,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 						}
 					case OperateType.Update:
 						{
-							AtomicRedialExecutor.Execute("db-update", () =>
+							RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-update", () =>
 							{
 								dataRepository?.Update(pair.Value);
 							});
