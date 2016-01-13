@@ -16,7 +16,6 @@ namespace Java2Dotnet.Spider.Core.Selector
 		/// </summary>
 		public HtmlAgilityPack.HtmlNode Document { get; }
 
-
 		public Html(string text, Uri url)
 		{
 			try

@@ -66,7 +66,6 @@ namespace Java2Dotnet.Spider.Core.Downloader
 					request.PutExtra(Request.CycleTriedTimes, null);
 
 					httpWebRequest.ServicePoint.ConnectionLimit = int.MaxValue;
-					OnSuccess(request);
 
 					return page;
 				}

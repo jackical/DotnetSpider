@@ -16,10 +16,6 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			return null;
 		}
 
-		protected virtual void OnSuccess(Request request)
-		{
-		}
-
 		public virtual void Dispose()
 		{
 		}
