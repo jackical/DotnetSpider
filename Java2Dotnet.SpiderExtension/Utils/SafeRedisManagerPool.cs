@@ -32,7 +32,7 @@ namespace Java2Dotnet.Spider.Extension.Utils
 				}
 				catch (Exception e)
 				{
-					Console.WriteLine("Error: Get redis client failed.");
+					Console.WriteLine("Error: Get redis client failed: " + e);
 					Thread.Sleep(500);
 				}
 			}
