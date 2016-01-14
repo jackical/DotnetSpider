@@ -16,14 +16,14 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		Update
 	}
 
-	public sealed class PageModelToDbPipeline : IPageModelPipeline
+	public sealed class DatabasePipeline : IPageModelPipeline
 	{
-		private readonly static log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(PageModelToDbPipeline));
+		private readonly static log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(DatabasePipeline));
 		private readonly OperateType _operateType;
 		public long TotalCount => _totalCount.Value;
 		private readonly ConcurrentDictionary<Type, IDataRepository> _cache = new ConcurrentDictionary<Type, IDataRepository>();
 
-		public PageModelToDbPipeline(OperateType operateType = OperateType.Insert)
+		public DatabasePipeline(OperateType operateType = OperateType.Insert)
 		{
 			_operateType = operateType;
 		}
@@ -83,40 +83,50 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 					}
 				}
 
-				switch (_operateType)
-				{
-					case OperateType.Insert:
+				SaveOrUpate(dataRepository, pair);
+			}
+		}
+
+		public void Dispose()
+		{
+			_cache.Clear();
+		}
+
+		private void SaveOrUpate(IDataRepository dataRepository, KeyValuePair<Type, List<dynamic>> data)
+		{
+			switch (_operateType)
+			{
+				case OperateType.Insert:
+					{
+						RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-insert", () =>
 						{
-							RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-insert", () =>
+							for (int i = 0; i < 100; i++)
 							{
-								for (int i = 0; i < 100; i++)
+								try
 								{
-									try
-									{
-										dataRepository?.Insert(pair.Value);
-										break;
-									}
-									catch (Exception e)
-									{
-										Logger.Warn($"Try to save data to DB failed. Times: {i + 1}", e);
-										Thread.Sleep(2000);
-										// ignored
-									}
+									dataRepository?.Insert(data.Value);
+									break;
 								}
-							});
+								catch (Exception e)
+								{
+									Logger.Warn($"Try to save data to DB failed. Times: {i + 1}", e);
+									Thread.Sleep(2000);
+									// ignored
+								}
+							}
+						});
 
-							break;
-						}
-					case OperateType.Update:
+						break;
+					}
+				case OperateType.Update:
+					{
+						RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-update", () =>
 						{
-							RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-update", () =>
-							{
-								dataRepository?.Update(pair.Value);
-							});
+							dataRepository?.Update(data.Value);
+						});
 
-							break;
-						}
-				}
+						break;
+					}
 			}
 		}
 	}

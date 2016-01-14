@@ -37,6 +37,10 @@ namespace Java2Dotnet.Spider.Core.Test.Pipeline
 			public void Stop()
 			{
 			}
+
+			public void Exit()
+			{
+			}
 		};
 
 		[TestMethod]

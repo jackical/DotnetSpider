@@ -48,6 +48,10 @@ namespace Java2Dotnet.Spider.Core.Test
 					Console.WriteLine($"{entry.Key}:{entry.Value}");
 				}
 			}
+
+			public void Dispose()
+			{
+			}
 		}
 
 		[Ignore]
@@ -114,10 +118,7 @@ namespace Java2Dotnet.Spider.Core.Test
 				return page;
 			}
 
-			public void SetThreadNum(int threadNum)
-			{
-				throw new NotImplementedException();
-			}
+			public int ThreadNum { get; set; }
 		}
 	}
 }

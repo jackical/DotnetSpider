@@ -77,17 +77,6 @@ namespace Java2Dotnet.Spider.Core.Downloader
 				//正常结果在上面已经Return了, 到此处必然是下载失败的值.
 				//throw new SpiderExceptoin("Download failed.");
 			}
-			//catch (Exception)
-			//{
-			//	_exceptionCount.Inc();
-
-			//	if (_exceptionCount.Value > 15)
-			//	{
-			//		_exceptionCount.Set(0);
-			//		Redialer?.Redial();
-			//	}
-			//	throw new SpiderExceptoin("Download failed.");
-			//}
 			finally
 			{
 				// 先Close Response, 避免前面语句异常导致没有关闭.

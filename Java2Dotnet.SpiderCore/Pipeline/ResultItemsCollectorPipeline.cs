@@ -19,5 +19,10 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 		{
 			return _collector;
 		}
+
+		public void Dispose()
+		{
+			_collector.Clear();
+		}
 	}
 }

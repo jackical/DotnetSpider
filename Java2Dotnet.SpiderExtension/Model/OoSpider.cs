@@ -39,10 +39,10 @@ namespace Java2Dotnet.Spider.Extension.Model
 			((ModelPageProcessor)PageProcessor).GetCustomizeTargetUrls = getCustomizeTargetUrls;
 		}
 
-		protected override List<ICollectorPipeline> GetCollectorPipeline(params Type[] types)
-		{
-			return types.Select(type => new PageModelCollectorPipeline(type)).Cast<ICollectorPipeline>().ToList();
-		}
+		//protected override List<ICollectorPipeline> GetCollectorPipeline(params Type[] types)
+		//{
+		//	return types.Select(type => new PageModelCollectorPipeline(type)).Cast<ICollectorPipeline>().ToList();
+		//}
 
 		public static OoSpider Create(Site site, IPageModelPipeline pageModelPipeline, params Type[] pageModels)
 		{

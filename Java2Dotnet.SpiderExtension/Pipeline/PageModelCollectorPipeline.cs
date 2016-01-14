@@ -64,5 +64,10 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 
 			_collectorPipeline.Process(resultDictionary, spider);
 		}
+
+		public void Dispose()
+		{
+			_collectorPipeline.Dispose();
+		}
 	}
 }

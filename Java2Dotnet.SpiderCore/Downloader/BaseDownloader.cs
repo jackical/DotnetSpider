@@ -7,9 +7,9 @@ namespace Java2Dotnet.Spider.Core.Downloader
 	public class BaseDownloader : IDownloader, IDisposable
 	{
 		public DownloadValidation DownloadValidation;
+		public int ThreadNum { set; get; }
 
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(BaseDownloader));
-		protected int ThreadNum;
 
 		public virtual Page Download(Request request, ISpider spider)
 		{
@@ -18,11 +18,6 @@ namespace Java2Dotnet.Spider.Core.Downloader
 
 		public virtual void Dispose()
 		{
-		}
-
-		public void SetThreadNum(int threadNum)
-		{
-			ThreadNum = threadNum;
 		}
 
 		protected void ValidatePage(Page page)

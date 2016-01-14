@@ -44,12 +44,12 @@ namespace Java2Dotnet.Spider.WebDriver
 					// ReSharper disable once FunctionNeverReturns
 				});
 			}
+
+			CheckInit();
 		}
 
 		public override Page Download(Request request, ISpider spider)
 		{
-			CheckInit();
-
 			WebDriverItem driverService = null;
 
 			try
@@ -120,10 +120,7 @@ namespace Java2Dotnet.Spider.WebDriver
 		{
 			if (_webDriverPool == null)
 			{
-				lock (this)
-				{
-					_webDriverPool = new WebDriverPool(_browser, ThreadNum, _option);
-				}
+				_webDriverPool = new WebDriverPool(_browser, ThreadNum, _option);
 			}
 		}
 	}

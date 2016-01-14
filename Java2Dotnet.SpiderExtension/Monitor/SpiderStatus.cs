@@ -62,7 +62,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 
 		public void Start()
 		{
-			Spider.Start();
+			Spider.Run();
 		}
 
 		public void Stop()

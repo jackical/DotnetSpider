@@ -14,10 +14,10 @@ namespace Java2Dotnet.Spider.Extension.Test
 			var threadPool = new CountableThreadPool();
 			for (int i = 0; i <= 10; i++)
 			{
-				threadPool.Push((obj, cts) =>
+				threadPool.Push((obj) =>
 				{
 					Thread.Sleep(1000 * 30);
-					return 1;
+					return true;
 				}, "");
 			}
 			Thread.Sleep(1000 * 10);
@@ -25,7 +25,6 @@ namespace Java2Dotnet.Spider.Extension.Test
 			Thread.Sleep(1000 * 60);
 			Assert.IsTrue(threadPool.ThreadAlive == 0);
 			threadPool.WaitToExit();
-			threadPool.Shutdown();
 		}
 	}
 }

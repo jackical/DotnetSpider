@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Java2Dotnet.Spider.Core.Scheduler.Component;
 using Java2Dotnet.Spider.Redial;
 using log4net;
@@ -13,15 +14,12 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 
 		protected IDuplicateRemover DuplicateRemover { get; set; } = new HashSetDuplicateRemover();
 
-		//这里应该都没有必要用异步锁, 只要用使用的IDuplicateRemover及存数据的Queue是支持异步的就可以
-		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public void Push(Request request, ISpider spider)
 		{
-			RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-push", () =>
+			RedialManagerConfig.RedialManager.AtomicExecutor.Execute("scheduler-push", () =>
 			{
 				if (!DuplicateRemover.IsDuplicate(request, spider) || ShouldReserved(request))
 				{
-					//_logger.InfoFormat("Push to queue {0}", request.Url);
 					PushWhenNoDuplicate(request, spider);
 				}
 			});
@@ -31,13 +29,11 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 		{
 		}
 
-		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public virtual Request Poll(ISpider spider)
 		{
 			return null;
 		}
 
-		//[MethodImpl(MethodImplOptions.Synchronized)]
 		protected virtual void PushWhenNoDuplicate(Request request, ISpider spider)
 		{
 		}

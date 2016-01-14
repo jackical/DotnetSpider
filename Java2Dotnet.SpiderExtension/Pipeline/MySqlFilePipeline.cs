@@ -8,13 +8,13 @@ using Java2Dotnet.Spider.Core;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
 {
-	public class CollectorMySqlFilePipeline : IPageModelPipeline
+	public class MySqlFilePipeline : IPageModelPipeline
 	{
 		private static string _folderPath;
 
-		public CollectorMySqlFilePipeline()
+		public MySqlFilePipeline()
 		{
-			_folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpider","Data");
+			_folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpider", "Data");
 
 			if (!Directory.Exists(_folderPath))
 			{
@@ -33,7 +33,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 				foreach (var r in pair.Value)
 				{
 					string filePath = Path.Combine(_folderPath, actualType.Name + ".sql");
-					
+
 					var properties = actualType.GetProperties();
 
 					StringBuilder builder = new StringBuilder();
@@ -47,6 +47,10 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 					File.AppendAllText(filePath, builder.ToString(), Encoding.UTF8);
 				}
 			}
+		}
+
+		public void Dispose()
+		{
 		}
 	}
 }

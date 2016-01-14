@@ -63,7 +63,7 @@ namespace Java2Dotnet.Spider.Extension.Test
 		[TestMethod]
 		public void PageExtract2MultiTypes3()
 		{
-			OoSpider ooSpider = OoSpider.Create(new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new QueueDuplicateRemovedScheduler(), new PageModelToDbPipeline(), typeof(Yuanzi), typeof(Jinghua));
+			OoSpider ooSpider = OoSpider.Create(new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new QueueDuplicateRemovedScheduler(), new DatabasePipeline(), typeof(Yuanzi), typeof(Jinghua));
 			ooSpider.SetEmptySleepTime(15000);
 			ooSpider.SetThreadNum(1);
 			ooSpider.ModelPipeline.CachedSize = 1;

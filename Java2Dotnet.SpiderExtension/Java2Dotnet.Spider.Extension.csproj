@@ -144,7 +144,7 @@
     <Compile Include="Monitor\ISpiderStatus.cs" />
     <Compile Include="MultiPageModel.cs" />
     <Compile Include="Pipeline\CollectorPageModelPipeline.cs" />
-    <Compile Include="Pipeline\CollectorMySqlFilePipeline.cs" />
+    <Compile Include="Pipeline\MySqlFilePipeline.cs" />
     <Compile Include="Pipeline\ImagePipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduler\ISchedulerManager.cs" />
@@ -162,9 +162,6 @@
     <Compile Include="Processor\PatternProcessor.cs" />
     <Compile Include="Processor\CompositePageProcessor.cs" />
     <Compile Include="Pipeline\CompositePipeline.cs" />
-    <Compile Include="Configurable\ExtractRule.cs" />
-    <Compile Include="Configurable\ExpressionType.cs" />
-    <Compile Include="Configurable\ConfigurablePageProcessor.cs" />
     <Compile Include="Downloader\FileCache.cs" />
     <Compile Include="Scheduler\RedisScheduler.cs" />
     <Compile Include="Pipeline\IPageModelPipeline.cs" />
@@ -185,7 +182,7 @@
     <Compile Include="Pipeline\ModelPipeline.cs" />
     <Compile Include="Pipeline\PageModelCollectorPipeline.cs" />
     <Compile Include="Pipeline\ConsolePageModelPipeline.cs" />
-    <Compile Include="Pipeline\PageModelToDbPipeline.cs" />
+    <Compile Include="Pipeline\DatabasePipeline.cs" />
     <Compile Include="Monitor\SpiderMonitor.cs" />
   </ItemGroup>
   <ItemGroup>

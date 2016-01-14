@@ -29,7 +29,7 @@ namespace Java2Dotnet.Spider.Core
 		/// </summary>
 		public Site Site { get; }
 
-		public void Start()
+		public void Exit()
 		{
 		}
 

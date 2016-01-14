@@ -13,5 +13,9 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 				System.Console.WriteLine(entry.Key + ":\t" + entry.Value);
 			}
 		}
+
+		public void Dispose()
+		{
+		}
 	}
 }

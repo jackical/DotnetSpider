@@ -47,5 +47,10 @@ namespace Java2Dotnet.Spider.Lib
 				return _list.Where(func).ToList();
 			}
 		}
+
+		public List<T> GetAll()
+		{
+			return _list;
+		} 
 	}
 }

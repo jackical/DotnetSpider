@@ -17,7 +17,7 @@ namespace Java2Dotnet.Spider.Samples
 	{
 		public static void RunTask()
 		{
-			OoSpider ooSpider = OoSpider.Create("aiqiyi_movies_" + DateTime.Now.ToLocalTime(), new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new RedisScheduler("localhost", null), new PageModelToDbPipeline(), typeof(List<Walter>));
+			OoSpider ooSpider = OoSpider.Create("aiqiyi_movies_" + DateTime.Now.ToLocalTime(), new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new RedisScheduler("localhost", null), new DatabasePipeline(), typeof(List<Walter>));
 			ooSpider.SetEmptySleepTime(15000);
 			ooSpider.SetThreadNum(10);
 			ooSpider.AddStartUrl("http://top.iqiyi.com/dianshiju.html#");
