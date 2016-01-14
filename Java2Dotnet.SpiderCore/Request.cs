@@ -133,9 +133,12 @@ namespace Java2Dotnet.Spider.Core
 		public object Clone()
 		{
 			IDictionary<string, dynamic> extras = new Dictionary<string, dynamic>();
-			foreach (var entry in Extras)
+			if (Extras != null)
 			{
-				extras.Add(entry.Key, entry.Value);
+				foreach (var entry in Extras)
+				{
+					extras.Add(entry.Key, entry.Value);
+				}
 			}
 			Request newObj = new Request(Url, Depth, extras)
 			{
