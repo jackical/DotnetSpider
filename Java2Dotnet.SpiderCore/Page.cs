@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Core.Utils;
@@ -50,6 +51,8 @@ namespace Java2Dotnet.Spider.Core
 			get { return ResultItems.IsSkip; }
 			set { ResultItems.IsSkip = value; }
 		}
+
+		public Exception Exception { get; set; }
 
 		public HashSet<Request> TargetRequests { get; } = new HashSet<Request>();
 

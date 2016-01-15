@@ -8,10 +8,7 @@ namespace Java2Dotnet.Spider.Extension
 {
 	public abstract class AbastractRedisSpider : IRedisSpider
 	{
-		private SafeRedisManagerPool _pool;
 		private RedisScheduler _scheduler;
-
-		protected SafeRedisManagerPool Pool => _pool ?? (_pool = new SafeRedisManagerPool(RedisHost, RedisPassword));
 
 		protected RedisScheduler Scheduler
 		{
@@ -38,7 +35,9 @@ namespace Java2Dotnet.Spider.Extension
 
 		private void Prepare()
 		{
-			using (var redis = Pool.GetSafeGetClient())
+			SafeRedisManagerPool.SetConfig(RedisHost, RedisPassword);
+
+			using (var redis = SafeRedisManagerPool.Default.GetSafeGetClient())
 			{
 				IDisposable locker = null;
 				try

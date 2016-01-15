@@ -77,6 +77,17 @@ namespace Java2Dotnet.Spider.Core.Downloader
 				//正常结果在上面已经Return了, 到此处必然是下载失败的值.
 				//throw new SpiderExceptoin("Download failed.");
 			}
+			catch (Exception e)
+			{
+				if (!(e is RedialException))
+				{
+					Page page = new Page(request) {Exception = e};
+
+					ValidatePage(page);
+				}
+
+				throw;
+			}
 			finally
 			{
 				// 先Close Response, 避免前面语句异常导致没有关闭.
@@ -100,10 +111,8 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			return acceptStatCode.Contains(statusCode);
 		}
 
-		private HttpWebRequest GeneratorCookie(HttpWebRequest httpWebRequest, Request request, Site site)
+		private HttpWebRequest GeneratorCookie(HttpWebRequest httpWebRequest, Site site)
 		{
-			string domain = request.Url.Host;
-
 			CookieContainer cookieContainer = new CookieContainer();
 
 			foreach (var cookie in site.AllCookies)
@@ -142,7 +151,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			}
 
 			// cookie
-			httpWebRequest = GeneratorCookie(httpWebRequest, request, site);
+			httpWebRequest = GeneratorCookie(httpWebRequest, site);
 
 			//check:
 			httpWebRequest.Timeout = site.Timeout;

@@ -36,7 +36,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 					case DownloadValidationResult.FailedAndNeedRedial:
 						{
 							RedialManagerConfig.RedialManager?.Redial();
-							throw new RedialException("Download failed and need Redial.");
+							throw new RedialException("Download failed and Redial already.");
 						}
 					case DownloadValidationResult.Success:
 						{

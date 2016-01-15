@@ -10,7 +10,6 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 {
 	public class RedisStatusUpdater
 	{
-		private static SafeRedisManagerPool _pool;
 		private readonly ISpiderStatus _spiderStatus;
 		private readonly Core.Spider _spider;
 
@@ -22,7 +21,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 			var password = ConfigurationManager.AppSettings["redisPassword"];
 			if (!string.IsNullOrEmpty(host))
 			{
-				_pool = new SafeRedisManagerPool(host, password);
+				SafeRedisManagerPool.SetConfig(host, password);
 			}
 		}
 
@@ -51,7 +50,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 		{
 			try
 			{
-				using (var redis = _pool?.GetSafeGetClient())
+				using (var redis = SafeRedisManagerPool.Default.GetSafeGetClient())
 				{
 					if (redis == null)
 					{

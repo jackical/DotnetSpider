@@ -14,7 +14,7 @@ namespace Java2Dotnet.Spider.Lib
 					action();
 					return;
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
 					// ignored
 					Thread.Sleep(500);

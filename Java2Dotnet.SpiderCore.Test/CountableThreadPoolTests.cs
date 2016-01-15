@@ -21,9 +21,8 @@ namespace Java2Dotnet.Spider.Core.Test
 			}
 			Thread.Sleep(1000 * 10);
 			Assert.AreEqual(threadPool.ThreadAlive, 5);
-			Thread.Sleep(1000 * 60);
-			Assert.IsTrue(threadPool.ThreadAlive == 0);
 			threadPool.WaitToExit();
+			Assert.IsTrue(threadPool.ThreadAlive == 0);
 		}
 	}
 }

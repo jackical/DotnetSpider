@@ -17,7 +17,6 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 	/// </summary>
 	public class RedisScheduler : DuplicateRemovedScheduler, IMonitorableScheduler, IDuplicateRemover
 	{
-		private readonly SafeRedisManagerPool _pool;
 		public static readonly string QueuePrefix = "queue-";
 		public static readonly string TaskStatus = "task-status";
 		public static readonly string SetPrefix = "set-";
@@ -27,6 +26,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		public RedisScheduler(string host, string password)
 			: this(new SafeRedisManagerPool(new List<string> { host }, new RedisPoolConfig { MaxPoolSize = 100 }, password))
 		{
+			SafeRedisManagerPool.SetConfig(host, password);
 		}
 
 		public override void Init(ISpider spider)
@@ -40,10 +40,8 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			});
 		}
 
-		private RedisScheduler(SafeRedisManagerPool pool)
+		private RedisScheduler()
 		{
-			_pool = pool;
-
 			DuplicateRemover = this;
 		}
 
