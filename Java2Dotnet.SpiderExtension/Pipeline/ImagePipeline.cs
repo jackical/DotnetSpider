@@ -8,7 +8,6 @@ using System.Reflection;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
-using ServiceStack;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
 {
@@ -41,7 +40,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 						downloadPropertyInfos = new List<PropertyInfo>();
 						foreach (var propertyInfo in propertyInfos)
 						{
-							List<Download> downloads = propertyInfo.GetAttributes<Download>();
+							List<Download> downloads = new List<Download>(propertyInfo.GetCustomAttributes<Download>());
 							if (downloads != null && downloads.Count > 0)
 							{
 								downloadPropertyInfos.Add(propertyInfo);
@@ -68,7 +67,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 							downloadPropertyInfos = new List<PropertyInfo>();
 							foreach (var propertyInfo in propertyInfos)
 							{
-								List<Download> downloads = propertyInfo.GetAttributes<Download>();
+								List<Download> downloads = new List<Download>(propertyInfo.GetCustomAttributes<Download>());
 								if (downloads != null && downloads.Count > 0)
 								{
 									downloadPropertyInfos.Add(propertyInfo);

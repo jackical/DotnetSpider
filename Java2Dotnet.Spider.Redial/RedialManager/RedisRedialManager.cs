@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Java2Dotnet.Spider.Redial.AtomicExecutor;
-using ServiceStack.Redis;
+using StackExchange.Redis;
 
 namespace Java2Dotnet.Spider.Redial.RedialManager
 {
@@ -14,12 +14,13 @@ namespace Java2Dotnet.Spider.Redial.RedialManager
 	public class RedisRedialManager : BaseRedialManager, IDisposable
 	{
 		private static RedisRedialManager _instanse;
-		private readonly SafeRedisManagerPool _pool;
+
 		private const string RedialStatusKey = "REDIAL_STATUS";
 
 		public string RedisHost { get; set; } = "localhost";
 		private const string RunningRedialStatus = "Running";
 		private const string DialingRedialStatus = "Dialing";
+		private ConnectionMultiplexer redis;
 
 		public override IAtomicExecutor AtomicExecutor { get; }
 
@@ -30,8 +31,16 @@ namespace Java2Dotnet.Spider.Redial.RedialManager
 			{
 				RedisHost = tmpRedisHost;
 			}
+			else
+			{
+				throw new RedialException("Redial Redis Server did not set.");
+			}
 
-			_pool = new SafeRedisManagerPool(new List<string> { RedisHost }, new RedisPoolConfig { MaxPoolSize = 1000 }, "");
+			redis = ConnectionMultiplexer.Connect(new ConfigurationOptions()
+			{
+				ConnectTimeout = 5000,
+				KeepAlive = 8
+			});
 
 			var redialSetting = GetRedialStatus();
 			if (redialSetting == null)
@@ -80,18 +89,15 @@ namespace Java2Dotnet.Spider.Redial.RedialManager
 
 		private string GetRedialStatus()
 		{
-			using (var redisClient = _pool.GetClient())
-			{
-				return redisClient.GetValue(RedialStatusKey);
-			}
+			IDatabase db = redis.GetDatabase(0);
+			return db.StringGet(RedialStatusKey);
 		}
 
 		private void SetRedialStatus(string value)
 		{
-			using (var redisClient = _pool.GetClient())
-			{
-				redisClient.SetValue(RedialStatusKey, value);
-			}
+			IDatabase db = redis.GetDatabase(0);
+			db.StringSet(RedialStatusKey, value);
+
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
@@ -137,7 +143,7 @@ namespace Java2Dotnet.Spider.Redial.RedialManager
 
 		public void Dispose()
 		{
-			_pool?.Dispose();
+			redis?.Dispose();
 		}
 	}
 }

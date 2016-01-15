@@ -21,7 +21,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 			var password = ConfigurationManager.AppSettings["redisPassword"];
 			if (!string.IsNullOrEmpty(host))
 			{
-				SafeRedisManagerPool.SetConfig(host, password);
+				//_pool = new SafeRedisManagerPool(host, password);
 			}
 		}
 
@@ -50,29 +50,29 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 		{
 			try
 			{
-				using (var redis = SafeRedisManagerPool.Default.GetSafeGetClient())
-				{
-					if (redis == null)
-					{
-						return;
-					}
+				//using (var redis = _pool?.GetSafeGetClient())
+				//{
+				//	if (redis == null)
+				//	{
+				//		return;
+				//	}
 
-					object status = new
-					{
-						_spiderStatus.Name,
-						_spiderStatus.ErrorPageCount,
-						_spiderStatus.LeftPageCount,
-						_spiderStatus.PagePerSecond,
-						_spiderStatus.StartTime,
-						_spiderStatus.EndTime,
-						_spiderStatus.Status,
-						_spiderStatus.SuccessPageCount,
-						_spiderStatus.ThreadCount,
-						_spiderStatus.TotalPageCount,
-						_spiderStatus.AliveThreadCount
-					};
-					redis.SetEntryInHash(RedisScheduler.TaskStatus, _spider.Identify, JsonConvert.SerializeObject(status));
-				}
+				//	object status = new
+				//	{
+				//		_spiderStatus.Name,
+				//		_spiderStatus.ErrorPageCount,
+				//		_spiderStatus.LeftPageCount,
+				//		_spiderStatus.PagePerSecond,
+				//		_spiderStatus.StartTime,
+				//		_spiderStatus.EndTime,
+				//		_spiderStatus.Status,
+				//		_spiderStatus.SuccessPageCount,
+				//		_spiderStatus.ThreadCount,
+				//		_spiderStatus.TotalPageCount,
+				//		_spiderStatus.AliveThreadCount
+				//	};
+				//	redis.SetEntryInHash(RedisScheduler.TaskStatus, _spider.Identify, JsonConvert.SerializeObject(status));
+				//}
 			}
 			catch (Exception)
 			{
