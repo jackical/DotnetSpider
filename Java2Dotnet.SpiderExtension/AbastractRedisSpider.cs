@@ -17,7 +17,7 @@ namespace Java2Dotnet.Spider.Extension
 			{
 				if (_scheduler == null)
 				{
-					var redis = ConnectionMultiplexer.Connect("localhost,password=#frAiI^MtFxh3Ks&swrnVyzAtRTq%w");
+					var redis = ConnectionMultiplexer.Connect($"{RedisHost},password={RedisPassword}");
 					_scheduler = new RedisScheduler(redis);
 				}
 				return _scheduler;

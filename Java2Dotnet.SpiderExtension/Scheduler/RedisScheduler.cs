@@ -24,7 +24,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		public static readonly string ItemPrefix = "item-";
 		public ConnectionMultiplexer Redis { get; }
 
-		public RedisScheduler(string host, string password)
+		public RedisScheduler(string host, string password) : this()
 		{
 			Redis = ConnectionMultiplexer.Connect(new ConfigurationOptions()
 			{
@@ -129,12 +129,12 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 					IDatabase db = Redis.GetDatabase(0);
 					//string url = redis.PopItemWithLowestScoreFromSortedSet(GetQueueKey(spider));
 
-					var url = db.SetPop(GetQueueKey(spider)).ToString();
-					if (url == null)
+					var value = db.SetPop(GetQueueKey(spider));
+					if (!value.HasValue)
 					{
 						return null;
 					}
-
+					string url = value.ToString();
 					string hashId = ItemPrefix + spider.Identify;
 					string field = Encrypt.Md5Encrypt(url);
 
