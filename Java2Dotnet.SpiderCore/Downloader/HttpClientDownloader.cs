@@ -44,11 +44,19 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			{
 				var httpWebRequest = GetHttpWebRequest(request, site, headers);
 
-				response = RedialManagerConfig.RedialManager.AtomicExecutor.Execute("downloader-download", h =>
+				if (RedialManagerConfig.RedialManager != null)
 				{
-					HttpWebRequest tmpHttpWebRequest = h as HttpWebRequest;
-					return (HttpWebResponse)tmpHttpWebRequest?.GetResponse();
-				}, httpWebRequest);
+					response = RedialManagerConfig.RedialManager.AtomicExecutor.Execute("downloader-download", h =>
+					{
+						HttpWebRequest tmpHttpWebRequest = h as HttpWebRequest;
+						return (HttpWebResponse)tmpHttpWebRequest?.GetResponse();
+					}, httpWebRequest);
+				}
+				else
+				{
+
+					response = (HttpWebResponse)httpWebRequest.GetResponse();
+				}
 
 				statusCode = (int)response.StatusCode;
 				request.PutExtra(Request.StatusCode, statusCode);
@@ -81,7 +89,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			{
 				if (!(e is RedialException))
 				{
-					Page page = new Page(request) {Exception = e};
+					Page page = new Page(request) { Exception = e };
 
 					ValidatePage(page);
 				}

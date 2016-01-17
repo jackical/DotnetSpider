@@ -21,7 +21,7 @@ namespace Java2Dotnet.Spider.Redial.RedialManager
 
 		public override IAtomicExecutor AtomicExecutor { get; }
 
-		public static ZookeeperRedialManager Instance
+		public static ZookeeperRedialManager Default
 		{
 			get
 			{

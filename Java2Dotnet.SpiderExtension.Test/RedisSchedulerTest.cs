@@ -18,6 +18,7 @@ namespace Java2Dotnet.Spider.Extension.Test
 			redisScheduler.Push(request, spider);
 			redisScheduler.Poll(spider);
 			//System.out.println(poll);
+			redisScheduler.Dispose();
 		}
 	}
 

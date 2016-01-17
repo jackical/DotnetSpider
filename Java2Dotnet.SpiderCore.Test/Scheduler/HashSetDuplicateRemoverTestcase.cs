@@ -11,14 +11,14 @@ namespace Java2Dotnet.Spider.Core.Test.Scheduler
 		public void HashSetDuplicate()
 		{
 			HashSetDuplicateRemover scheduler = new HashSetDuplicateRemover();
-			bool isDuplicate = scheduler.IsDuplicate(new Request("a", 1, null), null);
+			bool isDuplicate = scheduler.IsDuplicate(new Request("http://www.a.com", 1, null), null);
 
 			Assert.IsFalse(isDuplicate);
-			isDuplicate = scheduler.IsDuplicate(new Request("a", 1, null), null);
+			isDuplicate = scheduler.IsDuplicate(new Request("http://www.a.com", 1, null), null);
 			Assert.IsTrue(isDuplicate);
-			isDuplicate = scheduler.IsDuplicate(new Request("b", 1, null), null);
+			isDuplicate = scheduler.IsDuplicate(new Request("http://www.b.com", 1, null), null);
 			Assert.IsFalse(isDuplicate);
-			isDuplicate = scheduler.IsDuplicate(new Request("b", 1, null), null);
+			isDuplicate = scheduler.IsDuplicate(new Request("http://www.b.com", 1, null), null);
 			Assert.IsTrue(isDuplicate);
 		}
 
@@ -26,12 +26,12 @@ namespace Java2Dotnet.Spider.Core.Test.Scheduler
 		public void HashSetDuplicateSynchronized()
 		{
 			HashSetDuplicateRemover scheduler = new HashSetDuplicateRemover();
-			bool isDuplicate = scheduler.IsDuplicate(new Request("a", 1, null), null);
+			bool isDuplicate = scheduler.IsDuplicate(new Request("http://www.a.com", 1, null), null);
 
 			Assert.IsFalse(isDuplicate);
 			Parallel.For(0, 1000, new ParallelOptions() { MaxDegreeOfParallelism = 30 }, i =>
 			{
-				isDuplicate = scheduler.IsDuplicate(new Request("a", 1, null), null);
+				isDuplicate = scheduler.IsDuplicate(new Request("http://www.a.com", 1, null), null);
 				Assert.IsTrue(isDuplicate);
 			});
 		}

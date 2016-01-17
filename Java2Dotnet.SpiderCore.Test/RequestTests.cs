@@ -10,7 +10,7 @@ namespace Java2Dotnet.Spider.Core.Test
 		{
 			var extras = new Dictionary<string, dynamic>();
 			extras.Add("Test", "Forever");
-			var request = new Request("www.taobao.com", 2, extras)
+			var request = new Request("http://www.taobao.com", 2, extras)
 			{
 				Method = "get",
 				Priority = 1
@@ -22,7 +22,7 @@ namespace Java2Dotnet.Spider.Core.Test
 		public void RequestTest()
 		{
 			var request = GetRequest();
-			Assert.AreEqual(request.Extras.Count, 2);
+			Assert.AreEqual(request.Extras.Count, 1);
 			Assert.AreEqual(request.Extras["Test"], "Forever");
 		}
 		[TestMethod()]
@@ -35,7 +35,7 @@ namespace Java2Dotnet.Spider.Core.Test
 			request.PutExtra("", "");
 			request.PutExtra("One", "One");
 			request.PutExtra("One", "One");
-			Assert.AreEqual(request.Extras.Count, 4);
+			Assert.AreEqual(request.Extras.Count, 3);
 			Assert.AreEqual(request.Extras["One"], "One");
 			Assert.AreEqual(request.Extras[""], "");
 		}
@@ -46,14 +46,14 @@ namespace Java2Dotnet.Spider.Core.Test
 			var request = GetRequest();
 			request.PutExtra("One", new { Name = "John" });
 			Assert.AreEqual(request.Extras["One"], new { Name = "John" });
-			Assert.AreEqual(request.Extras["deep"], 2);
+			Assert.AreEqual(request.Depth, 2);
 		}
 
 		[TestMethod()]
 		public void DisposeTest()
 		{
 			var request = GetRequest();
-			Assert.AreEqual(request.Extras.Count, 2);
+			Assert.AreEqual(request.Extras.Count, 1);
 			request.Dispose();
 			Assert.AreEqual(request.Extras.Count, 0);
 		}
@@ -65,7 +65,7 @@ namespace Java2Dotnet.Spider.Core.Test
 			var request = GetRequest();
 			var clone = (Request)request.Clone();
 			Assert.AreEqual(request.Extras.Count, clone.Extras.Count);
-			Assert.AreEqual(request.Extras["deep"], clone.Extras["deep"]);
+			Assert.AreEqual(request.Depth, clone.Depth);
 			Assert.AreEqual(request.Extras["Test"], clone.Extras["Test"]);
 			Assert.AreEqual(request.Url, clone.Url);
 			Assert.AreEqual(request.Method, clone.Method);

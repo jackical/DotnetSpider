@@ -35,6 +35,11 @@ namespace Java2Dotnet.Spider.Core.Downloader
 						}
 					case DownloadValidationResult.FailedAndNeedRedial:
 						{
+							if (RedialManagerConfig.RedialManager == null)
+							{
+								throw new SpiderExceptoin("RedialManager is null.");
+							}
+
 							RedialManagerConfig.RedialManager?.Redial();
 							throw new RedialException("Download failed and Redial already.");
 						}

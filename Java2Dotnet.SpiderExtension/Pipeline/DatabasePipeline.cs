@@ -98,35 +98,54 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 			{
 				case OperateType.Insert:
 					{
-						RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-insert", () =>
+						if (RedialManagerConfig.RedialManager != null)
 						{
-							for (int i = 0; i < 100; i++)
+							RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-insert", () =>
 							{
-								try
-								{
-									dataRepository?.Insert(data.Value);
-									break;
-								}
-								catch (Exception e)
-								{
-									Logger.Warn($"Try to save data to DB failed. Times: {i + 1}", e);
-									Thread.Sleep(2000);
-									// ignored
-								}
-							}
-						});
+								Insert(data, dataRepository);
+							});
+						}
+						else
+						{
+							Insert(data, dataRepository);
+						}
 
 						break;
 					}
 				case OperateType.Update:
 					{
-						RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-update", () =>
+						if (RedialManagerConfig.RedialManager != null)
+						{
+							RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-update", () =>
+							{
+								dataRepository?.Update(data.Value);
+							});
+						}
+						else
 						{
 							dataRepository?.Update(data.Value);
-						});
+						}
 
 						break;
 					}
+			}
+		}
+
+		private void Insert(KeyValuePair<Type, List<dynamic>> data, IDataRepository dataRepository)
+		{
+			for (int i = 0; i < 100; i++)
+			{
+				try
+				{
+					dataRepository?.Insert(data.Value);
+					break;
+				}
+				catch (Exception e)
+				{
+					Logger.Warn($"Try to save data to DB failed. Times: {i + 1}", e);
+					Thread.Sleep(2000);
+					// ignored
+				}
 			}
 		}
 	}

@@ -2,12 +2,14 @@
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.Monitor;
 using Java2Dotnet.Spider.Extension.Scheduler;
-using Java2Dotnet.Spider.Extension.Utils;
 using StackExchange.Redis;
+using Java2Dotnet.Spider.Redial;
+using Java2Dotnet.Spider.Redial.RedialManager;
+using Java2Dotnet.Spider.Extension.Utils;
 
 namespace Java2Dotnet.Spider.Extension
 {
-	public abstract class AbastractRedisSpider : IRedisSpider
+	public abstract class AbstractRedisSpider : IRedisSpider
 	{
 		private RedisScheduler _scheduler;
 
@@ -17,8 +19,7 @@ namespace Java2Dotnet.Spider.Extension
 			{
 				if (_scheduler == null)
 				{
-					var redis = ConnectionMultiplexer.Connect($"{RedisHost},password={RedisPassword}");
-					_scheduler = new RedisScheduler(redis);
+					_scheduler = new RedisScheduler(RedisProvider.GetProvider());
 				}
 				return _scheduler;
 			}
@@ -37,11 +38,29 @@ namespace Java2Dotnet.Spider.Extension
 
 		private void Prepare()
 		{
+			switch (AtomicType)
+			{
+				case AtomicType.Zookeeper:
+					{
+						RedialManagerConfig.RedialManager = ZookeeperRedialManager.Default;
+						break;
+					}
+				case AtomicType.File:
+					{
+						RedialManagerConfig.RedialManager = FileLockerRedialManager.Default;
+						break;
+					}
+				case AtomicType.Null:
+					{
+						RedialManagerConfig.RedialManager = null;
+						break;
+					}
+			}
+
 			IDatabase db = Scheduler.Redis.GetDatabase(0);
 			string key = "locker-" + Name;
 			try
 			{
-
 				// 取得锁
 				Console.WriteLine("Lock: " + key);
 				db.LockExtend(key, 0, TimeSpan.FromMinutes(10));
@@ -80,12 +99,10 @@ namespace Java2Dotnet.Spider.Extension
 		}
 
 		protected abstract void PrepareSite();
-
 		protected abstract Site Site { get; }
-
 		protected abstract Core.Spider InitSpider(Site site);
-		public virtual string RedisHost { get; } = "localhost";
-		public virtual string RedisPassword { get; } = null;
+
 		public abstract string Name { get; }
+		public virtual AtomicType AtomicType { get; } = AtomicType.Zookeeper;
 	}
 }

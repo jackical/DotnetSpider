@@ -10,43 +10,47 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 	{
 		private ConnectionMultiplexer redis;
 
-		public RedisSchedulerManager(string host, string password)
+		public RedisSchedulerManager(string host, string password, int port = 6379)
 		{
 			redis = ConnectionMultiplexer.Connect(new ConfigurationOptions()
 			{
 				ServiceName = host,
 				Password = password,
 				ConnectTimeout = 5000,
-				KeepAlive = 8
+				KeepAlive = 8,
+				EndPoints =
+				{
+					{ host, port }
+				}
 			});
+		}
+
+		public RedisSchedulerManager()
+		{
+			redis = RedisProvider.GetProvider();
 		}
 
 		public IDictionary<string, double> GetTaskList(int startIndex, int count)
 		{
-			//IDatabase db = redis.GetDatabase(0);
-			//Dictionary<string, double> tmp = new Dictionary<string, double>();
-			// foreach (var entry in db.SortedSetRangeByScore(RedisScheduler.TaskList, startIndex, startIndex + count))
-			//{
-			//	tmp.Add(entry.k)
-			//}
-			return null;
+			IDatabase db = redis.GetDatabase(0);
+			Dictionary<string, double> tmp = new Dictionary<string, double>();
+			foreach (var entry in db.SortedSetRangeByRank(RedisScheduler.TaskList, startIndex, startIndex + count))
+			{
+				tmp.Add(entry.ToString(), 0d);
+			}
+			return tmp;
 		}
 
 		public void RemoveTask(string taskIdentify)
 		{
-			//using (var redis = _pool.GetSafeGetClient())
-			//{
-			//	//string json = redis?.GetValueFromHash(RedisScheduler.TaskStatus, taskIdentify);
-			//	//if (!string.IsNullOrEmpty(json))
-			//	{
-			//		redis.Remove(GetQueueKey(taskIdentify));
-			//		redis.Remove(GetSetKey(taskIdentify));
-			//		redis.RemoveEntryFromHash(RedisScheduler.TaskStatus, taskIdentify);
-			//		redis.Remove(RedisScheduler.ItemPrefix + taskIdentify);
-			//		redis.Remove(taskIdentify);
-			//		redis.RemoveItemFromSortedSet(RedisScheduler.TaskList, taskIdentify);
-			//	}
-			//}
+			IDatabase db = redis.GetDatabase(0);
+
+			db.KeyDelete(GetQueueKey(taskIdentify));
+			db.KeyDelete(GetSetKey(taskIdentify));
+			db.HashDelete(RedisScheduler.TaskStatus, taskIdentify);
+			db.KeyDelete(RedisScheduler.ItemPrefix + taskIdentify);
+			db.KeyDelete(taskIdentify);
+			db.SortedSetRemove(RedisScheduler.TaskList, taskIdentify);
 		}
 
 		private string GetSetKey(string identify)
@@ -61,23 +65,20 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public SpiderStatus GetTaskStatus(string taskIdentify)
 		{
-			//using (var redis = _pool.GetSafeGetClient())
-			//{
-			//	string json = redis?.GetValueFromHash(RedisScheduler.TaskStatus, taskIdentify);
-			//	if (!string.IsNullOrEmpty(json))
-			//	{
-			//		return JsonConvert.DeserializeObject<SpiderStatus>(json);
-			//	}
-			//}
+			IDatabase db = redis.GetDatabase(0);
+			string json = db.HashGet(RedisScheduler.TaskStatus, taskIdentify);
+			if (!string.IsNullOrEmpty(json))
+			{
+				return JsonConvert.DeserializeObject<SpiderStatus>(json);
+			}
+
 			return new SpiderStatus();
 		}
 
 		public void ClearDb()
 		{
-			//using (var redis = _pool.GetSafeGetClient())
-			//{
-			//	redis.FlushDb();
-			//}
+			IServer server = redis.GetServer(redis.GetEndPoints()[0]);
+			server.FlushDatabase(0);
 		}
 	}
 }

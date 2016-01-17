@@ -17,7 +17,7 @@ namespace Java2Dotnet.Spider.Redial.RedialManager
 
 		public override IAtomicExecutor AtomicExecutor { get; }
 
-		public static FileLockerRedialManager Instance
+		public static FileLockerRedialManager Default
 		{
 			get
 			{

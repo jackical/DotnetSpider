@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using Java2Dotnet.Spider.Core.Scheduler.Component;
 using Java2Dotnet.Spider.Redial;
@@ -14,15 +15,20 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 
 		protected IDuplicateRemover DuplicateRemover { get; set; } = new HashSetDuplicateRemover();
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void Push(Request request, ISpider spider)
 		{
-			RedialManagerConfig.RedialManager.AtomicExecutor.Execute("scheduler-push", () =>
+			if (RedialManagerConfig.RedialManager != null)
 			{
-				if (!DuplicateRemover.IsDuplicate(request, spider) || ShouldReserved(request))
+				RedialManagerConfig.RedialManager.AtomicExecutor.Execute("scheduler-push", () =>
 				{
-					PushWhenNoDuplicate(request, spider);
-				}
-			});
+					DoPush(request, spider);
+				});
+			}
+			else
+			{
+				DoPush(request, spider);
+			}
 		}
 
 		public virtual void Init(ISpider spider)
@@ -48,6 +54,14 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 			var cycleTriedTimes = (int?)request.GetExtra(Request.CycleTriedTimes);
 
 			return cycleTriedTimes > 0;
+		}
+
+		private void DoPush(Request request, ISpider spider)
+		{
+			if (!DuplicateRemover.IsDuplicate(request, spider) || ShouldReserved(request))
+			{
+				PushWhenNoDuplicate(request, spider);
+			}
 		}
 	}
 }

@@ -4,6 +4,6 @@ namespace Java2Dotnet.Spider.Redial
 {
 	public static class RedialManagerConfig
 	{
-		public static IRedialManager RedialManager = ZookeeperRedialManager.Instance;
+		public static IRedialManager RedialManager;
 	}
 }

@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RedialManager\AtomicType.cs" />
     <Compile Include="Redialer\AdslRedialer.cs" />
     <Compile Include="Utils\AdslUtils.cs" />
     <Compile Include="AtomicExecutor\IAtomicExecutor.cs" />

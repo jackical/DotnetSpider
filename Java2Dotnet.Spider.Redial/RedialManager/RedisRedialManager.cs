@@ -38,8 +38,13 @@ namespace Java2Dotnet.Spider.Redial.RedialManager
 
 			redis = ConnectionMultiplexer.Connect(new ConfigurationOptions()
 			{
+				ServiceName = RedisHost,
 				ConnectTimeout = 5000,
-				KeepAlive = 8
+				KeepAlive = 8,
+				EndPoints =
+				{
+					{ RedisHost, 6379 }
+				}
 			});
 
 			var redialSetting = GetRedialStatus();

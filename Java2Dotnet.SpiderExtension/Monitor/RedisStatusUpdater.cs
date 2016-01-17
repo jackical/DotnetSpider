@@ -1,28 +1,25 @@
-﻿using System;
-using System.Configuration;
-using System.Threading;
-using System.Threading.Tasks;
-using Java2Dotnet.Spider.Extension.Scheduler;
+﻿using Java2Dotnet.Spider.Extension.Scheduler;
 using Java2Dotnet.Spider.Extension.Utils;
 using Newtonsoft.Json;
+using StackExchange.Redis;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Java2Dotnet.Spider.Extension.Monitor
 {
-	public class RedisStatusUpdater
+	public class RedisStatusUpdater : IDisposable
 	{
 		private readonly ISpiderStatus _spiderStatus;
 		private readonly Core.Spider _spider;
+		private ConnectionMultiplexer Redis { get; }
 
 		public RedisStatusUpdater(Core.Spider spider, ISpiderStatus spiderStatus)
 		{
 			_spider = spider;
 			_spiderStatus = spiderStatus;
-			string host = ConfigurationManager.AppSettings["redisServer"];
-			var password = ConfigurationManager.AppSettings["redisPassword"];
-			if (!string.IsNullOrEmpty(host))
-			{
-				//_pool = new SafeRedisManagerPool(host, password);
-			}
+
+			Redis = RedisProvider.GetProvider();
 		}
 
 		public void Run()
@@ -50,34 +47,33 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 		{
 			try
 			{
-				//using (var redis = _pool?.GetSafeGetClient())
-				//{
-				//	if (redis == null)
-				//	{
-				//		return;
-				//	}
+				IDatabase db = Redis.GetDatabase(0);
 
-				//	object status = new
-				//	{
-				//		_spiderStatus.Name,
-				//		_spiderStatus.ErrorPageCount,
-				//		_spiderStatus.LeftPageCount,
-				//		_spiderStatus.PagePerSecond,
-				//		_spiderStatus.StartTime,
-				//		_spiderStatus.EndTime,
-				//		_spiderStatus.Status,
-				//		_spiderStatus.SuccessPageCount,
-				//		_spiderStatus.ThreadCount,
-				//		_spiderStatus.TotalPageCount,
-				//		_spiderStatus.AliveThreadCount
-				//	};
-				//	redis.SetEntryInHash(RedisScheduler.TaskStatus, _spider.Identify, JsonConvert.SerializeObject(status));
-				//}
+				var status = new
+				{
+					_spiderStatus.Name,
+					_spiderStatus.ErrorPageCount,
+					_spiderStatus.LeftPageCount,
+					_spiderStatus.PagePerSecond,
+					_spiderStatus.StartTime,
+					_spiderStatus.EndTime,
+					_spiderStatus.Status,
+					_spiderStatus.SuccessPageCount,
+					_spiderStatus.ThreadCount,
+					_spiderStatus.TotalPageCount,
+					_spiderStatus.AliveThreadCount
+				};
+				db.HashSet(RedisScheduler.TaskStatus, _spider.Identify, JsonConvert.SerializeObject(status));
 			}
 			catch (Exception)
 			{
 				// ignored
 			}
+		}
+
+		public void Dispose()
+		{
+			Redis?.Dispose();
 		}
 	}
 }

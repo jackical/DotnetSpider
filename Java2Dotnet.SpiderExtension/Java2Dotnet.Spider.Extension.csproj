@@ -79,7 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbastractRedisSpider.cs" />
+    <Compile Include="AbstractRedisSpider.cs" />
     <Compile Include="DbSupport\DataProviderManager.cs" />
     <Compile Include="DbSupport\Dapper\Attributes\Deleted.cs" />
     <Compile Include="DbSupport\Dapper\Attributes\KeyProperty.cs" />
@@ -140,6 +140,7 @@
     <Compile Include="Scheduler\SpiderStatus.cs" />
     <Compile Include="Utils\DoubleKeyDictionary.cs" />
     <Compile Include="Utils\Operator.cs" />
+    <Compile Include="Utils\RedisProvider.cs" />
     <Compile Include="Utils\SafeRedisManagerPool.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Scheduler;
@@ -24,30 +23,41 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		public static readonly string ItemPrefix = "item-";
 		public ConnectionMultiplexer Redis { get; }
 
-		public RedisScheduler(string host, string password) : this()
+		public RedisScheduler(string host, string password, int port = 6379) : this(ConnectionMultiplexer.Connect(new ConfigurationOptions()
 		{
-			Redis = ConnectionMultiplexer.Connect(new ConfigurationOptions()
-			{
-				ServiceName = host,
-				Password = password,
-				ConnectTimeout = 5000,
-				KeepAlive = 8
-			});
+			ServiceName = host,
+			Password = password,
+			ConnectTimeout = 5000,
+			KeepAlive = 8,
+			EndPoints =
+				{
+					{ host, port }
+				}
+		}))
+		{
 		}
 
-		public RedisScheduler(ConnectionMultiplexer redis)
+		public RedisScheduler(ConnectionMultiplexer redis) : this()
 		{
 			Redis = redis;
 		}
 
 		public override void Init(ISpider spider)
 		{
-			RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-init", () =>
+			if (RedialManagerConfig.RedialManager != null)
+			{
+				RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-init", () =>
+				{
+					IDatabase db = Redis.GetDatabase(0);
+					// redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
+					db.SortedSetAdd(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
+				});
+			}
+			else
 			{
 				IDatabase db = Redis.GetDatabase(0);
-				// redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
 				db.SortedSetAdd(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
-			});
+			}
 		}
 
 		private RedisScheduler()
@@ -57,11 +67,19 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public void ResetDuplicateCheck(ISpider spider)
 		{
-			RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-reset", () =>
+			if (RedialManagerConfig.RedialManager != null)
+			{
+				RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-reset", () =>
+				{
+					IDatabase db = Redis.GetDatabase(0);
+					db.KeyDelete(GetSetKey(spider));
+				});
+			}
+			else
 			{
 				IDatabase db = Redis.GetDatabase(0);
 				db.KeyDelete(GetSetKey(spider));
-			});
+			}
 		}
 
 		private string GetSetKey(ISpider spider)
@@ -102,89 +120,106 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 				string field = Encrypt.Md5Encrypt(request.Url.ToString());
 				string value = JsonConvert.SerializeObject(request);
 
-				//redis.SetEntryInHash(ItemPrefix + spider.Identify, field, value);
 				db.HashSet(ItemPrefix + spider.Identify, field, value);
-
-				var value1 = db.HashGet(ItemPrefix + spider.Identify, field);
-
-				// 验证数据是否存入成功
-				for (int i = 0; i < 10 && value1 != value; ++i)
-				{
-					db.HashSet(ItemPrefix + spider.Identify, field, value);
-					value1 = db.HashGet(ItemPrefix + spider.Identify, field);
-					Thread.Sleep(150);
-				}
-				//}
-
 			});
 		}
 
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public override Request Poll(ISpider spider)
 		{
-			return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-poll", () =>
+			if (RedialManagerConfig.RedialManager != null)
 			{
-				return SafeExecutor.Execute(30, () =>
+				return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-poll", () =>
 				{
-					IDatabase db = Redis.GetDatabase(0);
-					//string url = redis.PopItemWithLowestScoreFromSortedSet(GetQueueKey(spider));
-
-					var value = db.SetPop(GetQueueKey(spider));
-					if (!value.HasValue)
-					{
-						return null;
-					}
-					string url = value.ToString();
-					string hashId = ItemPrefix + spider.Identify;
-					string field = Encrypt.Md5Encrypt(url);
-
-					string json = null;
-
-					//redis 有可能取数据失败
-					for (int i = 0; i < 10 && string.IsNullOrEmpty(json = db.HashGet(hashId, field)); ++i)
-					{
-						Thread.Sleep(150);
-					}
-
-					if (!string.IsNullOrEmpty(json))
-					{
-						return JsonConvert.DeserializeObject<Request>(json);
-					}
-
-					// 严格意义上说不会走到这里, 一定会有JSON数据,详情看Push方法
-					// 是否应该设为1级？
-					Request request = new Request(url, 1, null);
-					return request;
-
+					return DoPoll(spider);
 				});
-			});
+			}
+			else
+			{
+				return DoPoll(spider);
+			}
 		}
 
 		public int GetLeftRequestsCount(ISpider spider)
 		{
-			return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-getleftcount", () =>
+			if (RedialManagerConfig.RedialManager != null)
+			{
+				return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-getleftcount", () =>
+				{
+					IDatabase db = Redis.GetDatabase(0);
+					long size = db.SetLength(GetQueueKey(spider));
+					return (int)size;
+
+				});
+			}
+			else
 			{
 				IDatabase db = Redis.GetDatabase(0);
 				long size = db.SetLength(GetQueueKey(spider));
 				return (int)size;
-
-			});
+			}
 		}
 
 		public int GetTotalRequestsCount(ISpider spider)
 		{
-			return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-gettotalcount", () =>
+			if (RedialManagerConfig.RedialManager != null)
+			{
+				return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-gettotalcount", () =>
+				{
+					IDatabase db = Redis.GetDatabase(0);
+					long size = db.SetLength(GetSetKey(spider));
+
+					return (int)size;
+				});
+			}
+			else
 			{
 				IDatabase db = Redis.GetDatabase(0);
 				long size = db.SetLength(GetSetKey(spider));
 
 				return (int)size;
-			});
+			}
 		}
 
 		public void Dispose()
 		{
 			Redis?.Dispose();
+		}
+
+		private Request DoPoll(ISpider spider)
+		{
+			IDatabase db = Redis.GetDatabase(0);
+			return SafeExecutor.Execute(30, () =>
+			{
+				//string url = redis.PopItemWithLowestScoreFromSortedSet(GetQueueKey(spider));
+
+				var value = db.SetPop(GetQueueKey(spider));
+				if (!value.HasValue)
+				{
+					return null;
+				}
+				string url = value.ToString();
+				string hashId = ItemPrefix + spider.Identify;
+				string field = Encrypt.Md5Encrypt(url);
+
+				string json = null;
+
+				//redis 有可能取数据失败
+				for (int i = 0; i < 10 && string.IsNullOrEmpty(json = db.HashGet(hashId, field)); ++i)
+				{
+					Thread.Sleep(150);
+				}
+
+				if (!string.IsNullOrEmpty(json))
+				{
+					return JsonConvert.DeserializeObject<Request>(json);
+				}
+
+				// 严格意义上说不会走到这里, 一定会有JSON数据,详情看Push方法
+				// 是否应该设为1级？
+				Request request = new Request(url, 1, null);
+				return request;
+			});
 		}
 	}
 }
