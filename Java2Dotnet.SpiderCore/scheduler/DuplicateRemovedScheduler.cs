@@ -18,17 +18,10 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void Push(Request request, ISpider spider)
 		{
-			if (RedialManagerConfig.RedialManager != null)
-			{
-				RedialManagerConfig.RedialManager.AtomicExecutor.Execute("scheduler-push", () =>
-				{
-					DoPush(request, spider);
-				});
-			}
-			else
+			RedialManagerUtils.Execute("scheduler-push", () =>
 			{
 				DoPush(request, spider);
-			}
+			});
 		}
 
 		public virtual void Init(ISpider spider)

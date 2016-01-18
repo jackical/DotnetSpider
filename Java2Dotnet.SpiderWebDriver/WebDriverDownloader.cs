@@ -83,17 +83,10 @@ namespace Java2Dotnet.Spider.WebDriver
 					realUrl = UrlFormatFunc(realUrl);
 				}
 
-				if (RedialManagerConfig.RedialManager != null)
-				{
-					RedialManagerConfig.RedialManager.AtomicExecutor.Execute("webdriverdownloader-download", () =>
-					{
-						driverService.WebDriver.Navigate().GoToUrl(realUrl);
-					});
-				}
-				else
+				RedialManagerUtils.Execute("webdriverdownloader-download", () =>
 				{
 					driverService.WebDriver.Navigate().GoToUrl(realUrl);
-				}
+				});
 
 				Thread.Sleep(_webDriverWaitTime);
 

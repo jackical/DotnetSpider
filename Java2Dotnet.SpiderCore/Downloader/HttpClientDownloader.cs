@@ -44,19 +44,11 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			{
 				var httpWebRequest = GetHttpWebRequest(request, site, headers);
 
-				if (RedialManagerConfig.RedialManager != null)
+				response = RedialManagerUtils.Execute("downloader-download", h =>
 				{
-					response = RedialManagerConfig.RedialManager.AtomicExecutor.Execute("downloader-download", h =>
-					{
-						HttpWebRequest tmpHttpWebRequest = h as HttpWebRequest;
-						return (HttpWebResponse)tmpHttpWebRequest?.GetResponse();
-					}, httpWebRequest);
-				}
-				else
-				{
-
-					response = (HttpWebResponse)httpWebRequest.GetResponse();
-				}
+					HttpWebRequest tmpHttpWebRequest = h as HttpWebRequest;
+					return (HttpWebResponse)tmpHttpWebRequest?.GetResponse();
+				}, httpWebRequest);
 
 				statusCode = (int)response.StatusCode;
 				request.PutExtra(Request.StatusCode, statusCode);

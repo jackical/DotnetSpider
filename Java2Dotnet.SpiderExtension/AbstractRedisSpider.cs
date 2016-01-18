@@ -42,17 +42,17 @@ namespace Java2Dotnet.Spider.Extension
 			{
 				case AtomicType.Zookeeper:
 					{
-						RedialManagerConfig.RedialManager = ZookeeperRedialManager.Default;
+						RedialManagerUtils.RedialManager = ZookeeperRedialManager.Default;
 						break;
 					}
 				case AtomicType.File:
 					{
-						RedialManagerConfig.RedialManager = FileLockerRedialManager.Default;
+						RedialManagerUtils.RedialManager = FileLockerRedialManager.Default;
 						break;
 					}
 				case AtomicType.Null:
 					{
-						RedialManagerConfig.RedialManager = null;
+						RedialManagerUtils.RedialManager = null;
 						break;
 					}
 			}

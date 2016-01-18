@@ -98,33 +98,19 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 			{
 				case OperateType.Insert:
 					{
-						if (RedialManagerConfig.RedialManager != null)
-						{
-							RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-insert", () =>
-							{
-								Insert(data, dataRepository);
-							});
-						}
-						else
+						RedialManagerUtils.Execute("db-insert", () =>
 						{
 							Insert(data, dataRepository);
-						}
+						});
 
 						break;
 					}
 				case OperateType.Update:
 					{
-						if (RedialManagerConfig.RedialManager != null)
-						{
-							RedialManagerConfig.RedialManager.AtomicExecutor.Execute("db-update", () =>
-							{
-								dataRepository?.Update(data.Value);
-							});
-						}
-						else
+						RedialManagerUtils.Execute("db-update", () =>
 						{
 							dataRepository?.Update(data.Value);
-						}
+						});
 
 						break;
 					}

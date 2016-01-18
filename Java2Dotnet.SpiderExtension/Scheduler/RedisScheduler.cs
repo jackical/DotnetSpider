@@ -44,20 +44,12 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public override void Init(ISpider spider)
 		{
-			if (RedialManagerConfig.RedialManager != null)
-			{
-				RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-init", () =>
-				{
-					IDatabase db = Redis.GetDatabase(0);
-					// redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
-					db.SortedSetAdd(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
-				});
-			}
-			else
+			RedialManagerUtils.Execute("rds-init", () =>
 			{
 				IDatabase db = Redis.GetDatabase(0);
+				// redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
 				db.SortedSetAdd(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
-			}
+			});
 		}
 
 		private RedisScheduler()
@@ -67,19 +59,11 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public void ResetDuplicateCheck(ISpider spider)
 		{
-			if (RedialManagerConfig.RedialManager != null)
-			{
-				RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-reset", () =>
-				{
-					IDatabase db = Redis.GetDatabase(0);
-					db.KeyDelete(GetSetKey(spider));
-				});
-			}
-			else
+			RedialManagerUtils.Execute("rds-reset", () =>
 			{
 				IDatabase db = Redis.GetDatabase(0);
 				db.KeyDelete(GetSetKey(spider));
-			}
+			});
 		}
 
 		private string GetSetKey(ISpider spider)
@@ -127,58 +111,31 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public override Request Poll(ISpider spider)
 		{
-			if (RedialManagerConfig.RedialManager != null)
-			{
-				return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-poll", () =>
-				{
-					return DoPoll(spider);
-				});
-			}
-			else
+			return RedialManagerUtils.Execute("rds-poll", () =>
 			{
 				return DoPoll(spider);
-			}
+			});
 		}
 
 		public int GetLeftRequestsCount(ISpider spider)
 		{
-			if (RedialManagerConfig.RedialManager != null)
-			{
-				return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-getleftcount", () =>
-				{
-					IDatabase db = Redis.GetDatabase(0);
-					long size = db.SetLength(GetQueueKey(spider));
-					return (int)size;
-
-				});
-			}
-			else
+			return RedialManagerUtils.Execute("rds-getleftcount", () =>
 			{
 				IDatabase db = Redis.GetDatabase(0);
 				long size = db.SetLength(GetQueueKey(spider));
 				return (int)size;
-			}
+			});
 		}
 
 		public int GetTotalRequestsCount(ISpider spider)
 		{
-			if (RedialManagerConfig.RedialManager != null)
-			{
-				return RedialManagerConfig.RedialManager.AtomicExecutor.Execute("rds-gettotalcount", () =>
-				{
-					IDatabase db = Redis.GetDatabase(0);
-					long size = db.SetLength(GetSetKey(spider));
-
-					return (int)size;
-				});
-			}
-			else
+			return RedialManagerUtils.Execute("rds-gettotalcount", () =>
 			{
 				IDatabase db = Redis.GetDatabase(0);
 				long size = db.SetLength(GetSetKey(spider));
 
 				return (int)size;
-			}
+			});
 		}
 
 		public void Dispose()
