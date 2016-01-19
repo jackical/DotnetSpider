@@ -16,9 +16,14 @@ namespace Java2Dotnet.Spider.Extension.Test
 			Request request = new Request("http://www.ibm.com/developerworks/cn/java/j-javadev2-22/", 1, null);
 			request.PutExtra("1", "2");
 			redisScheduler.Push(request, spider);
-			redisScheduler.Poll(spider);
-			//System.out.println(poll);
+			Request result = redisScheduler.Poll(spider);
+			Assert.AreEqual("http://www.ibm.com/developerworks/cn/java/j-javadev2-22/", result.Url.ToString());
+			Request result1 = redisScheduler.Poll(spider);
+			Assert.IsNull(result1);
 			redisScheduler.Dispose();
+
+			RedisSchedulerManager m = new RedisSchedulerManager("localhost");
+			m.RemoveTask(spider.Identify);
 		}
 	}
 

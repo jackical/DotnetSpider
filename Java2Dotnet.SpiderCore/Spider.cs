@@ -43,7 +43,7 @@ namespace Java2Dotnet.Spider.Core
 		public IList<ISpiderListener> SpiderListeners { get; set; } = new List<ISpiderListener>();
 		public int ThreadAliveCount => ThreadPool.ThreadAlive;
 
-		protected readonly string RootDirectory;
+		protected readonly string DataRootDirectory;
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(Spider));
 		protected IPageProcessor PageProcessor { get; set; }
 		protected List<Request> StartRequests { get; set; }
@@ -117,7 +117,7 @@ namespace Java2Dotnet.Spider.Core
 				Identify = identify;
 			}
 
-			RootDirectory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\dotnetspider\\" + Identify;
+			DataRootDirectory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\" + Identify;
 		}
 
 		/// <summary>
@@ -491,7 +491,7 @@ namespace Java2Dotnet.Spider.Core
 			lock (this)
 			{
 				//写入文件中, 用户从最终的结果可以知道有多少个Request没有跑. 提供ReRun, Spider可以重新载入错误的Request重新跑过
-				FileInfo file = FilePersistentBase.PrepareFile(Path.Combine(RootDirectory, "ErrorRequests.txt"));
+				FileInfo file = FilePersistentBase.PrepareFile(Path.Combine(DataRootDirectory, "ErrorRequests.txt"));
 				File.AppendAllText(file.FullName, JsonConvert.SerializeObject(request) + Environment.NewLine, Encoding.UTF8);
 			}
 

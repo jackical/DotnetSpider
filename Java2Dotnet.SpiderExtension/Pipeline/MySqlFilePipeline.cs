@@ -10,18 +10,6 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 {
 	public class MySqlFilePipeline : IPageModelPipeline
 	{
-		private static string _folderPath;
-
-		public MySqlFilePipeline()
-		{
-			_folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DotnetSpider", "Data");
-
-			if (!Directory.Exists(_folderPath))
-			{
-				Directory.CreateDirectory(_folderPath);
-			}
-		}
-
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void Process(Dictionary<Type, List<dynamic>> data, ISpider spider)
 		{
@@ -32,7 +20,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 				Type actualType = isGeneric ? type.GenericTypeArguments[0] : type;
 				foreach (var r in pair.Value)
 				{
-					string filePath = Path.Combine(_folderPath, actualType.Name + ".sql");
+					string filePath = GetDataFilePath(spider, actualType.Name);
 
 					var properties = actualType.GetProperties();
 
@@ -44,9 +32,22 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 					builder.Remove(builder.Length - 1, 1);
 					builder.Append(Environment.NewLine);
 
+					// 这里需要优化, 这个方法太慢了
 					File.AppendAllText(filePath, builder.ToString(), Encoding.UTF8);
 				}
 			}
+		}
+
+		private string GetDataFilePath(ISpider spider, string name)
+		{
+			string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", spider.Identify);
+
+			if (!Directory.Exists(folderPath))
+			{
+				Directory.CreateDirectory(folderPath);
+			}
+
+			return Path.Combine(folderPath, name + ".sql");
 		}
 
 		public void Dispose()

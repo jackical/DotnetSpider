@@ -8,11 +8,11 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 {
 	public class RedisSchedulerManager : ISchedulerManager
 	{
-		private ConnectionMultiplexer redis;
+		private readonly ConnectionMultiplexer _redis;
 
-		public RedisSchedulerManager(string host, string password, int port = 6379)
+		public RedisSchedulerManager(string host, string password = null, int port = 6379)
 		{
-			redis = ConnectionMultiplexer.Connect(new ConfigurationOptions()
+			_redis = ConnectionMultiplexer.Connect(new ConfigurationOptions()
 			{
 				ServiceName = host,
 				Password = password,
@@ -27,12 +27,12 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public RedisSchedulerManager()
 		{
-			redis = RedisProvider.GetProvider();
+			_redis = RedisProvider.GetProvider();
 		}
 
 		public IDictionary<string, double> GetTaskList(int startIndex, int count)
 		{
-			IDatabase db = redis.GetDatabase(0);
+			IDatabase db = _redis.GetDatabase(0);
 			Dictionary<string, double> tmp = new Dictionary<string, double>();
 			foreach (var entry in db.SortedSetRangeByRank(RedisScheduler.TaskList, startIndex, startIndex + count))
 			{
@@ -43,7 +43,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public void RemoveTask(string taskIdentify)
 		{
-			IDatabase db = redis.GetDatabase(0);
+			IDatabase db = _redis.GetDatabase(0);
 
 			db.KeyDelete(GetQueueKey(taskIdentify));
 			db.KeyDelete(GetSetKey(taskIdentify));
@@ -65,7 +65,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public SpiderStatus GetTaskStatus(string taskIdentify)
 		{
-			IDatabase db = redis.GetDatabase(0);
+			IDatabase db = _redis.GetDatabase(0);
 			string json = db.HashGet(RedisScheduler.TaskStatus, taskIdentify);
 			if (!string.IsNullOrEmpty(json))
 			{
@@ -77,8 +77,8 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public void ClearDb()
 		{
-			IServer server = redis.GetServer(redis.GetEndPoints()[0]);
-			server.FlushDatabase(0);
+			IServer server = _redis.GetServer(_redis.GetEndPoints()[0]);
+			server.FlushDatabase();
 		}
 	}
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.CompilerServices;
 using Java2Dotnet.Spider.Core.Scheduler.Component;
 using Java2Dotnet.Spider.Redial;

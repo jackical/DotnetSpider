@@ -23,7 +23,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		public static readonly string ItemPrefix = "item-";
 		public ConnectionMultiplexer Redis { get; }
 
-		public RedisScheduler(string host, string password, int port = 6379) : this(ConnectionMultiplexer.Connect(new ConfigurationOptions()
+		public RedisScheduler(string host, string password = null, int port = 6379) : this(ConnectionMultiplexer.Connect(new ConfigurationOptions()
 		{
 			ServiceName = host,
 			Password = password,

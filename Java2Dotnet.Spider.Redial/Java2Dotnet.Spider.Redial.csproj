@@ -70,7 +70,7 @@
     <Compile Include="RedialManager\FileLockerRedialManager.cs" />
     <Compile Include="NetworkValidater\INetworkValidater.cs" />
     <Compile Include="Redialer\IRedialer.cs" />
-    <Compile Include="RedialManagerConfig.cs" />
+    <Compile Include="RedialManagerUtils.cs" />
     <Compile Include="Redialer\H3CSshAdslRedialer.cs" />
     <Compile Include="RedialManager\IRedialManager.cs" />
     <Compile Include="RedialException.cs" />
