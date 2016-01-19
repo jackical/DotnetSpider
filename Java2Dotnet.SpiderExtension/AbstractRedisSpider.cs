@@ -6,6 +6,7 @@ using StackExchange.Redis;
 using Java2Dotnet.Spider.Redial;
 using Java2Dotnet.Spider.Redial.RedialManager;
 using Java2Dotnet.Spider.Extension.Utils;
+using System.Threading;
 
 namespace Java2Dotnet.Spider.Extension
 {
@@ -63,7 +64,10 @@ namespace Java2Dotnet.Spider.Extension
 			{
 				// 取得锁
 				Console.WriteLine("Lock: " + key);
-				db.LockExtend(key, 0, TimeSpan.FromMinutes(10));
+				while (!db.LockTake(key, 0, TimeSpan.FromMinutes(10)))
+				{
+					Thread.Sleep(1000);
+				}
 
 				var lockerValue = db.StringGet(Name);
 				bool needInitStartRequest = lockerValue != "init finished";

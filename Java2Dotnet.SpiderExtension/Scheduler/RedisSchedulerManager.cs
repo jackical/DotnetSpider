@@ -18,6 +18,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 				Password = password,
 				ConnectTimeout = 5000,
 				KeepAlive = 8,
+				AllowAdmin = true,
 				EndPoints =
 				{
 					{ host, port }
