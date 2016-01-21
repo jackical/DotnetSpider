@@ -1,11 +1,33 @@
-﻿using Java2Dotnet.Spider.Core;
+﻿using System.Collections.Generic;
+using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Extension.Pipeline;
 using Java2Dotnet.Spider.Extension.Processor;
 
 namespace Java2Dotnet.Spider.Extension.Model
 {
-	public sealed class ModelCollectorSpider<T> : BaseModelSpider
+	public class BaseModelCollectorSpider : BaseModelSpider
+	{
+		protected BaseModelCollectorSpider(string identify, ModelPageProcessor processor, IScheduler scheduler = null)
+			: base(identify, processor, scheduler)
+		{
+		}
+
+		public List<TEntity> GetCollected<TEntity>()
+		{
+			foreach (var pipeline in Pipelines)
+			{
+				var p = pipeline as ModelPipeline<TEntity>;
+				if (p != null)
+				{
+					return (p.PageModelPipeline as CollectorModelPipeline<TEntity>)?.GetCollected();
+				}
+			}
+			return null;
+		}
+	}
+
+	public sealed class ModelCollectorSpider<T> : BaseModelCollectorSpider
 	{
 		public ModelCollectorSpider(string identify, Site site, IScheduler scheduler = null)
 			: this(identify, new ModelPageProcessor<T>(site), scheduler)
@@ -16,9 +38,11 @@ namespace Java2Dotnet.Spider.Extension.Model
 		{
 			AddPipeline(new ModelPipeline<T>(new CollectorModelPipeline<T>()));
 		}
+
+
 	}
 
-	public sealed class ModelCollectorSpider<T1, T2> : BaseModelSpider
+	public sealed class ModelCollectorSpider<T1, T2> : BaseModelCollectorSpider
 	{
 		public ModelCollectorSpider(string identify, Site site, IScheduler scheduler = null)
 			: this(identify, new ModelPageProcessor<T1, T2>(site), scheduler)
@@ -32,7 +56,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		}
 	}
 
-	public sealed class ModelCollectorSpider<T1, T2, T3> : BaseModelSpider
+	public sealed class ModelCollectorSpider<T1, T2, T3> : BaseModelCollectorSpider
 	{
 		public ModelCollectorSpider(string identify, Site site, IScheduler scheduler = null)
 			: this(identify, new ModelPageProcessor<T1, T2, T3>(site), scheduler)
@@ -47,7 +71,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		}
 	}
 
-	public sealed class ModelCollectorSpider<T1, T2, T3, T4> : BaseModelSpider
+	public sealed class ModelCollectorSpider<T1, T2, T3, T4> : BaseModelCollectorSpider
 	{
 		public ModelCollectorSpider(string identify, Site site, IScheduler scheduler = null)
 			: this(identify, new ModelPageProcessor<T1, T2, T3, T4>(site), scheduler)
@@ -63,7 +87,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		}
 	}
 
-	public sealed class ModelCollectorSpider<T1, T2, T3, T4, T5> : BaseModelSpider
+	public sealed class ModelCollectorSpider<T1, T2, T3, T4, T5> : BaseModelCollectorSpider
 	{
 		public ModelCollectorSpider(string identify, Site site, IScheduler scheduler = null)
 			: this(identify, new ModelPageProcessor<T1, T2, T3, T4, T5>(site), scheduler)
@@ -80,7 +104,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		}
 	}
 
-	public sealed class ModelCollectorSpider<T1, T2, T3, T4, T5, T6> : BaseModelSpider
+	public sealed class ModelCollectorSpider<T1, T2, T3, T4, T5, T6> : BaseModelCollectorSpider
 	{
 		public ModelCollectorSpider(string identify, Site site, IScheduler scheduler = null)
 			: this(identify, new ModelPageProcessor<T1, T2, T3, T4, T5, T6>(site), scheduler)
@@ -98,7 +122,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		}
 	}
 
-	public sealed class ModelCollectorSpider<T1, T2, T3, T4, T5, T6, T7> : BaseModelSpider
+	public sealed class ModelCollectorSpider<T1, T2, T3, T4, T5, T6, T7> : BaseModelCollectorSpider
 	{
 		public ModelCollectorSpider(string identify, Site site, IScheduler scheduler = null)
 			: this(identify, new ModelPageProcessor<T1, T2, T3, T4, T5, T6, T7>(site), scheduler)
@@ -117,7 +141,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		}
 	}
 
-	public sealed class ModelCollectorSpider<T1, T2, T3, T4, T5, T6, T7, T8> : BaseModelSpider
+	public sealed class ModelCollectorSpider<T1, T2, T3, T4, T5, T6, T7, T8> : BaseModelCollectorSpider
 	{
 		public ModelCollectorSpider(string identify, Site site, IScheduler scheduler = null)
 			: this(identify, new ModelPageProcessor<T1, T2, T3, T4, T5, T6, T7, T8>(site), scheduler)
@@ -137,7 +161,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		}
 	}
 
-	public sealed class ModelCollectorSpider<T1, T2, T3, T4, T5, T6, T7, T8, T9> : BaseModelSpider
+	public sealed class ModelCollectorSpider<T1, T2, T3, T4, T5, T6, T7, T8, T9> : BaseModelCollectorSpider
 	{
 		public ModelCollectorSpider(string identify, Site site, IScheduler scheduler = null)
 			: this(identify, new ModelPageProcessor<T1, T2, T3, T4, T5, T6, T7, T8, T9>(site), scheduler)

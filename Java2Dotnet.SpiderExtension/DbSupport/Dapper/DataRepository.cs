@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Dapper;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.Model;
@@ -87,7 +88,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 			}
 		}
 
-		public IEnumerable<T> GetWhere(object filters)
+		public List<T> GetWhere(object filters)
 		{
 			if (filters == null)
 			{
@@ -98,7 +99,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 
 			using (IDbConnection conn = DbProviderUtil.Provider.CreateConnection())
 			{
-				return conn.Query<T>(sql, filters, null, false, 99999, CommandType.Text);
+				return conn.Query<T>(sql, filters, null, false, 99999, CommandType.Text).ToList();
 			}
 		}
 
