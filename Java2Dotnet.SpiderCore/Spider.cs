@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Java2Dotnet.Spider.Core.Downloader;
+using Java2Dotnet.Spider.Core.Monitor;
 using Java2Dotnet.Spider.Core.Pipeline;
 using Java2Dotnet.Spider.Core.Processor;
 using Java2Dotnet.Spider.Core.Proxy;
@@ -40,8 +41,12 @@ namespace Java2Dotnet.Spider.Core
 		public bool IsExitWhenComplete { get; set; } = true;
 		public Status StatusCode => Stat;
 		public IScheduler Scheduler { get; }
-		public IList<ISpiderListener> SpiderListeners { get; set; } = new List<ISpiderListener>();
+		//public IList<ISpiderListener> SpiderListeners { get; set; } = new List<ISpiderListener>();
+		public event RequestSuccessed RequestSuccessedEvent;
+		public event RequestFailed RequestFailedEvent;
+		public event SpiderClosing SpiderClosingEvent;
 		public int ThreadAliveCount => ThreadPool.ThreadAlive;
+		public Dictionary<string, dynamic> Settings { get; } = new Dictionary<string, dynamic>();
 
 		protected readonly string DataRootDirectory;
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(Spider));
@@ -103,7 +108,8 @@ namespace Java2Dotnet.Spider.Core
 			PageProcessor = pageProcessor;
 			Site = pageProcessor.Site;
 			StartRequests = Site.StartRequests;
-			Scheduler = scheduler;
+
+			Scheduler = scheduler ?? new QueueDuplicateRemovedScheduler();
 			if (string.IsNullOrWhiteSpace(identify))
 			{
 				Identify = string.IsNullOrEmpty(Site.Domain) ? Guid.NewGuid().ToString() : Site.Domain;
@@ -475,13 +481,7 @@ namespace Java2Dotnet.Spider.Core
 
 		protected void OnClose()
 		{
-			if (SpiderListeners != null && SpiderListeners.Count > 0)
-			{
-				foreach (ISpiderListener spiderListener in SpiderListeners)
-				{
-					spiderListener.OnClose();
-				}
-			}
+			SpiderClosingEvent?.Invoke();
 			SafeDestroy(Downloader);
 			SafeDestroy(PageProcessor);
 		}
@@ -495,24 +495,12 @@ namespace Java2Dotnet.Spider.Core
 				File.AppendAllText(file.FullName, JsonConvert.SerializeObject(request) + Environment.NewLine, Encoding.UTF8);
 			}
 
-			if (SpiderListeners != null && SpiderListeners.Count > 0)
-			{
-				foreach (ISpiderListener spiderListener in SpiderListeners)
-				{
-					spiderListener.OnError(request);
-				}
-			}
+			RequestFailedEvent?.Invoke(request);
 		}
 
 		protected void OnSuccess(Request request)
 		{
-			if (SpiderListeners != null && SpiderListeners.Count > 0)
-			{
-				foreach (ISpiderListener spiderListener in SpiderListeners)
-				{
-					spiderListener.OnSuccess(request);
-				}
-			}
+			RequestSuccessedEvent?.Invoke(request);
 		}
 
 		protected Page AddToCycleRetry(Request request, Site site)
@@ -563,6 +551,11 @@ namespace Java2Dotnet.Spider.Core
 					{
 						page.RawText = SubDownloadedHtml(page.RawText);
 					}
+
+					// 解析页面数据
+					// PageProcess中2种错误：1 下载的HTML有误 2是实现的IPageProcessor有误
+					PageProcessor.Process(page);
+
 					break;
 				}
 				catch (Exception e)
@@ -585,6 +578,7 @@ namespace Java2Dotnet.Spider.Core
 				OnError(request);
 				return;
 			}
+
 			// for cycle retry, 这个下载出错时, 会把自身Request扔回TargetUrls中做重复任务。所以此时，targetRequests只有本身
 			// 而不需要考虑 MissTargetUrls的情况
 			if (page.IsNeedCycleRetry)
@@ -592,10 +586,6 @@ namespace Java2Dotnet.Spider.Core
 				ExtractAndAddRequests(page, true);
 				return;
 			}
-
-			// 解析页面数据
-			// PageProcess中2种错误：1 下载的HTML有误 2是实现的IPageProcessor有误
-			PageProcessor.Process(page);
 
 			//watch.Stop();
 			//Logger.Info("process cost time:" + watch.ElapsedMilliseconds);

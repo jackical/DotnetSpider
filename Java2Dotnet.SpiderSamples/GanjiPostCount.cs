@@ -1,6 +1,7 @@
-﻿using Java2Dotnet.Spider.Core;
+﻿using System;
+using System.Text;
+using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.Model;
-using Java2Dotnet.Spider.Extension.Pipeline;
 
 namespace Java2Dotnet.Spider.Samples
 {
@@ -8,10 +9,7 @@ namespace Java2Dotnet.Spider.Samples
 	{
 		public static void RunTask()
 		{
-			OoSpider ooSpider = OoSpider.Create(new Site
-			{
-				SleepTime = 10000
-			}, new DatabasePipeline(), typeof(Ganji));
+			ModelMysqlFileSpider<Ganji> ooSpider = new ModelMysqlFileSpider<Ganji>("ganji" + DateTime.Now.ToLocalTime(), new Site { SleepTime = 1000, Encoding = Encoding.UTF8 });
 			ooSpider.SetThreadNum(1);
 			Request request = new Request("http://mobds.ganji.com/datashare/", 1, null);
 			request.Method = "POST";

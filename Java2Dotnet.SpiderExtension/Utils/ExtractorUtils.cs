@@ -10,9 +10,9 @@ namespace Java2Dotnet.Spider.Extension.Utils
 	/// </summary>
 	public class ExtractorUtils
 	{
-		public static ISelector GetSelector(ExtractBy extractBy)
+		public static ISelector GetSelector(BaseExtractBy extractBy)
 		{
-			string value = extractBy.Value;
+			string value = extractBy.Expression;
 			ISelector selector;
 			switch (extractBy.Type)
 			{
@@ -29,7 +29,7 @@ namespace Java2Dotnet.Spider.Extension.Utils
 					selector = new JsonPathSelector(value);
 					break;
 				case ExtractType.Enviroment:
-					selector = new EnviromentSelector(value);
+					selector = null;
 					break;
 				default:
 					selector = GetXpathSelector(value);
@@ -38,10 +38,16 @@ namespace Java2Dotnet.Spider.Extension.Utils
 			return selector;
 		}
 
-		public static Extractor GetExtractor(ExtractBy extractBy)
+		//public static Extractor GetExtractor(PropertyExtractBy extractBy)
+		//{
+		//	ISelector selector = GetSelector(extractBy);
+		//	return new FieldExtractor(selector, extractBy.Expression, extractBy.Source, extractBy.NotNull, extractBy.Count);
+		//}
+
+		public static TypeExtractor GetTypeExtractor(TypeExtractBy extractBy)
 		{
 			ISelector selector = GetSelector(extractBy);
-			return new Extractor(selector, extractBy.Source, extractBy.NotNull,extractBy.Count);
+			return new TypeExtractor(selector, extractBy.Expression, extractBy.Source, extractBy.Multi);
 		}
 
 		private static ISelector GetXpathSelector(string value)
@@ -50,14 +56,14 @@ namespace Java2Dotnet.Spider.Extension.Utils
 			return selector;
 		}
 
-		public static IList<ISelector> GetSelectors(ExtractBy[] extractBies)
+		public static IList<ISelector> GetSelectors(PropertyExtractBy[] extractBies)
 		{
 			IList<ISelector> selectors = new List<ISelector>();
 			if (extractBies == null)
 			{
 				return selectors;
 			}
-			foreach (ExtractBy extractBy in extractBies)
+			foreach (PropertyExtractBy extractBy in extractBies)
 			{
 				selectors.Add(GetSelector(extractBy));
 			}

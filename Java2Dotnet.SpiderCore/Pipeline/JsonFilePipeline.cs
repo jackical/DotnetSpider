@@ -1,11 +1,9 @@
 using System.IO;
 using System.Text;
-using Java2Dotnet.Spider.Core;
-using Java2Dotnet.Spider.Core.Pipeline;
 using Java2Dotnet.Spider.Core.Utils;
 using Newtonsoft.Json;
 
-namespace Java2Dotnet.Spider.Extension.Pipeline
+namespace Java2Dotnet.Spider.Core.Pipeline
 {
 	/// <summary>
 	/// Store results to files in JSON format.

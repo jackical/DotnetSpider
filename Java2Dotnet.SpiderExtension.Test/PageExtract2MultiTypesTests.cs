@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Java2Dotnet.Spider.Core;
-using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper.Attributes;
 using Java2Dotnet.Spider.Extension.Model;
@@ -15,20 +15,28 @@ namespace Java2Dotnet.Spider.Extension.Test
 	[TestClass]
 	public class PageExtract2MultiTypesTests
 	{
-		[ExtractBy(Value = "//*[@id='nav_menu']/a[1]")]
+		[TypeExtractBy(Expression = "//*[@id='nav_menu']/a[1]")]
 		[Scheme("cnblogs", "yuanzi")]
 		public class Yuanzi : SpiderEntity
 		{
-			[ExtractBy(Value = ".")]
+			[PropertyExtractBy(Expression = ".")]
 			[StoredAs("name", StoredAs.ValueType.Varchar, false, 20)]
 			public string Name { get; set; }
+
+			[StoredAs("id", StoredAs.ValueType.Long, true)]
+			[KeyProperty(Identity = true)]
+			public override long Id { get; set; }
 		}
 
-		[ExtractBy(Value = "//*[@id='nav_menu']/a[2]")]
+		[TypeExtractBy(Expression = "//*[@id='nav_menu']/a[2]")]
 		[Scheme("cnblogs", "jinghua")]
 		public class Jinghua : SpiderEntity
 		{
-			[ExtractBy(Value = ".")]
+			[StoredAs("id", StoredAs.ValueType.Long, true)]
+			[KeyProperty(Identity = true)]
+			public override long Id { get; set; }
+
+			[PropertyExtractBy(Expression = ".")]
 			[StoredAs("name", StoredAs.ValueType.Varchar, false, 20)]
 			public string Name { get; set; }
 		}
@@ -36,40 +44,29 @@ namespace Java2Dotnet.Spider.Extension.Test
 		[TestMethod]
 		public void PageExtract2MultiTypes()
 		{
-			OoSpider ooSpider = OoSpider.Create(new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new QueueDuplicateRemovedScheduler(), new CollectorPageModelPipeline(), typeof(Yuanzi), typeof(Jinghua));
-			ooSpider.SetEmptySleepTime(15000);
-			ooSpider.SetThreadNum(1);
-			ooSpider.ModelPipeline.CachedSize = 1;
-			ooSpider.AddStartUrls(new List<string> { "http://www.cnblogs.com/" });
-			var results = ((CollectorPageModelPipeline)ooSpider.Pipelines[0]).GetCollected();
-			Assert.AreEqual("园子", results[typeof(Yuanzi)][0].Name);
-			Assert.AreEqual("新闻", results[typeof(Jinghua)][0].Name);
+			ModelCollectorSpider<Yuanzi, Jinghua> spider = new ModelCollectorSpider<Yuanzi, Jinghua>(Guid.NewGuid().ToString(), new Site { SleepTime = 1000, Encoding = Encoding.UTF8 });
+			spider.SetEmptySleepTime(15000);
+			spider.SetThreadNum(1);
+			spider.SetCachedSize(1);
+			spider.AddStartUrls(new List<string> { "http://www.cnblogs.com/" });
+			spider.Run();
+			var results1 = ((CollectorModelPipeline<Yuanzi>)(((ModelPipeline<Yuanzi>)spider.Pipelines[0]).PageModelPipeline)).GetCollected();
+			var results2 = ((CollectorModelPipeline<Jinghua>)(((ModelPipeline<Jinghua>)spider.Pipelines[1]).PageModelPipeline)).GetCollected();
+			Assert.AreEqual("园子", results1[0].Name);
+			Assert.AreEqual("新闻", results2[0].Name);
 		}
 
-		[TestMethod]
-		public void PageExtract2MultiTypes2()
-		{
-			OoSpider ooSpider = OoSpider.Create(new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new QueueDuplicateRemovedScheduler(), new CollectorPageModelPipeline(), typeof(Yuanzi), typeof(Jinghua));
-			ooSpider.SetEmptySleepTime(15000);
-			ooSpider.SetThreadNum(1);
-			ooSpider.ModelPipeline.CachedSize = 1;
-			ooSpider.AddStartUrls(new List<string> { "http://www.cnblogs.com/" });
-			var collectorPageModelPipeline = (CollectorPageModelPipeline)ooSpider.Pipelines[0];
-
-			var results = collectorPageModelPipeline.GetCollected();
-			Assert.AreEqual("新闻", results[typeof(Jinghua)][0].Name);
-		}
 
 		[TestMethod]
 		public void PageExtract2MultiTypes3()
 		{
-			OoSpider ooSpider = OoSpider.Create(new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, new QueueDuplicateRemovedScheduler(), new DatabasePipeline(), typeof(Yuanzi), typeof(Jinghua));
-			ooSpider.SetEmptySleepTime(15000);
-			ooSpider.SetThreadNum(1);
-			ooSpider.ModelPipeline.CachedSize = 1;
-			ooSpider.AddStartUrl("http://www.cnblogs.com/");
-			ooSpider.Run();
-			DataRepository dataRepository = new DataRepository(typeof(Jinghua));
+			ModelDatabaseSpider<Yuanzi, Jinghua> spider = new ModelDatabaseSpider<Yuanzi, Jinghua>(Guid.NewGuid().ToString(), new Site { SleepTime = 1000, Encoding = Encoding.UTF8 });
+			spider.SetEmptySleepTime(15000);
+			spider.SetThreadNum(1);
+			spider.SetCachedSize(1);
+			spider.AddStartUrls(new List<string> { "http://www.cnblogs.com/" });
+			spider.Run();
+			DataRepository<Jinghua> dataRepository = new DataRepository<Jinghua>();
 			Assert.AreEqual("新闻", dataRepository.GetWhere("id>0").ToList()[0].Name);
 			dataRepository.Execute("drop database cnblogs");
 		}

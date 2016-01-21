@@ -1,40 +1,50 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Java2Dotnet.Spider.Core;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
 {
-	public class MySqlFilePipeline : IPageModelPipeline
+	public class MySqlFilePipeline<T> : IPageModelPipeline<T>
 	{
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void Process(Dictionary<Type, List<dynamic>> data, ISpider spider)
+		private readonly Type _type;
+		private readonly PropertyInfo[] _propertyInfos;
+
+		public MySqlFilePipeline()
 		{
-			foreach (var pair in data)
+			_type = typeof(T);
+			
+			_propertyInfos = _type.GetProperties();
+		}
+
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public void Process(List<T> data, ISpider spider)
+		{
+			string filePath = GetDataFilePath(spider, _type.Name);
+			foreach (var d in data)
 			{
-				Type type = pair.Key;
-				bool isGeneric = typeof(IEnumerable).IsAssignableFrom(type);
-				Type actualType = isGeneric ? type.GenericTypeArguments[0] : type;
-				foreach (var r in pair.Value)
+				StringBuilder builder = new StringBuilder();
+				foreach (var propertyInfo in _propertyInfos)
 				{
-					string filePath = GetDataFilePath(spider, actualType.Name);
-
-					var properties = actualType.GetProperties();
-
-					StringBuilder builder = new StringBuilder();
-					foreach (var propertyInfo in properties)
+					object value = propertyInfo.GetValue(d);
+					if (value != null)
 					{
-						builder.Append("'").Append(propertyInfo.GetValue(r).ToString()).Append("'").Append(",");
+						string correntValue = value.ToString().Replace("'", " ").Replace(",", " ");
+						builder.Append("'").Append(correntValue).Append("'").Append(",");
 					}
-					builder.Remove(builder.Length - 1, 1);
-					builder.Append(Environment.NewLine);
-
-					// 这里需要优化, 这个方法太慢了
-					File.AppendAllText(filePath, builder.ToString(), Encoding.UTF8);
+					else
+					{
+						builder.Append("'',");
+					}
 				}
+				builder.Remove(builder.Length - 1, 1);
+				builder.Append(Environment.NewLine);
+
+				// 这里需要优化, 这个方法太慢了
+				File.AppendAllText(filePath, builder.ToString(), Encoding.UTF8);
 			}
 		}
 

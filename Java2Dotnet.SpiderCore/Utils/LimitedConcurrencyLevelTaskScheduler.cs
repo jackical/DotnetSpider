@@ -124,13 +124,13 @@ namespace Java2Dotnet.Spider.Core.Utils
 			bool lockTaken = false;
 			try
 			{
-				Monitor.TryEnter(_tasks, ref lockTaken);
+				System.Threading.Monitor.TryEnter(_tasks, ref lockTaken);
 				if (lockTaken) return _tasks.ToArray();
 				else throw new NotSupportedException();
 			}
 			finally
 			{
-				if (lockTaken) Monitor.Exit(_tasks);
+				if (lockTaken) System.Threading.Monitor.Exit(_tasks);
 			}
 		}
 	}

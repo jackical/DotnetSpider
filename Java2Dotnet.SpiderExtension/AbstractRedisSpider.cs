@@ -82,7 +82,7 @@ namespace Java2Dotnet.Spider.Extension
 				Console.WriteLine("Init spider with site.");
 				_spider = InitSpider(Site);
 				_spider.SaveStatusToRedis = true;
-				SpiderMonitor.Instance.Register(_spider);
+				SpiderMonitor.Default.Register(_spider);
 				_spider.InitComponent();
 
 				if (needInitStartRequest)

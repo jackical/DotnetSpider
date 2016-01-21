@@ -15,37 +15,9 @@ namespace Java2Dotnet.Spider.Extension.Processor
 	/// </summary>
 	public class ModelPageProcessor : IPageProcessor
 	{
-		private readonly IList<PageModelExtractor> _pageModelExtractorList = new List<PageModelExtractor>();
+		protected readonly IList<IPageModelExtractor> PageModelExtractorList = new List<IPageModelExtractor>();
 
 		public Func<Page, IList<string>> GetCustomizeTargetUrls;
-
-		public static ModelPageProcessor Create(Site site, params Type[] types)
-		{
-			ModelPageProcessor modelPageProcessor = new ModelPageProcessor(site);
-			foreach (Type type in types)
-			{
-				modelPageProcessor.AddPageModel(type);
-			}
-			return modelPageProcessor;
-		}
-
-		public static T Create<T>(Site site, params Type[] types) where T : ModelPageProcessor
-		{
-			T t = (T)Activator.CreateInstance(typeof(T), new object[] { site });
-
-			foreach (Type type in types)
-			{
-				t.AddPageModel(type);
-			}
-			return t;
-		}
-
-		public ModelPageProcessor AddPageModel(Type type)
-		{
-			PageModelExtractor pageModelExtractor = PageModelExtractor.Create(type);
-			_pageModelExtractorList.Add(pageModelExtractor);
-			return this;
-		}
 
 		protected ModelPageProcessor(Site site)
 		{
@@ -54,7 +26,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 
 		public virtual void Process(Page page)
 		{
-			foreach (PageModelExtractor pageModelExtractor in _pageModelExtractorList)
+			foreach (IPageModelExtractor pageModelExtractor in PageModelExtractorList)
 			{
 				ExtractLinks(page, pageModelExtractor.GetHelpUrlRegionSelector(), pageModelExtractor.GetHelpUrlPatterns());
 
@@ -125,6 +97,114 @@ namespace Java2Dotnet.Spider.Extension.Processor
 		{
 		}
 
-		public Site Site { get; }
+		public Site Site { get; protected set; }
+	}
+
+	public class ModelPageProcessor<T> : ModelPageProcessor
+	{
+		public ModelPageProcessor(Site site) : base(site)
+		{
+			PageModelExtractorList.Add(new PageModelExtractor<T>());
+		}
+	}
+
+	public class ModelPageProcessor<T1, T2> : ModelPageProcessor
+	{
+		public ModelPageProcessor(Site site) : base(site)
+		{
+			PageModelExtractorList.Add(new PageModelExtractor<T1>());
+			PageModelExtractorList.Add(new PageModelExtractor<T2>());
+		}
+	}
+
+	public class ModelPageProcessor<T1, T2, T3> : ModelPageProcessor
+	{
+		public ModelPageProcessor(Site site) : base(site)
+		{
+			PageModelExtractorList.Add(new PageModelExtractor<T1>());
+			PageModelExtractorList.Add(new PageModelExtractor<T2>());
+			PageModelExtractorList.Add(new PageModelExtractor<T3>());
+		}
+	}
+
+	public class ModelPageProcessor<T1, T2, T3, T4> : ModelPageProcessor
+	{
+		public ModelPageProcessor(Site site) : base(site)
+		{
+			PageModelExtractorList.Add(new PageModelExtractor<T1>());
+			PageModelExtractorList.Add(new PageModelExtractor<T2>());
+			PageModelExtractorList.Add(new PageModelExtractor<T3>());
+			PageModelExtractorList.Add(new PageModelExtractor<T4>());
+		}
+	}
+
+	public class ModelPageProcessor<T1, T2, T3, T4, T5> : ModelPageProcessor
+	{
+		public ModelPageProcessor(Site site) : base(site)
+		{
+			PageModelExtractorList.Add(new PageModelExtractor<T1>());
+			PageModelExtractorList.Add(new PageModelExtractor<T2>());
+			PageModelExtractorList.Add(new PageModelExtractor<T3>());
+			PageModelExtractorList.Add(new PageModelExtractor<T4>());
+			PageModelExtractorList.Add(new PageModelExtractor<T5>());
+		}
+	}
+
+	public class ModelPageProcessor<T1, T2, T3, T4, T5, T6> : ModelPageProcessor
+	{
+		public ModelPageProcessor(Site site) : base(site)
+		{
+			PageModelExtractorList.Add(new PageModelExtractor<T1>());
+			PageModelExtractorList.Add(new PageModelExtractor<T2>());
+			PageModelExtractorList.Add(new PageModelExtractor<T3>());
+			PageModelExtractorList.Add(new PageModelExtractor<T4>());
+			PageModelExtractorList.Add(new PageModelExtractor<T5>());
+			PageModelExtractorList.Add(new PageModelExtractor<T6>());
+		}
+	}
+
+	public class ModelPageProcessor<T1, T2, T3, T4, T5, T6, T7> : ModelPageProcessor
+	{
+		public ModelPageProcessor(Site site) : base(site)
+		{
+			PageModelExtractorList.Add(new PageModelExtractor<T1>());
+			PageModelExtractorList.Add(new PageModelExtractor<T2>());
+			PageModelExtractorList.Add(new PageModelExtractor<T3>());
+			PageModelExtractorList.Add(new PageModelExtractor<T4>());
+			PageModelExtractorList.Add(new PageModelExtractor<T5>());
+			PageModelExtractorList.Add(new PageModelExtractor<T6>());
+			PageModelExtractorList.Add(new PageModelExtractor<T7>());
+		}
+	}
+
+	public class ModelPageProcessor<T1, T2, T3, T4, T5, T6, T7, T8> : ModelPageProcessor
+	{
+		public ModelPageProcessor(Site site) : base(site)
+		{
+			PageModelExtractorList.Add(new PageModelExtractor<T1>());
+			PageModelExtractorList.Add(new PageModelExtractor<T2>());
+			PageModelExtractorList.Add(new PageModelExtractor<T3>());
+			PageModelExtractorList.Add(new PageModelExtractor<T4>());
+			PageModelExtractorList.Add(new PageModelExtractor<T5>());
+			PageModelExtractorList.Add(new PageModelExtractor<T6>());
+			PageModelExtractorList.Add(new PageModelExtractor<T7>());
+			PageModelExtractorList.Add(new PageModelExtractor<T8>());
+		}
+	}
+
+	public class ModelPageProcessor<T1, T2, T3, T4, T5, T6, T7, T8, T9> : ModelPageProcessor
+	{
+		public ModelPageProcessor(Site site) : base(site)
+		{
+			PageModelExtractorList.Add(new PageModelExtractor<T1>());
+			PageModelExtractorList.Add(new PageModelExtractor<T2>());
+			PageModelExtractorList.Add(new PageModelExtractor<T3>());
+			PageModelExtractorList.Add(new PageModelExtractor<T4>());
+			PageModelExtractorList.Add(new PageModelExtractor<T5>());
+			PageModelExtractorList.Add(new PageModelExtractor<T6>());
+			PageModelExtractorList.Add(new PageModelExtractor<T7>());
+			PageModelExtractorList.Add(new PageModelExtractor<T8>());
+			PageModelExtractorList.Add(new PageModelExtractor<T9>());
+		}
 	}
 }

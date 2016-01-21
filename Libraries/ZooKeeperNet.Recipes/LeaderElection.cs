@@ -17,8 +17,6 @@
  */
 
 using System;
-using System.Diagnostics;
-using System.Linq;
 
 namespace ZooKeeperNet.Recipes {
 	public interface ILeaderWatcher {

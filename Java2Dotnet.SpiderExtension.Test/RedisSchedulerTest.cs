@@ -1,4 +1,5 @@
-﻿using Java2Dotnet.Spider.Core;
+﻿using System.Collections.Generic;
+using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.Scheduler;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -43,6 +44,8 @@ namespace Java2Dotnet.Spider.Extension.Test
 		public void Stop()
 		{
 		}
+
+		public Dictionary<string, dynamic> Settings { get; }=new Dictionary<string, dynamic>();
 
 		public void Exit()
 		{

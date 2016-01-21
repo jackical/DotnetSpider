@@ -1,4 +1,4 @@
-/*
+﻿/*
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -15,14 +15,12 @@
  *  limitations under the License.
  *
  */
-﻿namespace ZooKeeperNet
+ namespace ZooKeeperNet
 {
     using System;
     using System.Linq;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.IO;
-    using System.Runtime.CompilerServices;
     using log4net;
     using Org.Apache.Zookeeper.Data;
     using Org.Apache.Zookeeper.Proto;

@@ -14,12 +14,9 @@ namespace Java2Dotnet.Spider.Extension.Model
 	/// </summary>
 	public class OoSpider : Core.Spider
 	{
-		public ModelPipeline ModelPipeline { get; private set; }
-
 		private OoSpider(string identify, ModelPageProcessor modelPageProcessor, IScheduler scheduler)
 			: base(identify, modelPageProcessor, scheduler)
 		{
-			//_modelPageProcessor = modelPageProcessor;
 		}
 
 		private OoSpider(string identify, Site site, IScheduler scheduler, IPageModelPipeline[] pageModelPipeline, params Type[] modelTypes)
@@ -38,11 +35,6 @@ namespace Java2Dotnet.Spider.Extension.Model
 		{
 			((ModelPageProcessor)PageProcessor).GetCustomizeTargetUrls = getCustomizeTargetUrls;
 		}
-
-		//protected override List<ICollectorPipeline> GetCollectorPipeline(params Type[] types)
-		//{
-		//	return types.Select(type => new PageModelCollectorPipeline(type)).Cast<ICollectorPipeline>().ToList();
-		//}
 
 		public static OoSpider Create(Site site, IPageModelPipeline pageModelPipeline, params Type[] pageModels)
 		{
@@ -80,9 +72,9 @@ namespace Java2Dotnet.Spider.Extension.Model
 			return new OoSpider(identify, site, scheduler, pageModelPipelines, pageModels);
 		}
 
-		public static OoSpider Create<T>(string identify, Site site, IScheduler scheduler, IPageModelPipeline[] pageModelPipeline, params Type[] pageModels) where T : ModelPageProcessor
+		public static OoSpider Create(string identify, Site site, IScheduler scheduler, IPageModelPipeline[] pageModelPipeline, Type processType, params Type[] pageModels)
 		{
-			var processor = ModelPageProcessor.Create<T>(site, pageModels);
+			var processor = ModelPageProcessor.Create(site, processType, pageModels);
 			return new OoSpider(identify, processor, scheduler, pageModelPipeline, pageModels);
 		}
 
@@ -112,7 +104,6 @@ namespace Java2Dotnet.Spider.Extension.Model
 						ModelPipeline.Put(modelType, modelPipeline);
 					}
 				}
-				//_pageModelTypes.Add(modelType);
 			}
 		}
 	}

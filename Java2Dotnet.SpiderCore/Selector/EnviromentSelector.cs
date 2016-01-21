@@ -7,10 +7,6 @@ namespace Java2Dotnet.Spider.Core.Selector
 	{
 		private readonly string _field;
 
-		static EnviromentSelector()
-		{
-		}
-
 		public EnviromentSelector(string field)
 		{
 			_field = field;

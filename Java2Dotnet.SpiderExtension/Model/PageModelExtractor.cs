@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,58 +11,58 @@ using Java2Dotnet.Spider.Extension.Utils;
 
 namespace Java2Dotnet.Spider.Extension.Model
 {
+	public interface IPageModelExtractor
+	{
+		dynamic Process(Page page);
+		Type GetActualType();
+		IList<Regex> GetTargetUrlPatterns();
+		IObjectFormatter GetTargetUrlFormatter();
+		IList<Regex> GetHelpUrlPatterns();
+		ISelector GetTargetUrlRegionSelector();
+		ISelector GetHelpUrlRegionSelector();
+	}
+
 	/// <summary>
 	/// The main internal logic of page model extractor.
 	/// </summary>
-	public class PageModelExtractor
+	public class PageModelExtractor<T> : IPageModelExtractor
 	{
+		private readonly static log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(PageModelExtractor<T>));
 		private readonly IList<Regex> _targetUrlPatterns = new List<Regex>();
 		private ISelector _targetUrlRegionSelector;
 		private readonly IList<Regex> _helpUrlPatterns = new List<Regex>();
 		private ISelector _helpUrlRegionSelector;
-		private readonly Type _modelType;
 		private readonly Type _actualType;
 		private List<FieldExtractor> _fieldExtractors;
 		private IObjectFormatter _targetUrlFormatter;
-		private Extractor _objectExtractor;
-		private readonly static log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(PageModelExtractor));
-		private static readonly Regex UrlRegex = new Regex(@"((http|https|ftp):(\/\/|\\\\)((\w)+[.]){1，}(net|com|cn|org|cc|tv|[0-9]{1，3})(((\/[\~]*|\\[\~]*)(\w)+)|[.](\w)+)*(((([?](\w)+){1}[=]*))*((\w)+){1}([\&](\w)+[\=](\w)+)*)*)");
-		private readonly bool _isGeneric;
-		private readonly MethodInfo _addMethod;
+		private TypeExtractor _typeExtractor;
+		private readonly Regex _urlRegex = new Regex(@"((http|https|ftp):(\/\/|\\\\)((\w)+[.]){1，}(net|com|cn|org|cc|tv|[0-9]{1，3})(((\/[\~]*|\\[\~]*)(\w)+)|[.](\w)+)*(((([?](\w)+){1}[=]*))*((\w)+){1}([\&](\w)+[\=](\w)+)*)*)");
 
-		private PageModelExtractor(Type type)
+		public PageModelExtractor()
 		{
-			_isGeneric = typeof(IEnumerable).IsAssignableFrom(type);
-			if (_isGeneric)
-			{
-				_addMethod = type.GetMethod("Add");
-				if (_addMethod == null)
-				{
-					throw new SpiderExceptoin("Add method is not exist.");
-				}
-			}
-			_modelType = type;
-			_actualType = _isGeneric ? type.GenericTypeArguments[0] : type;
-		}
-
-		public static PageModelExtractor Create(Type type)
-		{
-			var pageModelExtractor = new PageModelExtractor(type);
-			pageModelExtractor.Init();
-
-			return pageModelExtractor;
+			_actualType = typeof(T);
+			Init();
 		}
 
 		private FieldExtractor GetAttributeExtractBy(PropertyInfo field)
 		{
 			FieldExtractor fieldExtractor = null;
-			ExtractBy extractBy = (ExtractBy)field.GetCustomAttribute(typeof(ExtractBy));
+			PropertyExtractBy extractBy = (PropertyExtractBy)field.GetCustomAttribute(typeof(PropertyExtractBy));
 			if (extractBy != null)
 			{
 				ISelector selector = ExtractorUtils.GetSelector(extractBy);
-				// 改为由属性类型决定是否为List, Attribte可能会错, Property可能更可靠
-				fieldExtractor = new FieldExtractor(field, selector, extractBy.Source,
-					extractBy.NotNull, field.PropertyType.IsGenericType);
+
+				ExtractSource source = extractBy.Source;
+				if (extractBy.Type == ExtractType.Enviroment)
+				{
+					source = ExtractSource.Enviroment;
+				}
+				if (extractBy.Type == ExtractType.JsonPath)
+				{
+					source = ExtractSource.Json;
+				}
+
+				fieldExtractor = new FieldExtractor(field, selector, extractBy.Expression, source, extractBy.NotNull, field.PropertyType.IsGenericType);
 			}
 
 			return fieldExtractor;
@@ -72,6 +71,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		private void Init()
 		{
 			InitTypeExtractors();
+
 			_fieldExtractors = new List<FieldExtractor>();
 			foreach (PropertyInfo field in _actualType.GetProperties())
 			{
@@ -101,7 +101,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 			ComboExtract comboExtract = field.GetCustomAttribute<ComboExtract>();
 			if (comboExtract != null)
 			{
-				ExtractBy[] extractBies = comboExtract.Value;
+				PropertyExtractBy[] extractBies = comboExtract.Value;
 				ISelector selector;
 				switch (comboExtract.Op)
 				{
@@ -115,7 +115,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 						selector = new AndSelector(ExtractorUtils.GetSelectors(extractBies));
 						break;
 				}
-				fieldExtractor = new FieldExtractor(field, selector, comboExtract.Source,
+				fieldExtractor = new FieldExtractor(field, selector, null, comboExtract.Source,
 						comboExtract.NotNull, comboExtract.Multi || field.PropertyType.IsGenericType);
 			}
 
@@ -191,15 +191,13 @@ namespace Java2Dotnet.Spider.Extension.Model
 			ExtractByUrl extractByUrl = field.GetCustomAttribute<ExtractByUrl>();
 			if (extractByUrl != null)
 			{
-				string regexPattern = extractByUrl.Value;
+				string regexPattern = extractByUrl.Expession;
 				if (string.IsNullOrEmpty(regexPattern.Trim()))
 				{
 					regexPattern = ".*";
 				}
-				fieldExtractor = new FieldExtractor(field,
-						new RegexSelector(regexPattern), ExtractSource.Url, extractByUrl.NotNull,
-						extractByUrl.Multi || field.PropertyType.IsGenericType);
 
+				fieldExtractor = new FieldExtractor(field, new RegexSelector(regexPattern), extractByUrl.Expession, ExtractSource.Url, extractByUrl.NotNull, field.PropertyType.IsGenericType);
 			}
 			return fieldExtractor;
 		}
@@ -245,6 +243,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 					_targetUrlFormatter.InitParam(formatter.Value);
 				}
 			}
+
 			HelpUrl helpAnnotation = _actualType.GetCustomAttribute<HelpUrl>();
 			if (helpAnnotation != null)
 			{
@@ -258,10 +257,11 @@ namespace Java2Dotnet.Spider.Extension.Model
 					_helpUrlRegionSelector = new XPathSelector(helpAnnotation.SourceRegion);
 				}
 			}
-			ExtractBy extractByAttribute = _actualType.GetCustomAttribute<ExtractBy>();
+
+			TypeExtractBy extractByAttribute = _actualType.GetCustomAttribute<TypeExtractBy>();
 			if (extractByAttribute != null)
 			{
-				_objectExtractor = ExtractorUtils.GetExtractor(extractByAttribute);
+				_typeExtractor = ExtractorUtils.GetTypeExtractor(extractByAttribute);
 			}
 		}
 
@@ -288,49 +288,48 @@ namespace Java2Dotnet.Spider.Extension.Model
 			{
 				return null;
 			}
-			if (_objectExtractor == null)
+			if (_typeExtractor == null)
 			{
 				return ProcessSingle(page, null, true);
 			}
 			else
 			{
-				if (_isGeneric)
+				if (_typeExtractor.Multi)
 				{
-					IList<string> list = _objectExtractor.Selector.SelectList(page.RawText);
-					if (_objectExtractor.Count < long.MaxValue)
+					IList<string> list = _typeExtractor.Selector.SelectList(page.RawText);
+					if (_typeExtractor.Count < long.MaxValue)
 					{
-						list = list.Take((int)_objectExtractor.Count).ToList();
+						list = list.Take((int)_typeExtractor.Count).ToList();
 					}
 
-					dynamic result = Activator.CreateInstance(_modelType);
+					List<T> result = new List<T>();
 					foreach (var item in list)
 					{
-						var obj = ProcessSingle(page, item, false);
+						T obj = ProcessSingle(page, item, false);
 						if (obj != null)
 						{
-							//result.Add(obj);
-							_addMethod.Invoke(result, new object[] { obj });
+							result.Add(obj);
+
 						}
 					}
 					return result;
 				}
 				else
 				{
-					string select = _objectExtractor.Selector.Select(page.RawText);
-					object o = ProcessSingle(page, select, false);
-					return o;
+					string select = _typeExtractor.Selector.Select(page.RawText);
+					return ProcessSingle(page, select, false);
 				}
 			}
 		}
 
-		private dynamic ProcessSingle(Page page, string content, bool isEntire)
+		private T ProcessSingle(Page page, string content, bool isEntire)
 		{
 			var instance = Activator.CreateInstance(_actualType);
 			foreach (FieldExtractor fieldExtractor in _fieldExtractors)
 			{
 				if (fieldExtractor.Multi)
 				{
-					IList<string> value = null;
+					IList<string> value;
 					switch (fieldExtractor.Source)
 					{
 						case ExtractSource.RawHtml:
@@ -347,8 +346,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 							break;
 						case ExtractSource.Enviroment:
 							{
-								EnviromentSelector selector = fieldExtractor.Selector as EnviromentSelector;
-								if (selector != null) value = selector.GetValueList(page);
+								value = GetEnviromentValue(fieldExtractor.Expression, page);
 								break;
 							}
 						default:
@@ -357,48 +355,11 @@ namespace Java2Dotnet.Spider.Extension.Model
 					}
 					if ((value == null || value.Count == 0) && fieldExtractor.NotNull)
 					{
-						return null;
+						return default(T);
 					}
 
 					if (fieldExtractor.ObjectFormatter != null)
 					{
-						//if (!string.IsNullOrEmpty(fieldExtractor.Expresion))
-						//{
-						//	MemoryStream stream = new MemoryStream();
-						//	StreamWriter writer = new StreamWriter(stream);
-						//	writer.Write(fieldExtractor.Expresion.EndsWith(";") ? fieldExtractor.Expresion : fieldExtractor.Expresion + ";");
-						//	writer.Flush();
-
-						//	// convert stream to string  
-						//	stream.Position = 0;
-						//	AntlrInputStream input = new AntlrInputStream(stream);
-						//	ModifyScriptLexer lexer = new ModifyScriptLexer(input);
-						//	CommonTokenStream tokens = new CommonTokenStream(lexer);
-						//	// implement custom expresion
-						//	IList<string> tmp = new List<string>();
-						//	bool missTargetUrls = false;
-						//	// ReSharper disable once PossibleNullReferenceException
-						//	foreach (string d in value)
-						//	{
-						//		lexer.Reset();
-						//		tokens.Reset();
-
-						//		ModifyScriptVisitor modifyScriptVisitor = new ModifyScriptVisitor(d, fieldExtractor.Field);
-						//		ModifyScriptParser parser = new ModifyScriptParser(tokens);
-						//		modifyScriptVisitor.Visit(parser.stats());
-						//		if (!string.IsNullOrEmpty(modifyScriptVisitor.Value))
-						//		{
-						//			tmp.Add(modifyScriptVisitor.Value);
-						//		}
-						//		if (!missTargetUrls && modifyScriptVisitor.NeedStop)
-						//		{
-						//			missTargetUrls = true;
-						//		}
-						//	}
-						//	page.MissTargetUrls = missTargetUrls;
-						//	value = tmp;
-						//}
-
 						IList<dynamic> converted = Convert(value, fieldExtractor.ObjectFormatter);
 
 						if (fieldExtractor.Stopper != null)
@@ -424,7 +385,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 							foreach (var url in converted)
 							{
 								// 不需要判断为空, 前面已经判断过了
-								if (UrlRegex.IsMatch(url))
+								if (_urlRegex.IsMatch(url))
 								{
 									urlList.Add(url);
 								}
@@ -449,7 +410,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 							foreach (var url in value)
 							{
 								// 不需要判断为空, 前面已经判断过了
-								if (UrlRegex.IsMatch(url))
+								if (_urlRegex.IsMatch(url))
 								{
 									urlList.Add(url);
 								}
@@ -460,7 +421,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 				}
 				else
 				{
-					string value = null;
+					string value;
 					switch (fieldExtractor.Source)
 					{
 						case ExtractSource.RawHtml:
@@ -477,11 +438,12 @@ namespace Java2Dotnet.Spider.Extension.Model
 							break;
 						case ExtractSource.Enviroment:
 							{
-								EnviromentSelector selector = fieldExtractor.Selector as EnviromentSelector;
-								if (selector != null)
-								{
-									value = selector.GetValue(page)?.ToString();
-								}
+								//EnviromentSelector selector = fieldExtractor.Selector as EnviromentSelector;
+								//if (selector != null)
+								//{
+								//	value = selector.GetValue(page)?.ToString();
+								//}
+								value = GetEnviromentValue(fieldExtractor.Expression, page);
 								break;
 							}
 						default:
@@ -490,7 +452,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 					}
 					if (value == null && fieldExtractor.NotNull)
 					{
-						return null;
+						return default(T);
 					}
 					if (fieldExtractor.ObjectFormatter != null)
 					{
@@ -520,7 +482,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 						if (converted == null && fieldExtractor.NotNull)
 						{
-							return null;
+							return default(T);
 						}
 
 						if (fieldExtractor.Stopper != null && !page.MissTargetUrls)
@@ -538,7 +500,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 					if (fieldExtractor.Download)
 					{
 						// 不需要判断为空, 前面已经判断过了
-						if (UrlRegex.IsMatch(value))
+						if (_urlRegex.IsMatch(value))
 						{
 							page.AddResultItem(Page.Images, value);
 						}
@@ -552,7 +514,22 @@ namespace Java2Dotnet.Spider.Extension.Model
 			var customize = instance as ICustomize;
 			customize?.Customize();
 
-			return instance;
+			return (T)instance;
+		}
+
+		private dynamic GetEnviromentValue(string expression, Page page)
+		{
+			if ("url" == expression)
+			{
+				return page.Url;
+			}
+
+			if ("targeturl" == expression)
+			{
+				return page.TargetUrl;
+			}
+
+			return page.Request.GetExtra(expression);
 		}
 
 		private dynamic Convert(string value, IObjectFormatter objectFormatter)

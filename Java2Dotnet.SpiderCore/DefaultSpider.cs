@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Java2Dotnet.Spider.Core
@@ -7,7 +8,7 @@ namespace Java2Dotnet.Spider.Core
 	/// </summary>
 	public class DefaultSpider : ISpider
 	{
-		private static  readonly Regex IdentifyRegex=new Regex(@"^[0-9A-Za-z_-]+$");
+		private static readonly Regex IdentifyRegex = new Regex(@"^[0-9A-Za-z_-]+$");
 		public DefaultSpider(string uuid, Site site)
 		{
 			if (!IdentifyRegex.IsMatch(uuid))
@@ -40,5 +41,7 @@ namespace Java2Dotnet.Spider.Core
 		public void Stop()
 		{
 		}
+
+		public Dictionary<string, dynamic> Settings { get; } = new Dictionary<string, dynamic>();
 	}
 }

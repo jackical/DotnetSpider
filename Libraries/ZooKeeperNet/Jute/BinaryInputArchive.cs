@@ -19,8 +19,7 @@ using ZooKeeperNet.IO;
 
 namespace Org.Apache.Jute
 {
-    using System;
-    using System.IO;
+	using System.IO;
     using System.Text;
     using ZooKeeperNet;
 

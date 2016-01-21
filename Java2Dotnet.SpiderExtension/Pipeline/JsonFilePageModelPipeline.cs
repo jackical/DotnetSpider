@@ -13,37 +13,34 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 	/// Use model.getKey() as file name if the model implements HasKey.
 	/// Otherwise use SHA1 as file name.
 	/// </summary>
-	public class JsonFilePageModelPipeline : FilePersistentBase, IPageModelPipeline
+	public class JsonFileModelPipeline<T> : FilePersistentBase, IPageModelPipeline<T>
 	{
-		private readonly log4net.ILog _logger;
+		private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(typeof(JsonFileModelPipeline<T>));
+		private readonly Type _type;
 
 		/// <summary>
 		/// New JsonFilePageModelPipeline with default path "/data/webmagic/"
 		/// </summary>
-		public JsonFilePageModelPipeline()
+		public JsonFileModelPipeline()
 		{
-			_logger = log4net.LogManager.GetLogger(GetType());
-			SetPath("/data/dotnetspider/");
+			SetPath("/data/");
+			
+			_type = typeof(T);
 		}
 
-		public JsonFilePageModelPipeline(string path)
+		public void Process(List<T> data, ISpider spider)
 		{
-			SetPath(path);
-		}
+			string path = BasePath + "/" + spider.Identify + "/";
+			string filename = path + _type.FullName + ".json";
 
-		public void Process(Dictionary<Type, List<dynamic>> data, ISpider spider)
-		{
-			foreach (var pair in data)
+			foreach (var entry in data)
 			{
-				string path = BasePath + "/" + spider.Identify + "/";
 				try
 				{
-					string filename = path + pair.Key.FullName + ".json";
-
 					FileInfo file = PrepareFile(filename);
 					using (StreamWriter printWriter = new StreamWriter(file.OpenWrite(), Encoding.UTF8))
 					{
-						printWriter.WriteLine(JsonConvert.SerializeObject(pair.Value));
+						printWriter.WriteLine(JsonConvert.SerializeObject(entry));
 					}
 				}
 				catch (Exception e)

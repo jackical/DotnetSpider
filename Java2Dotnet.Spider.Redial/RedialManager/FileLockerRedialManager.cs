@@ -13,7 +13,7 @@ namespace Java2Dotnet.Spider.Redial.RedialManager
 	{
 		private static FileLockerRedialManager _instanse;
 		private readonly string _lockerFilePath;
-		private readonly int RedialTimeout = 60 * 1000 / 50;
+		private readonly int RedialTimeout = 120 * 1000 / 50;
 
 		public override IAtomicExecutor AtomicExecutor { get; }
 
@@ -64,7 +64,6 @@ namespace Java2Dotnet.Spider.Redial.RedialManager
 			}
 		}
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override RedialResult Redial()
 		{
 			if (Skip)

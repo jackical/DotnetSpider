@@ -65,6 +65,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Monitor\SpiderClosing.cs" />
+    <Compile Include="Monitor\RequestFailed.cs" />
+    <Compile Include="Monitor\RequestSuccessed.cs" />
+    <Compile Include="Pipeline\JsonFilePipeline.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="SpiderExceptoin.cs" />
     <Compile Include="Page.cs" />

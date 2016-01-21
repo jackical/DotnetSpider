@@ -54,6 +54,18 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MongoDB.Bson, Version=2.2.2.10, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.2.2\lib\net45\MongoDB.Bson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=2.2.2.10, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.2.2.2\lib\net45\MongoDB.Driver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Core, Version=2.2.2.10, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.Core.2.2.2\lib\net45\MongoDB.Driver.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
@@ -88,7 +100,7 @@
     <Compile Include="DbSupport\Dapper\Attributes\StatusProperty.cs" />
     <Compile Include="DbSupport\Dapper\Attributes\StoredAs.cs" />
     <Compile Include="DbSupport\Dapper\DataRepository.cs" />
-    <Compile Include="DbSupport\Dapper\IDataRepository.cs" />
+    <Compile Include="DbSupport\IDataRepository.cs" />
     <Compile Include="DbSupport\Dapper\ISqlGenerator.cs" />
     <Compile Include="DbSupport\Dapper\MSSqlGenerator.cs" />
     <Compile Include="DbSupport\Dapper\MySqlGenerator.cs" />
@@ -98,19 +110,27 @@
     <Compile Include="DbSupport\DbProviderUtil.cs" />
     <Compile Include="DbSupport\IDataProvider.cs" />
     <Compile Include="DbSupport\IDataProviderManager.cs" />
+    <Compile Include="DbSupport\MongoDbRepository.cs" />
     <Compile Include="DbSupport\MySqlDataProvider.cs" />
     <Compile Include="DbSupport\SqlServerDataProvider.cs" />
     <Compile Include="IRedisSpider.cs" />
-    <Compile Include="Model\Attribute\Column.cs" />
+    <Compile Include="Model\Attribute\BaseExtractBy.cs" />
     <Compile Include="Model\Attribute\ComboExtract.cs" />
-    <Compile Include="Model\Attribute\ExtractBy.cs" />
+    <Compile Include="Model\Attribute\PropertyExtractBy.cs" />
     <Compile Include="Model\Attribute\TargetUrlFormatter.cs" />
     <Compile Include="Model\Attribute\HelpUrl.cs" />
     <Compile Include="Model\Attribute\Download.cs" />
-    <Compile Include="Model\Attribute\Stoper.cs" />
-    <Compile Include="Model\Attribute\Table.cs" />
+    <Compile Include="Model\Stopper.cs" />
+    <Compile Include="Model\BaseModelSpider.cs" />
+    <Compile Include="Model\Extractor.cs" />
     <Compile Include="Model\ExtractType.cs" />
+    <Compile Include="Model\Attribute\TypeExtractBy.cs" />
     <Compile Include="Model\ICustomize.cs" />
+    <Compile Include="Model\ModelDatabaseSpider.cs" />
+    <Compile Include="Model\ModelJsonFileSpider.cs" />
+    <Compile Include="Model\ModelCollectorSpider.cs" />
+    <Compile Include="Model\ModelMongoDbSpider.cs" />
+    <Compile Include="Model\ModelMysqlFileSpider.cs" />
     <Compile Include="Model\SpiderEntity.cs" />
     <Compile Include="Model\ExtractSource.cs" />
     <Compile Include="Model\Formatter\CustomizeFormatter.cs" />
@@ -127,21 +147,19 @@
     <Compile Include="Monitor\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Monitor\RedisStatusUpdater.cs" />
-    <Compile Include="Monitor\SpiderStatus.cs" />
     <Compile Include="Monitor\ISpiderStatus.cs" />
     <Compile Include="MultiPageModel.cs" />
-    <Compile Include="Pipeline\CollectorPageModelPipeline.cs" />
+    <Compile Include="Pipeline\CollectorModelPipeline.cs" />
+    <Compile Include="Pipeline\MongoDBPipeline.cs" />
     <Compile Include="Pipeline\MySqlFilePipeline.cs" />
     <Compile Include="Pipeline\ImagePipeline.cs" />
+    <Compile Include="Pipeline\PipelineModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduler\ISchedulerManager.cs" />
     <Compile Include="Scheduler\RedisSchedulerManager.cs" />
     <Compile Include="Scheduler\SpiderStatus.cs" />
     <Compile Include="Utils\DoubleKeyDictionary.cs" />
-    <Compile Include="Utils\Operator.cs" />
     <Compile Include="Utils\RedisProvider.cs" />
-    <Compile Include="Utils\SafeRedisManagerPool.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Pipeline\ISubPipeline.cs" />
@@ -155,12 +173,9 @@
     <Compile Include="Scheduler\RedisScheduler.cs" />
     <Compile Include="Pipeline\IPageModelPipeline.cs" />
     <Compile Include="Pipeline\MultiPagePipeline.cs" />
-    <Compile Include="Pipeline\JsonFilePipeline.cs" />
     <Compile Include="Pipeline\JsonFilePageModelPipeline.cs" />
-    <Compile Include="Model\OoSpider.cs" />
     <Compile Include="Processor\ModelPageProcessor.cs" />
     <Compile Include="Model\PageModelExtractor.cs" />
-    <Compile Include="Model\Extractor.cs" />
     <Compile Include="Model\FieldExtractor.cs" />
     <Compile Include="Utils\ExtractorUtils.cs" />
     <Compile Include="Model\Attribute\Formatter.cs" />
@@ -170,7 +185,7 @@
     <Compile Include="Model\AfterExtractor.cs" />
     <Compile Include="Pipeline\ModelPipeline.cs" />
     <Compile Include="Pipeline\PageModelCollectorPipeline.cs" />
-    <Compile Include="Pipeline\ConsolePageModelPipeline.cs" />
+    <Compile Include="Pipeline\ConsoleModelPipeline.cs" />
     <Compile Include="Pipeline\DatabasePipeline.cs" />
     <Compile Include="Monitor\SpiderMonitor.cs" />
   </ItemGroup>

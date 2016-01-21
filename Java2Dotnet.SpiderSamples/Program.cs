@@ -55,7 +55,7 @@ namespace Java2Dotnet.Spider.Samples
 			DbProviderUtil.Provider = new DataProviderManager().LoadDataProvider();
 
 			//SingleSample.RunTask();
-            
+
 			Ganji.RunTask();
 			//News163.Run();
 			//OschinaAnswer.Run();
@@ -88,6 +88,8 @@ namespace Java2Dotnet.Spider.Samples
 			//}
 			//Console.WriteLine("The demo stopped!");
 			//Console.WriteLine("To more usage, try to customize your own Spider!");
+
+			Console.Read();
 		}
 	}
 }

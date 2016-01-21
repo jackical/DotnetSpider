@@ -28,7 +28,7 @@ namespace Java2Dotnet.Spider.Extension.Model.Attribute
 		/// <param name="notNull"></param>
 		/// <param name="source"></param>
 		/// <param name="multi"></param>
-		public ComboExtract(ExtractBy[] value, ExtractOp op, bool notNull, ExtractSource source, bool multi)
+		public ComboExtract(PropertyExtractBy[] value, ExtractOp op, bool notNull, ExtractSource source, bool multi)
 		{
 			Value = value;
 			Op = op;
@@ -40,7 +40,7 @@ namespace Java2Dotnet.Spider.Extension.Model.Attribute
 		/// <summary>
 		/// The extractors to be combined.
 		/// </summary>
-		public ExtractBy[] Value { get; set; }
+		public PropertyExtractBy[] Value { get; set; }
 
 		/// <summary>
 		/// Combining operation of extractors.

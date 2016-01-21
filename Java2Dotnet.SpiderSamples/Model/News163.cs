@@ -1,12 +1,7 @@
 ﻿using System.Collections.Generic;
-using Java2Dotnet.Spider.Core;
-using Java2Dotnet.Spider.Core.Pipeline;
 using Java2Dotnet.Spider.Extension;
-using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
 using Java2Dotnet.Spider.Extension.Model.Formatter;
-using Java2Dotnet.Spider.Extension.Pipeline;
-using Java2Dotnet.Spider.Extension.Scheduler;
 
 namespace Java2Dotnet.Spider.Samples.Model
 {
@@ -16,19 +11,19 @@ namespace Java2Dotnet.Spider.Samples.Model
 		[ExtractByUrl("http://news\\.163\\.com/\\d+/\\d+/\\d+/([^_]*).*\\.html")]
 		public string PageKey { get; set; }
 
-		[ExtractByUrl(Value = "http://news\\.163\\.com/\\d+/\\d+/\\d+/\\w+_(\\d+)\\.html", NotNull = false)]
+		[ExtractByUrl(Expession = "http://news\\.163\\.com/\\d+/\\d+/\\d+/\\w+_(\\d+)\\.html", NotNull = false)]
 		public string Page { get; set; }
 
 		////div[@class=\"ep-pages\"]/a[substring(@href,string-length(@href)-5)='.html']
 
 		[Formatter(typeof(RegexFormater), new[] { "http://news\\.163\\.com/\\d+/\\d+/\\d+/\\w+_(\\d+)\\.html", "1" })]
-		[ExtractBy(Value = "//div[@class=\"ep-pages\"]/a/@href", NotNull = false)]
+		[PropertyExtractBy(Expression = "//div[@class=\"ep-pages\"]/a/@href", NotNull = false)]
 		public HashSet<string> OtherPage { get; set; }
 
-		[ExtractBy(Value = "//h1[@id=\"h1title\"]/text()")]
+		[PropertyExtractBy(Expression = "//h1[@id=\"h1title\"]/text()")]
 		public string Title { get; set; }
 
-		[ExtractBy(Value = "//div[@id=\"epContentLeft\"]")]
+		[PropertyExtractBy(Expression = "//div[@id=\"epContentLeft\"]")]
 		public string Content { get; set; }
 
 		public string GetPageKey()
@@ -69,10 +64,14 @@ namespace Java2Dotnet.Spider.Samples.Model
 
 		public static void Run()
 		{
-			OoSpider.Create(new Site(), new RedisScheduler("localhost", ""), new CollectorPageModelPipeline(), typeof(List<News163>)).AddStartUrl("http://news.163.com/13/0802/05/958I1E330001124J_2.html")
-				.AddPipeline(new MultiPagePipeline())
-				.AddPipeline(new ConsolePipeline())
-				.Run();
+			//ModelSpider<News163> spider = new ModelSpider<News163>("aiqiyi_movies_" + DateTime.Now.ToLocalTime(), new Site { SleepTime = 1000, Encoding = Encoding.UTF8 }, ModelPipelineType.Collect);
+			//spider.AddStartUrl("http://news.163.com/13/0802/05/958I1E330001124J_2.html");
+			//spider.AddPipeline(new MultiPagePipeline());
+			//spider.Run();
+			//OoSpider.Create(new Site(), new RedisScheduler("localhost", ""), new CollectorPageModelPipeline(), typeof(List<News163>)).AddStartUrl("http://news.163.com/13/0802/05/958I1E330001124J_2.html")
+			//	.AddPipeline(new MultiPagePipeline())
+			//	.AddPipeline(new ConsolePipeline())
+			//	.Run();
 		}
 	}
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
-using Java2Dotnet.Spider.Extension.Pipeline;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Java2Dotnet.Spider.Core.Test.Example
@@ -10,17 +10,14 @@ namespace Java2Dotnet.Spider.Core.Test.Example
 	[TargetUrl(new[] { "http://my.oschina.net/flashsword/blog" })]
 	public class OschinaBlog
 	{
-		[ExtractBy(Value = "//title/text()")]
+		[PropertyExtractBy(Expression = "//title/text()")]
 		public string Title { get; set; }
 
-		[ExtractBy(Value = "div.BlogContent", Type = ExtractType.Css)]
+		[PropertyExtractBy(Expression = "div.BlogContent", Type = ExtractType.Css)]
 		public string Content { get; set; }
 
-		[ExtractBy(Value = "//div[@class='BlogTags']/a/text()")]
+		[PropertyExtractBy(Expression = "//div[@class='BlogTags']/a/text()")]
 		public List<string> Tags { get; set; }
-
-		[ExtractBy(Value = "//div[@class='BlogStat']/regex('\\d+-\\d+-\\d+\\s+\\d+:\\d+')")]
-		public DateTime Date { get; set; }
 	}
 
 	[TestClass]
@@ -30,7 +27,19 @@ namespace Java2Dotnet.Spider.Core.Test.Example
 		public void TestOschinaBlog()
 		{
 			//results will be saved to "/data/webmagic/" in json format
-			OoSpider.Create(new Site(), new JsonFilePageModelPipeline("/data/webmagic/"), typeof(OschinaBlog)).AddStartUrl("http://my.oschina.net/flashsword/blog").Run();
+			//OoSpider.Create(new Site(), new JsonFilePageModelPipeline("/data/webmagic/"), typeof(OschinaBlog)).AddStartUrl("http://my.oschina.net/flashsword/blog").Run();
+			ModelMysqlFileSpider<OschinaBlog> spider = new ModelMysqlFileSpider<OschinaBlog>(Guid.NewGuid().ToString(), new Site()
+			{
+				Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+				Referer = "http://my.oschina.net/flashsword/blog",
+				Headers = new Dictionary<string, string>()
+				{
+					{ "Upgrade-Insecure-Requests","1" }
+				},
+				Encoding = Encoding.UTF8
+			});
+			spider.AddStartUrl("http://my.oschina.net/flashsword/blog");
+			spider.Run();
 		}
 	}
 }

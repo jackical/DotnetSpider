@@ -1,115 +1,77 @@
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Utils;
+using Java2Dotnet.Spider.Extension.DbSupport;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper;
+using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Redial;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
 {
-	public enum OperateType
+	public sealed class DatabasePipeline<T> : IPageModelPipeline<T> where T : ISpiderEntity
 	{
-		Insert,
-		Update
-	}
+		private readonly static log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(DatabasePipeline<T>));
+		private readonly IDataRepository<T> _dataRepository;
 
-	public sealed class DatabasePipeline : IPageModelPipeline
-	{
-		private readonly static log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(DatabasePipeline));
-		private readonly OperateType _operateType;
 		public long TotalCount => _totalCount.Value;
-		private readonly ConcurrentDictionary<Type, IDataRepository> _cache = new ConcurrentDictionary<Type, IDataRepository>();
 
-		public DatabasePipeline(OperateType operateType = OperateType.Insert)
+		public DatabasePipeline()
 		{
-			_operateType = operateType;
+			_dataRepository = new DataRepository<T>();
+			_dataRepository.CreateSheme();
+			_dataRepository.CreateTable();
 		}
 
 		private readonly AutomicLong _totalCount = new AutomicLong(0);
 
-		public void Process(Dictionary<Type, List<dynamic>> data, ISpider spider)
+		public void Process(List<T> data, ISpider spider)
 		{
-			if (data == null)
+			if (data == null || data.Count == 0)
 			{
 				return;
 			}
 
-			foreach (var pair in data)
+			if (data.Count > 0)
 			{
-				Type type = pair.Key;
-				IDataRepository dataRepository = null;
-
-				if (!type.IsGenericType)
+				for (int i = 0; i < data.Count; ++i)
 				{
-					if (_cache.ContainsKey(type))
-					{
-						dataRepository = _cache[type];
-						_totalCount.Inc();
-					}
-					else
-					{
-						dataRepository = new DataRepository(type);
-						dataRepository.CreateSheme();
-						dataRepository.CreateTable();
-						_cache.TryAdd(type, dataRepository);
-					}
+					_totalCount.Inc();
 				}
-				else
-				{
-					IList list = pair.Value;
-					if (list.Count > 0)
-					{
-						type = list[0].GetType();
-
-						if (_cache.ContainsKey(type))
-						{
-							dataRepository = _cache[type];
-						}
-						else
-						{
-							dataRepository = new DataRepository(type);
-							dataRepository.CreateSheme();
-							dataRepository.CreateTable();
-							_cache.TryAdd(type, dataRepository);
-						}
-
-						for (int i = 0; i < list.Count; ++i)
-						{
-							_totalCount.Inc();
-						}
-					}
-				}
-
-				SaveOrUpate(dataRepository, pair);
 			}
+
+			SaveOrUpate(data, spider);
 		}
 
 		public void Dispose()
 		{
-			_cache.Clear();
 		}
 
-		private void SaveOrUpate(IDataRepository dataRepository, KeyValuePair<Type, List<dynamic>> data)
+		private void SaveOrUpate(List<T> data, ISpider spider)
 		{
-			switch (_operateType)
+			PipelineModel model = PipelineModel.Insert;
+
+			if (spider.Settings.ContainsKey("PipelineModel"))
 			{
-				case OperateType.Insert:
+				model = spider.Settings["PipelineModel"];
+			}
+			switch (model)
+			{
+				case PipelineModel.Insert:
 					{
 						RedialManagerUtils.Execute("db-insert", () =>
 						{
-							Insert(data, dataRepository);
+							Insert(data);
 						});
 
 						break;
 					}
-				case OperateType.Update:
+				case PipelineModel.Update:
 					{
 						RedialManagerUtils.Execute("db-update", () =>
 						{
-							dataRepository?.Update(data.Value);
+							_dataRepository?.Update(data);
 						});
 
 						break;
@@ -117,13 +79,13 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 			}
 		}
 
-		private void Insert(KeyValuePair<Type, List<dynamic>> data, IDataRepository dataRepository)
+		private void Insert(List<T> data)
 		{
 			for (int i = 0; i < 100; i++)
 			{
 				try
 				{
-					dataRepository?.Insert(data.Value);
+					_dataRepository?.Insert(data);
 					break;
 				}
 				catch (Exception e)

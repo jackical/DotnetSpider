@@ -28,6 +28,8 @@ namespace Java2Dotnet.Spider.Extension.DbSupport
 			}
 		}
 
+		public string Name => "MsSql";
+
 		public string GetHost()
 		{
 			return _host;

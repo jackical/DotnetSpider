@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Java2Dotnet.Spider.Core
 {
 	/// <summary>
@@ -20,5 +22,7 @@ namespace Java2Dotnet.Spider.Core
 		void Run();
 
 		void Stop();
+
+		Dictionary<string, dynamic> Settings { get; }
 	}
 }

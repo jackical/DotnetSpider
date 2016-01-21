@@ -1,16 +1,25 @@
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Java2Dotnet.Spider.Core;
+using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Core.Utils;
+using Java2Dotnet.Spider.Extension.Scheduler;
+using Java2Dotnet.Spider.Extension.Utils;
+using log4net;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 
 namespace Java2Dotnet.Spider.Extension.Monitor
 {
-	[Experimental]
 	public class SpiderMonitor
 	{
 		private static SpiderMonitor _instanse;
-
 		private static readonly object Locker = new object();
+		private Dictionary<ISpider, MonitorSpiderListener> _data = new Dictionary<ISpider, MonitorSpiderListener>();
 
 		private SpiderMonitor()
 		{
@@ -21,27 +30,24 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 		{
 			foreach (Core.Spider spider in spiders)
 			{
-				MonitorSpiderListener monitorSpiderListener = new MonitorSpiderListener();
-				if (spider.SpiderListeners == null)
+				if (!_data.ContainsKey(spider))
 				{
-					spider.SpiderListeners = new List<ISpiderListener> { monitorSpiderListener };
+					MonitorSpiderListener monitorSpiderListener = new MonitorSpiderListener(spider);
+					spider.RequestFailedEvent += monitorSpiderListener.OnError;
+					spider.RequestSuccessedEvent += monitorSpiderListener.OnSuccess;
+					spider.SpiderClosingEvent += monitorSpiderListener.OnClose;
+					_data.Add(spider, monitorSpiderListener);
+					if (spider.ShowControl)
+					{
+						Form1 form1 = new Form1(monitorSpiderListener);
+						form1.ShowDialog();
+					}
 				}
-				else
-				{
-					spider.SpiderListeners.Add(monitorSpiderListener);
-				}
-				ISpiderStatus spiderStatus = GetSpiderStatus(spider, monitorSpiderListener);
-				Register(spider, spiderStatus, monitorSpiderListener);
 			}
 			return this;
 		}
 
-		private ISpiderStatus GetSpiderStatus(Core.Spider spider, MonitorSpiderListener monitorSpiderListener)
-		{
-			return new SpiderStatus(spider, monitorSpiderListener);
-		}
-
-		public static SpiderMonitor Instance
+		public static SpiderMonitor Default
 		{
 			get
 			{
@@ -52,31 +58,68 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 			}
 		}
 
-		private void Register(Core.Spider spider, ISpiderStatus spiderStatus, MonitorSpiderListener monitorSpiderListener)
+		public class MonitorSpiderListener : ISpiderStatus
 		{
-			if (spider.ShowControl)
-			{
-				Form1 form1 = new Form1(spiderStatus);
-				form1.ShowDialog();
-			}
+			protected static readonly ILog Logger = LogManager.GetLogger(typeof(MonitorSpiderListener));
 
-			if (spider.SaveStatusToRedis)
-			{
-				RedisStatusUpdater statusUpdater = new RedisStatusUpdater(spider, spiderStatus);
-				monitorSpiderListener.ClosingEvent += statusUpdater.UpdateStatus;
-				statusUpdater.Run();
-			}
-		}
-
-		public delegate void SpiderClosing();
-
-		public class MonitorSpiderListener : ISpiderListener
-		{
 			private readonly AutomicLong _successCount = new AutomicLong(0);
 			private readonly AutomicLong _errorCount = new AutomicLong(0);
 			private readonly List<string> _errorUrls = new List<string>();
+			private readonly Core.Spider _spider;
 
-			public event SpiderClosing ClosingEvent;
+			public MonitorSpiderListener(Core.Spider spider)
+			{
+				_spider = spider;
+
+				if (spider.SaveStatusToRedis)
+				{
+					Task.Factory.StartNew(() =>
+					{
+						ConnectionMultiplexer redis = RedisProvider.GetProvider();
+						IDatabase db = redis.GetDatabase(0);
+
+						while (true)
+						{
+							try
+							{
+								if (Closed)
+								{
+									UpdateStatus(db);
+									break;
+								}
+
+								UpdateStatus(db);
+							}
+							catch (Exception)
+							{
+								// ignored
+							}
+
+							Thread.Sleep(1000);
+						}
+						redis.Close();
+					});
+				}
+			}
+
+			private void UpdateStatus(IDatabase db)
+			{
+				var status = new
+				{
+					Name,
+					ErrorPageCount,
+					LeftPageCount,
+					PagePerSecond,
+					StartTime,
+					EndTime,
+					Status,
+					SuccessPageCount,
+					ThreadCount,
+					TotalPageCount,
+					AliveThreadCount
+				};
+				db.HashSet(RedisScheduler.TaskStatus, _spider.Identify, JsonConvert.SerializeObject(status));
+			}
 
 			public void OnSuccess(Request request)
 			{
@@ -92,16 +135,80 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 			public void OnClose()
 			{
 				Closed = true;
-				ClosingEvent?.Invoke();
 			}
 
-			public long SuccessCount => _successCount.Value;
+			public long SuccessPageCount => _successCount.Value;
 
-			public long ErrorCount => _errorCount.Value;
+			public long ErrorPageCount => _errorCount.Value;
 
-			public List<string> ErrorUrls => _errorUrls;
+			public List<string> ErrorPages => _errorUrls;
 
 			public bool Closed { get; set; }
+
+			public string Name => _spider.Identify;
+
+			public long LeftPageCount
+			{
+				get
+				{
+					IMonitorableScheduler scheduler = _spider.Scheduler as IMonitorableScheduler;
+					if (scheduler != null)
+					{
+						return scheduler.GetLeftRequestsCount(_spider);
+					}
+					Logger.Warn("Get leftPageCount fail, try to use a Scheduler implement MonitorableScheduler for monitor count!");
+					return -1;
+				}
+			}
+
+			public long TotalPageCount
+			{
+				get
+				{
+					IMonitorableScheduler scheduler = _spider.Scheduler as IMonitorableScheduler;
+					if (scheduler != null)
+					{
+						return scheduler.GetTotalRequestsCount(_spider);
+					}
+					Logger.Warn("Get totalPageCount fail, try to use a Scheduler implement MonitorableScheduler for monitor count!");
+					return -1;
+				}
+			}
+
+			public string Status => _spider.StatusCode.ToString();
+
+			public int AliveThreadCount => _spider.ThreadAliveCount;
+
+			public int ThreadCount => _spider.ThreadNum;
+
+			public void Start()
+			{
+				_spider.Run();
+			}
+
+			public void Stop()
+			{
+				_spider.Stop();
+			}
+
+			public DateTime StartTime => _spider.StartTime;
+
+			public DateTime EndTime => _spider.FinishedTime == DateTime.MinValue ? DateTime.Now : _spider.FinishedTime;
+
+			public double PagePerSecond
+			{
+				get
+				{
+					double runSeconds = (EndTime - StartTime).TotalSeconds;
+					if (runSeconds > 0)
+					{
+						return SuccessPageCount / runSeconds;
+					}
+					return 0;
+				}
+			}
+
+			public Core.Spider Spider => _spider;
 		}
 	}
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Collections.Concurrent;
 using ZooKeeperNet.IO;
 
@@ -7,7 +6,6 @@ namespace ZooKeeperNet
 {
     using System.IO;
     using System.Linq;
-    using System.Net;
     using System.Net.Sockets;
     using System.Text;
     using System.Threading;

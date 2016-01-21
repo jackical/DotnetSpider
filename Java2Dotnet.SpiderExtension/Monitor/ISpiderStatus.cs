@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Java2Dotnet.Spider.Core;
 
 namespace Java2Dotnet.Spider.Extension.Monitor
 {
@@ -32,5 +33,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 		DateTime EndTime { get; }
 
 		double PagePerSecond { get; }
+
+		 Core.Spider Spider { get; }
 	}
 }

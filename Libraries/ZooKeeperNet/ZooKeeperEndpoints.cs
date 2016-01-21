@@ -18,13 +18,11 @@
 
 namespace ZooKeeperNet
 {
-    using System.Text;
-    using System.Net;
+	using System.Net;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
-    public class ZooKeeperEndpoints:IEnumerable<ZooKeeperEndpoint>
+	public class ZooKeeperEndpoints:IEnumerable<ZooKeeperEndpoint>
     {
         private static readonly TimeSpan defaultBackoffInterval = new TimeSpan(0,2,0); 
         private List<ZooKeeperEndpoint> zkEndpoints = new List<ZooKeeperEndpoint>();

@@ -60,6 +60,8 @@ namespace Java2Dotnet.Spider.Core
 			}
 		}
 
+		public string Referer { get; set; }
+
 		/// <summary>
 		/// Set charset of page manually. 
 		/// When charset is not set or set to null, it can be auto detected by Http header.

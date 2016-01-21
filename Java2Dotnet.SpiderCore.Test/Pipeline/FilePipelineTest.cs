@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Java2Dotnet.Spider.Core.Pipeline;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -37,6 +38,8 @@ namespace Java2Dotnet.Spider.Core.Test.Pipeline
 			public void Stop()
 			{
 			}
+
+			public Dictionary<string, dynamic> Settings { get; } = new Dictionary<string, dynamic>();
 
 			public void Exit()
 			{

@@ -1,8 +1,5 @@
 using Java2Dotnet.Spider.Core;
-using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
-using Java2Dotnet.Spider.Extension.Monitor;
-using Java2Dotnet.Spider.Extension.Pipeline;
 
 namespace Java2Dotnet.Spider.Samples.Model
 {
@@ -10,10 +7,10 @@ namespace Java2Dotnet.Spider.Samples.Model
 	[HelpUrl(Value = new[] { "http://www.36kr.com/#/page/\\d+" })]
 	public class Kr36NewsModel
 	{
-		[ExtractBy(Value = "//h1[@class='entry-title sep10']")]
+		[PropertyExtractBy(Expression = "//h1[@class='entry-title sep10']")]
 		public string Title { get; set; }
 
-		[ExtractBy(Value = "//div[@class='mainContent sep-10']/tidyText()")]
+		[PropertyExtractBy(Expression = "//div[@class='mainContent sep-10']/tidyText()")]
 		public string Content { get; set; }
 
 		[ExtractByUrl]
@@ -23,10 +20,12 @@ namespace Java2Dotnet.Spider.Samples.Model
 		{
 			Site site = new Site();
 			site.AddStartUrl("http://www.36kr.com/");
-			Core.Spider thread = OoSpider.Create(site, new DatabasePipeline(), typeof(Kr36NewsModel)).SetThreadNum(20);
-			SpiderMonitor spiderMonitor = SpiderMonitor.Instance;
-			spiderMonitor.Register(thread);
-			thread.Run();
+			//Core.Spider thread = OoSpider.Create(site, new DatabasePipeline(), typeof(Kr36NewsModel)).SetThreadNum(20);
+			//ModelSpider<Kr36NewsModel> thread = new ModelSpider<Kr36NewsModel>(Guid.NewGuid().ToString(), site, ModelPipelineType.MySql);
+			//thread.SetThreadNum(20);
+			//SpiderMonitor spiderMonitor = SpiderMonitor.Instance;
+			//spiderMonitor.Register(thread);
+			//thread.Run();
 		}
 	}
 }

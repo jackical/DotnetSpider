@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using Java2Dotnet.Spider.Extension.DbSupport.Dapper;
 using log4net;
 using MySql.Data.MySqlClient;
 
@@ -31,6 +32,8 @@ namespace Java2Dotnet.Spider.Extension.DbSupport
 				return null;
 			}
 		}
+
+		public string Name => "MySql";
 
 		public string GetHost()
 		{
