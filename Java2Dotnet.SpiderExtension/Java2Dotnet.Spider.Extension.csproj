@@ -112,7 +112,9 @@
     <Compile Include="DbSupport\IDataProviderManager.cs" />
     <Compile Include="DbSupport\MongoDbRepository.cs" />
     <Compile Include="DbSupport\MySqlDataProvider.cs" />
+    <Compile Include="DbSupport\MysqlFileRepository.cs" />
     <Compile Include="DbSupport\SqlServerDataProvider.cs" />
+    <Compile Include="Environment.cs" />
     <Compile Include="IRedisSpider.cs" />
     <Compile Include="Model\Attribute\BaseExtractBy.cs" />
     <Compile Include="Model\Attribute\ComboExtract.cs" />

@@ -224,6 +224,11 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			page.TargetUrl = response.ResponseUri.ToString();
 			page.Url = request.Url.ToString();
 			page.StatusCode = statusCode;
+			foreach (string key in response.Headers.AllKeys)
+			{
+				page.Request.PutExtra(key, response.Headers[key]);
+			}
+
 			return page;
 		}
 
