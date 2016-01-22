@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.Utils;
 using Newtonsoft.Json;
@@ -6,7 +7,7 @@ using StackExchange.Redis;
 
 namespace Java2Dotnet.Spider.Extension.Scheduler
 {
-	public class RedisSchedulerManager : ISchedulerManager
+	public class RedisSchedulerManager : ISchedulerManager, IDisposable
 	{
 		private readonly ConnectionMultiplexer _redis;
 
@@ -80,6 +81,11 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			IServer server = _redis.GetServer(_redis.GetEndPoints()[0]);
 			server.FlushDatabase();
+		}
+
+		public void Dispose()
+		{
+			_redis?.Close();
 		}
 	}
 }

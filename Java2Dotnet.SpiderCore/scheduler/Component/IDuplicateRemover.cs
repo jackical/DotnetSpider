@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 
 namespace Java2Dotnet.Spider.Core.Scheduler.Component
@@ -5,7 +6,7 @@ namespace Java2Dotnet.Spider.Core.Scheduler.Component
 	/// <summary>
 	/// Remove duplicate requests.
 	/// </summary>
-	public interface IDuplicateRemover
+	public interface IDuplicateRemover : IDisposable
 	{
 		/// <summary>
 		/// Check whether the request is duplicate.

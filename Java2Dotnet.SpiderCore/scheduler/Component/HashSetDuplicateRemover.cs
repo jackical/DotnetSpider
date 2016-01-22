@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 
 namespace Java2Dotnet.Spider.Core.Scheduler.Component
@@ -24,6 +25,11 @@ namespace Java2Dotnet.Spider.Core.Scheduler.Component
 		public int GetTotalRequestsCount(ISpider spider)
 		{
 			return _urls.Count;
+		}
+
+		public void Dispose()
+		{
+			_urls.Clear();
 		}
 	}
 }

@@ -38,8 +38,6 @@ namespace Java2Dotnet.Spider.Extension.Model
 		{
 			AddPipeline(new ModelPipeline<T>(new CollectorModelPipeline<T>()));
 		}
-
-
 	}
 
 	public sealed class ModelCollectorSpider<T1, T2> : BaseModelCollectorSpider

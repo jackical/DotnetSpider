@@ -41,7 +41,7 @@ namespace Java2Dotnet.Spider.Core.Test.Pipeline
 
 			public Dictionary<string, dynamic> Settings { get; } = new Dictionary<string, dynamic>();
 
-			public void Exit()
+			public void Dispose()
 			{
 			}
 		};

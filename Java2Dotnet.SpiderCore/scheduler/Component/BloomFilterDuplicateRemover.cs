@@ -51,5 +51,10 @@ namespace Java2Dotnet.Spider.Core.Scheduler.Component
 		{
 			return _counter.Value;
 		}
+
+		public void Dispose()
+		{
+			_bloomFilter.Clear();
+		}
 	}
 }

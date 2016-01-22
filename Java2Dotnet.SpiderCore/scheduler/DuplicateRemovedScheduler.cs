@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using Java2Dotnet.Spider.Core.Scheduler.Component;
 using Java2Dotnet.Spider.Redial;
@@ -54,6 +55,11 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 			{
 				PushWhenNoDuplicate(request, spider);
 			}
+		}
+
+		public virtual void Dispose()
+		{
+			DuplicateRemover.Dispose();
 		}
 	}
 }

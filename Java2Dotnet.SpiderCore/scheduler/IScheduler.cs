@@ -1,4 +1,6 @@
-namespace Java2Dotnet.Spider.Core.Scheduler 
+using System;
+
+namespace Java2Dotnet.Spider.Core.Scheduler
 {
 	/// <summary>
 	/// Scheduler is the part of url management. 
@@ -6,7 +8,7 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 	/// manage urls to fetch
 	/// remove duplicate urls
 	/// </summary>
-	public interface IScheduler
+	public interface IScheduler : IDisposable
 	{
 		void Init(ISpider spider);
 

@@ -482,7 +482,12 @@ namespace Java2Dotnet.Spider.Core
 		protected void OnClose()
 		{
 			SpiderClosingEvent?.Invoke();
-			SafeDestroy(Downloader);
+			foreach (var pipeline in Pipelines)
+			{
+				SafeDestroy(pipeline);
+			}
+
+			SafeDestroy(Scheduler);
 			SafeDestroy(PageProcessor);
 		}
 
@@ -770,14 +775,9 @@ namespace Java2Dotnet.Spider.Core
 			}
 		}
 
-		//public T Get<T>(string url)
-		//{
-		//	IList<T> resultItemses = GetAll<T>(url);
-		//	if (resultItemses != null && resultItemses.Count > 0)
-		//	{
-		//		return resultItemses[0];
-		//	}
-		//	return default(T);
-		//}
+		public void Dispose()
+		{
+			OnClose();
+		}
 	}
 }

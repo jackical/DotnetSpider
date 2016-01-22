@@ -51,5 +51,9 @@ namespace Java2Dotnet.Spider.Extension.Test
 		{
 
 		}
+
+		public void Dispose()
+		{
+		}
 	};
 }

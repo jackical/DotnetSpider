@@ -43,5 +43,9 @@ namespace Java2Dotnet.Spider.Core
 		}
 
 		public Dictionary<string, dynamic> Settings { get; } = new Dictionary<string, dynamic>();
+
+		public void Dispose()
+		{
+		}
 	}
 }

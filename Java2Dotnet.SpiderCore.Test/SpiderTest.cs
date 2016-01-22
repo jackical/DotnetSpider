@@ -97,6 +97,10 @@ namespace Java2Dotnet.Spider.Core.Test
 				}
 				return new Request("test", 1, null);
 			}
+
+			public void Dispose()
+			{
+			}
 		}
 
 		private class TestPageProcessor : IPageProcessor

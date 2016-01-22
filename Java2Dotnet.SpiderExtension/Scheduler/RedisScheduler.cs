@@ -14,7 +14,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 	/// <summary>
 	/// Use Redis as url scheduler for distributed crawlers.
 	/// </summary>
-	public class RedisScheduler : DuplicateRemovedScheduler, IMonitorableScheduler, IDuplicateRemover, IDisposable
+	public class RedisScheduler : DuplicateRemovedScheduler, IMonitorableScheduler, IDuplicateRemover
 	{
 		public static readonly string QueuePrefix = "queue-";
 		public static readonly string TaskStatus = "task-status";
@@ -138,7 +138,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			});
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
 			Redis?.Dispose();
 		}
