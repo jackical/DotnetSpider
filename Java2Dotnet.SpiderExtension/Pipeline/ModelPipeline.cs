@@ -33,13 +33,16 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 			{
 				dynamic data = resultItems.GetResultItem(_actuallyType.FullName);
 
-				if (data is IEnumerable)
+				if (data != null)
 				{
-					list.AddRange(data);
-				}
-				else
-				{
-					list.Add(data);
+					if (data is IEnumerable)
+					{
+						list.AddRange(data);
+					}
+					else
+					{
+						list.Add(data);
+					}
 				}
 			}
 			PageModelPipeline.Process(list, spider);
