@@ -62,6 +62,7 @@ namespace Java2Dotnet.Spider.Core
 		private bool _init;
 		private bool _runningExit;
 		private static readonly Regex IdentifyRegex = new Regex(@"^[\d\w\s-/]+$");
+		private static bool _printedInfo;
 
 		/// <summary>
 		/// Create a spider with pageProcessor.
@@ -455,6 +456,22 @@ namespace Java2Dotnet.Spider.Core
 			}
 
 			_runningExit = true;
+		}
+
+		public static void PrintInfo()
+		{
+			if (!_printedInfo)
+			{
+				Console.WriteLine("=============================================================");
+				Console.WriteLine("== DotnetSpider is an open source .Net spider              ==");
+				Console.WriteLine("== It's a light, stable, high performce spider             ==");
+				Console.WriteLine("== Support save data to file, mysql, mssql, mongodb etc    ==");
+				Console.WriteLine("== License: LGPL3.0                                        ==");
+				Console.WriteLine("== Version: 0.9.10                                         ==");
+				Console.WriteLine("== Author: zlzforever@163.com                              ==");
+				Console.WriteLine("=============================================================");
+				_printedInfo = true;
+			}
 		}
 
 		public void RunAsync()

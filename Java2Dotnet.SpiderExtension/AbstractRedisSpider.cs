@@ -12,6 +12,11 @@ namespace Java2Dotnet.Spider.Extension
 {
 	public abstract class AbstractRedisSpider : IRedisSpider
 	{
+		public AbstractRedisSpider()
+		{
+			Core.Spider.PrintInfo();
+		}
+
 		private RedisScheduler _scheduler;
 
 		protected RedisScheduler Scheduler
