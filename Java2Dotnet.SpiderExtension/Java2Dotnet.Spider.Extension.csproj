@@ -123,7 +123,7 @@
     <Compile Include="Model\Attribute\HelpUrl.cs" />
     <Compile Include="Model\Attribute\Download.cs" />
     <Compile Include="Model\ModelSpider.cs" />
-    <Compile Include="Model\Stopper.cs" />
+    <Compile Include="Model\Attribute\RequestStoping.cs" />
     <Compile Include="Model\BaseModelSpider.cs" />
     <Compile Include="Model\Extractor.cs" />
     <Compile Include="Model\ExtractType.cs" />
@@ -144,6 +144,7 @@
     <Compile Include="Model\Formatter\PrefixFormatter.cs" />
     <Compile Include="Model\Formatter\RegexFormatter.cs" />
     <Compile Include="Model\Formatter\Types.cs" />
+    <Compile Include="Model\TypeExtractor.cs" />
     <Compile Include="Monitor\Form1.cs">
       <SubType>Form</SubType>
     </Compile>

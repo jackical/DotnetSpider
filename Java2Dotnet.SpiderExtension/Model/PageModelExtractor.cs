@@ -37,6 +37,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		private IObjectFormatter _targetUrlFormatter;
 		private TypeExtractor _typeExtractor;
 		private readonly Regex _urlRegex = new Regex(@"((http|https|ftp):(\/\/|\\\\)((\w)+[.]){1£¬}(net|com|cn|org|cc|tv|[0-9]{1£¬3})(((\/[\~]*|\\[\~]*)(\w)+)|[.](\w)+)*(((([?](\w)+){1}[=]*))*((\w)+){1}([\&](\w)+[\=](\w)+)*)*)");
+		private RequestStoping _requestRequestStoping;
 
 		public PageModelExtractor()
 		{
@@ -126,8 +127,6 @@ namespace Java2Dotnet.Spider.Extension.Model
 		{
 			//check custom formatter
 			Attribute.Formatter formatter = field.GetCustomAttribute<Attribute.Formatter>();
-			Stopper stopper = field.GetCustomAttribute<Stopper>();
-			fieldExtractor.Stopper = stopper;
 
 			IObjectFormatter objectFormatter;
 			if (formatter?.FormatterType != null)
@@ -263,6 +262,8 @@ namespace Java2Dotnet.Spider.Extension.Model
 			{
 				_typeExtractor = ExtractorUtils.GetTypeExtractor(extractByAttribute);
 			}
+
+			_requestRequestStoping = _actualType.GetCustomAttribute<RequestStoping>(true);
 		}
 
 		public dynamic Process(Page page)
@@ -361,18 +362,6 @@ namespace Java2Dotnet.Spider.Extension.Model
 					if (fieldExtractor.ObjectFormatter != null)
 					{
 						IList<dynamic> converted = Convert(value, fieldExtractor.ObjectFormatter);
-
-						if (fieldExtractor.Stopper != null)
-						{
-							foreach (string d in converted)
-							{
-								if (fieldExtractor.Stopper.NeedStop(d) && !page.MissTargetUrls)
-								{
-									page.MissTargetUrls = true;
-									break;
-								}
-							}
-						}
 
 						dynamic field = fieldExtractor.Field.GetValue(instance) ?? Activator.CreateInstance(fieldExtractor.Field.PropertyType);
 
@@ -485,11 +474,6 @@ namespace Java2Dotnet.Spider.Extension.Model
 							return default(T);
 						}
 
-						if (fieldExtractor.Stopper != null && !page.MissTargetUrls)
-						{
-							page.MissTargetUrls = fieldExtractor.Stopper.NeedStop(converted);
-						}
-
 						fieldExtractor.Field.SetValue(instance, converted);
 					}
 					else
@@ -505,6 +489,14 @@ namespace Java2Dotnet.Spider.Extension.Model
 							page.AddResultItem(Page.Images, value);
 						}
 					}
+				}
+			}
+
+			if (_requestRequestStoping != null)
+			{
+				if (_requestRequestStoping.NeedStop(instance) && !page.MissTargetUrls)
+				{
+					page.MissTargetUrls = true;
 				}
 			}
 
