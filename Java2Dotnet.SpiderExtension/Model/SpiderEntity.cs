@@ -28,7 +28,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 	public abstract class SpiderEntityUseStringKey : ICustomize, ISpiderEntity
 	{
-		public string Id { get; set; }
+		public abstract string Id { get; set; }
 
 		public virtual void Customize()
 		{

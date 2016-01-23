@@ -56,7 +56,9 @@ namespace Java2Dotnet.Spider.Samples
 
 			//SingleSample.RunTask();
 
-			Ganji.RunTask();
+			GanjiPostSpider spider = new GanjiPostSpider();
+			spider.Run();
+
 			//News163.Run();
 			//OschinaAnswer.Run();
 

@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseSpiderEntity.cs" />
     <Compile Include="Ganji.cs" />
     <Compile Include="GanjiPostCount.cs" />
     <Compile Include="Model\OschinaAnswer.cs" />

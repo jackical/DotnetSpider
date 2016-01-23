@@ -6,35 +6,39 @@ using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper.Attributes;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
+using Java2Dotnet.Spider.Extension;
 
 namespace Java2Dotnet.Spider.Samples
 {
-	////*[@id="list-job-id"]/div[15]/ul
-	//[TargetUrl(new[] { "zpdianhuaxiaoshou/o[0-9]+/" }, "//*[@id=\"list-job-id\"]/div[15]/ul")]
-
-	//////*[@id="list-job-id"]/div[9]/dl[1]
-	[TypeExtractBy(Expression = "//*[@id=\"list-job-id\"]/div[9]/dl", Multi = true)]
-	[Scheme("ganji", "post")]
-	public class Ganji : SpiderEntityUseStringKey
+	public class GanjiPostSpider : AbstractRedisSpider
 	{
-		public static void RunTask()
-		{
-			Stopwatch watch = Stopwatch.StartNew();
-			watch.Start();
-			ModelCollectorSpider<Ganji> ooSpider = new ModelCollectorSpider<Ganji>("ganji", new Site { SleepTime = 1000, Encoding = Encoding.UTF8 });
-			ooSpider.SetEmptySleepTime(15000);
-			ooSpider.SetThreadNum(1);
-			ooSpider.SetCachedSize(1);
+		public override string Name => "Ganji Post Dayly " + DateTime.Now.ToString("yyyy_MM_dd");
 
-			for (int i = 1; i <= 50; ++i)
-			{
-				ooSpider.AddStartUrl($"http://sh.ganji.com/zpdianhuaxiaoshou/o{i}/");
-			}
-			ooSpider.Run();
-			watch.Stop();
-			Console.WriteLine("Need time: " + watch.ElapsedMilliseconds);
+		protected override Site Site { get; } = new Site { SleepTime = 1000, Encoding = Encoding.UTF8 };
+
+		protected override Core.Spider InitSpider()
+		{
+			ModelDatabaseSpider<Ganji> spider = new ModelDatabaseSpider<Ganji>(Name, Site, Scheduler);
+			spider.SetEmptySleepTime(15000);
+			spider.SetThreadNum(1);
+			spider.SetCachedSize(1);
+
+			return spider;
 		}
 
+		protected override void PrepareSite()
+		{
+			for (int i = 1; i <= 50; ++i)
+			{
+				Site.AddStartUrl($"http://sh.ganji.com/zpdianhuaxiaoshou/o{i}/");
+			}
+		}
+	}
+
+	[TypeExtractBy(Expression = "//*[@id=\"list-job-id\"]/div[9]/dl", Multi = true)]
+	[Scheme("ganji", "post")]
+	public class Ganji : BaseSpiderEntity
+	{
 		[StoredAs("title", StoredAs.ValueType.Varchar, false, 100)]
 		////*[@id="list-job-id"]/div[9]/dl[1]/dt/a
 		[PropertyExtractBy(Expression = "/dl/dt/a")]

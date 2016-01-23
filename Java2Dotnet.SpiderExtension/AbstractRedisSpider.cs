@@ -85,7 +85,7 @@ namespace Java2Dotnet.Spider.Extension
 				}
 
 				Console.WriteLine("Init spider with site.");
-				_spider = InitSpider(Site);
+				_spider = InitSpider();
 				_spider.SaveStatusToRedis = true;
 				SpiderMonitor.Default.Register(_spider);
 				_spider.InitComponent();
@@ -109,9 +109,9 @@ namespace Java2Dotnet.Spider.Extension
 
 		protected abstract void PrepareSite();
 		protected abstract Site Site { get; }
-		protected abstract Core.Spider InitSpider(Site site);
+		protected abstract Core.Spider InitSpider();
 
 		public abstract string Name { get; }
-		public virtual AtomicType AtomicType { get; } = AtomicType.Zookeeper;
+		public virtual AtomicType AtomicType { get; } = AtomicType.Null;
 	}
 }
