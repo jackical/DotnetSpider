@@ -35,17 +35,6 @@ namespace Java2Dotnet.Spider.Core.Selector
 			return new XPathSelector(expr);
 		}
 
-		/// <summary>
-		/// @Deprecated
-		/// @see #xpath(string)
-		/// </summary>
-		/// <param name="expr"></param>
-		/// <returns></returns>
-		public static XPathSelector XSoup(string expr)
-		{
-			return new XPathSelector(expr);
-		}
-
 		public static AndSelector And(params ISelector[] selectors)
 		{
 			return new AndSelector(selectors);

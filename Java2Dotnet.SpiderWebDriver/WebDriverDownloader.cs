@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using System.Web;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Downloader;
-using OpenQA.Selenium;
 using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Redial;
+using OpenQA.Selenium.Remote;
 
 namespace Java2Dotnet.Spider.WebDriver
 {
@@ -18,9 +18,9 @@ namespace Java2Dotnet.Spider.WebDriver
 		private readonly Option _option;
 		private static bool _isLogined;
 
-		public Func<IWebDriver, bool> LoginFunc;
-		public Func<string, string> UrlFormatFunc;
-		public Func<IWebDriver, bool> AfterNavigateFunc;
+		public Func<RemoteWebDriver, bool> Login;
+		public Func<string, string> UrlFormat;
+		public Func<RemoteWebDriver, bool> AfterNavigate;
 
 		public WebDriverDownloader(Browser browser = Browser.Phantomjs, int webDriverWaitTime = 200, Option option = null)
 		{
@@ -56,9 +56,9 @@ namespace Java2Dotnet.Spider.WebDriver
 
 				lock (this)
 				{
-					if (!_isLogined && LoginFunc != null)
+					if (!_isLogined && Login != null)
 					{
-						_isLogined = LoginFunc.Invoke(driverService.WebDriver);
+						_isLogined = Login.Invoke(driverService.WebDriver as RemoteWebDriver);
 						if (!_isLogined)
 						{
 							throw new SpiderExceptoin("Login failed. Please check your login codes.");
@@ -75,9 +75,9 @@ namespace Java2Dotnet.Spider.WebDriver
 					? ""
 					: ("?" + HttpUtility.UrlPathEncode(uri.Query.Substring(1, uri.Query.Length - 1))));
 
-				if (UrlFormatFunc != null)
+				if (UrlFormat != null)
 				{
-					realUrl = UrlFormatFunc(realUrl);
+					realUrl = UrlFormat(realUrl);
 				}
 
 				RedialManagerUtils.Execute("webdriverdownloader-download", () =>
@@ -87,7 +87,7 @@ namespace Java2Dotnet.Spider.WebDriver
 
 				Thread.Sleep(_webDriverWaitTime);
 
-				AfterNavigateFunc?.Invoke(driverService.WebDriver);
+				AfterNavigate?.Invoke((RemoteWebDriver)driverService.WebDriver);
 
 				Page page = new Page(request);
 				page.RawText = driverService.WebDriver.PageSource;

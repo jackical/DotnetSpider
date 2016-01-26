@@ -15,28 +15,27 @@ namespace Java2Dotnet.Spider.Extension
 	{
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(AbstractRedisSpider));
 
+		private RedisScheduler _scheduler;
+
+		protected RedisScheduler Scheduler => _scheduler ?? (_scheduler = new RedisScheduler(RedisProvider.GetProvider()));
+
+		public Core.Spider Spider { get; private set; }
+
 		protected AbstractRedisSpider()
 		{
 			Core.Spider.PrintInfo();
 		}
 
-		private RedisScheduler _scheduler;
-
-		protected RedisScheduler Scheduler => _scheduler ?? (_scheduler = new RedisScheduler(RedisProvider.GetProvider()));
-
-		protected bool IsInited { get; set; }
-
 		public void Run()
 		{
-			Core.Spider spider = null;
 			try
 			{
-				spider = Prepare();
-				spider?.Run();
+				Spider = Prepare();
+				Spider?.Run();
 			}
 			finally
 			{
-				spider?.Dispose();
+				Spider?.Dispose();
 			}
 		}
 

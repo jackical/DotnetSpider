@@ -44,15 +44,15 @@ namespace Java2Dotnet.Spider.Core.Selector
 			return GetValue(elements[0]);
 		}
 
-		public override IList<string> SelectList(HtmlAgilityPack.HtmlNode doc)
+		public override IList<string> SelectList(HtmlAgilityPack.HtmlNode element)
 		{
 			IList<string> strings = new List<string>();
-			IList<HtmlAgilityPack.HtmlNode> elements = SelectElements(doc);
+			IList<HtmlAgilityPack.HtmlNode> elements = SelectElements(element);
 			if (elements != null && elements.Count > 0)
 			{
-				foreach (HtmlAgilityPack.HtmlNode element in elements)
+				foreach (HtmlAgilityPack.HtmlNode e in elements)
 				{
-					string value = GetValue(element);
+					string value = GetValue(e);
 					if (value != null)
 					{
 						strings.Add(value);
