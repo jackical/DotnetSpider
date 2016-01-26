@@ -134,12 +134,19 @@ namespace Java2Dotnet.Spider.Core
 		/// <returns></returns>
 		public virtual Spider SetThreadNum(int threadNum)
 		{
-			CheckIfRunning();
-			ThreadNum = threadNum;
 			if (threadNum <= 0)
 			{
 				throw new ArgumentException("threadNum should be more than one!");
 			}
+
+			CheckIfRunning();
+
+			ThreadNum = threadNum;
+			if (Downloader != null)
+			{
+				Downloader.ThreadNum = threadNum;
+			}
+
 			return this;
 		}
 
@@ -268,6 +275,7 @@ namespace Java2Dotnet.Spider.Core
 		{
 			CheckIfRunning();
 			Downloader = downloader;
+			Downloader.ThreadNum = ThreadNum == 0 ? 1 : ThreadNum;
 			return this;
 		}
 
@@ -465,6 +473,7 @@ namespace Java2Dotnet.Spider.Core
 				Console.WriteLine("=============================================================");
 				Console.WriteLine("== DotnetSpider is an open source .Net spider              ==");
 				Console.WriteLine("== It's a light, stable, high performce spider             ==");
+				Console.WriteLine("== Support multi thread, ajax page, http                   ==");
 				Console.WriteLine("== Support save data to file, mysql, mssql, mongodb etc    ==");
 				Console.WriteLine("== License: LGPL3.0                                        ==");
 				Console.WriteLine("== Version: 0.9.10                                         ==");
@@ -506,6 +515,7 @@ namespace Java2Dotnet.Spider.Core
 
 			SafeDestroy(Scheduler);
 			SafeDestroy(PageProcessor);
+			SafeDestroy(Downloader);
 		}
 
 		protected void OnError(Request request)

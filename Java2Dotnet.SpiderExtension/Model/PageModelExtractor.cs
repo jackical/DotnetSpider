@@ -27,7 +27,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 	/// </summary>
 	public class PageModelExtractor<T> : IPageModelExtractor
 	{
-		private readonly static log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(PageModelExtractor<T>));
+		private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(PageModelExtractor<T>));
 		private readonly IList<Regex> _targetUrlPatterns = new List<Regex>();
 		private ISelector _targetUrlRegionSelector;
 		private readonly IList<Regex> _helpUrlPatterns = new List<Regex>();

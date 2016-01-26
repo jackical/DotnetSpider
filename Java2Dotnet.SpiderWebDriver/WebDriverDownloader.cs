@@ -44,8 +44,6 @@ namespace Java2Dotnet.Spider.WebDriver
 					// ReSharper disable once FunctionNeverReturns
 				});
 			}
-
-			CheckInit();
 		}
 
 		public override Page Download(Request request, ISpider spider)
@@ -54,11 +52,10 @@ namespace Java2Dotnet.Spider.WebDriver
 
 			try
 			{
-				driverService = _webDriverPool.Get();
+				driverService = Pool.Get();
 
 				lock (this)
 				{
-					Site site = spider.Site;
 					if (!_isLogined && LoginFunc != null)
 					{
 						_isLogined = LoginFunc.Invoke(driverService.WebDriver);
@@ -107,20 +104,24 @@ namespace Java2Dotnet.Spider.WebDriver
 			}
 			finally
 			{
-				_webDriverPool.ReturnToPool(driverService);
+				Pool.ReturnToPool(driverService);
 			}
 		}
 
 		public override void Dispose()
 		{
-			_webDriverPool?.CloseAll();
+			Pool?.CloseAll();
 		}
 
-		private void CheckInit()
+		private WebDriverPool Pool
 		{
-			if (_webDriverPool == null)
+			get
 			{
-				_webDriverPool = new WebDriverPool(_browser, ThreadNum, _option);
+				if (_webDriverPool == null)
+				{
+					_webDriverPool = new WebDriverPool(_browser, ThreadNum, _option);
+				}
+				return _webDriverPool;
 			}
 		}
 	}
