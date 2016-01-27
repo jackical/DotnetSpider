@@ -443,7 +443,6 @@ namespace Java2Dotnet.Spider.Core
 				}
 			}
 
-
 			ThreadPool.WaitToExit();
 			FinishedTime = DateTime.Now;
 

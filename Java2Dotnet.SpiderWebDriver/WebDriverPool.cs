@@ -31,14 +31,8 @@ namespace Java2Dotnet.Spider.WebDriver
 
 		private readonly Browser _browser;
 
-		/**
-		 * store webDrivers created
-		 */
 		private readonly BlockingCollection<WebDriverItem> _webDriverList = new BlockingCollection<WebDriverItem>();
 		private readonly ConcurrentQueue<WebDriverItem> _innerQueue = new ConcurrentQueue<WebDriverItem>();
-		/**
-		 * store webDrivers available
-		 */
 
 		public WebDriverPool(Browser browser, int capacity = 5, Option option = null)
 		{

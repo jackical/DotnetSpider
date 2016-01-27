@@ -13,13 +13,13 @@ namespace Java2Dotnet.Spider.Core.Selector
 		/// </summary>
 		/// <param name="text"></param>
 		/// <returns></returns>
-		string Select(string text);
+		SelectedNode Select(SelectedNode text);
 
 		/// <summary>
 		/// Extract all results in text.
 		/// </summary>
 		/// <param name="text"></param>
 		/// <returns></returns>
-		IList<string> SelectList(string text);
+		List<SelectedNode> SelectList(SelectedNode text);
 	}
 }

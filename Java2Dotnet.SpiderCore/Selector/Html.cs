@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using HtmlAgilityPack;
 using Java2Dotnet.Spider.Core.Utils;
 
@@ -9,13 +9,8 @@ namespace Java2Dotnet.Spider.Core.Selector
 	/// <summary>
 	/// Selectable html.
 	/// </summary>
-	public class Html : HtmlNode
+	public class Html : AbstractSelectable
 	{
-		/// <summary>
-		/// Store parsed document for better performance when only one text exist.
-		/// </summary>
-		public HtmlAgilityPack.HtmlNode Document { get; }
-
 		public Html(string text, Uri url)
 		{
 			try
@@ -23,16 +18,16 @@ namespace Java2Dotnet.Spider.Core.Selector
 				HtmlDocument document = new HtmlDocument();
 				document.OptionAutoCloseOnEnd = true;
 				document.LoadHtml(text);
-				Document = document.DocumentNode;
 
 				if (url != null)
 				{
-					FixAllRelativeHrefs(url.ToString());
+					FixAllRelativeHrefs(document, url.ToString());
 				}
+
+				Elements=new List<SelectedNode>() { new SelectedNode() { Type = ResultType.Node, Result = document.DocumentNode } };
 			}
 			catch (Exception e)
 			{
-				Document = null;
 				Logger.Warn("parse document error ", e);
 			}
 		}
@@ -41,37 +36,66 @@ namespace Java2Dotnet.Spider.Core.Selector
 		{
 		}
 
-		public Html(HtmlAgilityPack.HtmlNode document)
+		public Html(SelectedNode node)
 		{
-			Document = document;
-		}
-
-		protected override IList<HtmlAgilityPack.HtmlNode> Elements => new ReadOnlyCollection<HtmlAgilityPack.HtmlNode>(new List<HtmlAgilityPack.HtmlNode> { Document });
-
-		public string SelectDocument(ISelector selector)
-		{
-			IElementSelector elementSelector = selector as IElementSelector;
-			if (elementSelector != null)
+			if (node.Type != ResultType.Node)
 			{
-				return elementSelector.Select(Document);
-			}
-			return selector?.Select(GetFirstSourceText());
-		}
+				HtmlDocument document = new HtmlDocument();
+				document.OptionAutoCloseOnEnd = true;
+				document.LoadHtml(node.Result.ToString());
 
-		public IList<string> SelectDocumentForList(ISelector selector)
-		{
-			var elementSelector = selector as IElementSelector;
-			if (elementSelector != null)
+				Elements = new List<SelectedNode>() { new SelectedNode() { Type = ResultType.Node, Result = document.DocumentNode } };
+			}
+			else
 			{
-				return elementSelector.SelectList(Document);
+				//Document = new List<SelectedNode>() { new SelectedNode() { Type = ResultType.Node, Result = document.DocumentNode } };
+				Elements.Add(node);
 			}
-			return selector?.SelectList(GetFirstSourceText());
 		}
 
-		// 问题太多, 如果有需要移到实体类的Expression中处理
-		internal void FixAllRelativeHrefs(string url)
+		public Html(List<SelectedNode> nodes)
 		{
-			var nodes = Document.SelectNodes("//a[not(starts-with(@href,'http') or starts-with(@href,'https'))]");
+			Elements = nodes;
+		}
+
+		public override ISelectable Select(ISelector selector)
+		{
+			if (selector != null)
+			{
+				List<SelectedNode> resluts = new List<SelectedNode>();
+				foreach (var selectedNode in Elements)
+				{
+					resluts.Add(selector.Select(selectedNode));
+				}
+				return new Html(resluts);
+			}
+			throw new SpiderExceptoin("Selector is null.");
+		}
+
+		public override ISelectable SelectList(ISelector selector)
+		{
+			//var elementSelector = selector as IElementSelector;
+			if (selector != null)
+			{
+				List<SelectedNode> resluts = new List<SelectedNode>();
+				foreach (var selectedNode in Elements)
+				{
+					resluts.AddRange(selector.SelectList(selectedNode));
+				}
+				return new Html(resluts);
+			}
+			//return selector?.SelectList(GetFirstSourceText());
+			throw new SpiderExceptoin("Selector is null.");
+		}
+
+		public override IList<ISelectable> Nodes()
+		{
+			return Elements.Select(element => new Html(element)).Cast<ISelectable>().ToList();
+		}
+
+		private void FixAllRelativeHrefs(HtmlDocument document, string url)
+		{
+			var nodes = document.DocumentNode.SelectNodes("//a[not(starts-with(@href,'http') or starts-with(@href,'https'))]");
 			if (nodes != null)
 			{
 				foreach (var node in nodes)
@@ -82,11 +106,6 @@ namespace Java2Dotnet.Spider.Core.Selector
 					}
 				}
 			}
-		}
-
-		public static Html Create(string text)
-		{
-			return new Html(text);
 		}
 	}
 }

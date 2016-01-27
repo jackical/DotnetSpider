@@ -41,27 +41,27 @@ namespace Java2Dotnet.Spider.Samples
 	{
 		[StoredAs("title", StoredAs.ValueType.Varchar, false, 100)]
 		////*[@id="list-job-id"]/div[9]/dl[1]/dt/a
-		[PropertyExtractBy(Expression = "/dl/dt/a")]
+		[PropertyExtractBy(Expression = "./dt/a")]
 		public string Title { get; set; }
 
 		[StoredAs("company", StoredAs.ValueType.Varchar, false, 100)]
-		[PropertyExtractBy(Expression = "/dl/dd[1]/a")]
+		[PropertyExtractBy(Expression = "./dd[1]/a")]
 		public string Company { get; set; }
 
 		[StoredAs("ishr", StoredAs.ValueType.Varchar, false, 5)]
-		[PropertyExtractBy(Expression = "/dl/dd[1]/span/@class")]
+		[PropertyExtractBy(Expression = "./dd[1]/span/@class")]
 		public string IsHr { get; set; }
 
 		[StoredAs("bangbang", StoredAs.ValueType.Varchar, false, 20)]
-		[PropertyExtractBy(Expression = "/dl/dd[1]/span")]
+		[PropertyExtractBy(Expression = "./dd[1]/span")]
 		public string BangBang { get; set; }
 
 		[StoredAs("third", StoredAs.ValueType.Varchar, false, 20)]
-		[PropertyExtractBy(Expression = "/dl/dd[1]/i/@title")]
+		[PropertyExtractBy(Expression = "./dd[1]/i/@title")]
 		public string Third { get; set; }
 
 		[StoredAs("corpmail", StoredAs.ValueType.Varchar, false, 20)]
-		[PropertyExtractBy(Expression = "/dl/dd[1]/span[1]/@title")]
+		[PropertyExtractBy(Expression = "./dd[1]/span[1]/@title")]
 		public string CorpMail { get; set; }
 
 		[StoredAs("uuid", StoredAs.ValueType.Varchar, false, 20)]

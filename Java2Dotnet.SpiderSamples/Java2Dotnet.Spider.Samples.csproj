@@ -65,6 +65,7 @@
     <Compile Include="walter.cs" />
     <Compile Include="VideoEntity.cs" />
     <Compile Include="YellowPage.cs" />
+    <Compile Include="YoukuVipBll.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

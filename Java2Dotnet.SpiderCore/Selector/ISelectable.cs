@@ -56,13 +56,13 @@ namespace Java2Dotnet.Spider.Core.Selector
 		/// <returns></returns>
 		ISelectable Regex(string regex, int group);
 
-		/// <summary>
-		/// Replace with regex
-		/// </summary>
-		/// <param name="regex"></param>
-		/// <param name="replacement"></param>
-		/// <returns></returns>
-		ISelectable Replace(string regex, string replacement);
+		///// <summary>
+		///// Replace with regex
+		///// </summary>
+		///// <param name="regex"></param>
+		///// <param name="replacement"></param>
+		///// <returns></returns>
+		//ISelectable Replace(string regex, string replacement);
 
 		/// <summary>
 		/// Single string result
@@ -73,19 +73,13 @@ namespace Java2Dotnet.Spider.Core.Selector
 		/// <summary>
 		/// Single string result
 		/// </summary>
-		string Value { get; }
+		dynamic Value { get; }
 
-		/// <summary>
-		/// If result exist for select
-		/// </summary>
-		/// <returns></returns>
-		bool Exist();
-
-		/// <summary>
-		/// Multi string result
-		/// </summary>
-		/// <returns></returns>
-		IList<string> GetAll();
+		///// <summary>
+		///// If result exist for select
+		///// </summary>
+		///// <returns></returns>
+		////bool Exist();
 
 		/// <summary>
 		/// Extract by JSON Path expression

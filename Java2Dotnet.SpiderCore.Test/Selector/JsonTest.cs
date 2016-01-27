@@ -13,14 +13,14 @@ namespace Java2Dotnet.Spider.Core.Test.Selector
 		[TestMethod]
 		public void TestRemovePadding()
 		{
-			string name = new Json(_text).RemovePadding("callback").JsonPath("$.name").Value;
+			string name = new Json(_text, "callback").JsonPath("$.name").Value;
 			Assert.AreEqual(name, "json");
 		}
 
 		[TestMethod]
 		public void TestRemovePaddingForQuotes()
 		{
-			string name = new Json(_textWithBrackerInContent).RemovePadding("callback").JsonPath("$.name").Value;
+			string name = new Json(_textWithBrackerInContent, "callback").JsonPath("$.name").Value;
 			Assert.AreEqual(name, "json)");
 		}
 	}

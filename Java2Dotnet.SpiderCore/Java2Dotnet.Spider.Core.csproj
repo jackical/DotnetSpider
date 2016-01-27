@@ -69,6 +69,8 @@
     <Compile Include="Monitor\RequestFailed.cs" />
     <Compile Include="Monitor\RequestSuccessed.cs" />
     <Compile Include="Pipeline\JsonFilePipeline.cs" />
+    <Compile Include="Selector\SelectedNode.cs" />
+    <Compile Include="Selector\ResultType.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="SpiderExceptoin.cs" />
     <Compile Include="Page.cs" />
@@ -84,7 +86,6 @@
     <Compile Include="Selector\AndSelector.cs" />
     <Compile Include="Selector\BaseElementSelector.cs" />
     <Compile Include="Selector\CssSelector.cs" />
-    <Compile Include="Selector\IElementSelector.cs" />
     <Compile Include="Selector\EnviromentSelector.cs" />
     <Compile Include="Selector\Html.cs" />
     <Compile Include="Selector\OrSelector.cs" />
@@ -138,9 +139,7 @@
     <Compile Include="ISpiderListener.cs" />
     <Compile Include="CountableThreadPool.cs" />
     <Compile Include="Utils\HttpConstant.cs" />
-    <Compile Include="Selector\HtmlNode.cs" />
     <Compile Include="Selector\AbstractSelectable.cs" />
-    <Compile Include="Selector\PlainText.cs" />
     <Compile Include="Selector\ReplaceSelector.cs" />
     <Compile Include="Selector\Json.cs" />
     <Compile Include="Selector\JsonPathSelector.cs" />

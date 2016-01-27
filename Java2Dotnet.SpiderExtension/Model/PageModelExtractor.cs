@@ -42,6 +42,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		public PageModelExtractor()
 		{
 			_actualType = typeof(T);
+
 			Init();
 		}
 
@@ -297,7 +298,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 			{
 				if (_typeExtractor.Multi)
 				{
-					IList<string> list = _typeExtractor.Selector.SelectList(page.RawText);
+					IList<SelectedNode> list = _typeExtractor.Selector.SelectList(new SelectedNode() { Result = page.RawText, Type = ResultType.String });
 					if (_typeExtractor.Count < long.MaxValue)
 					{
 						list = list.Take((int)_typeExtractor.Count).ToList();
@@ -317,13 +318,13 @@ namespace Java2Dotnet.Spider.Extension.Model
 				}
 				else
 				{
-					string select = _typeExtractor.Selector.Select(page.RawText);
+					SelectedNode select = _typeExtractor.Selector.Select(new SelectedNode() { Type = ResultType.String, Result = page.RawText });
 					return ProcessSingle(page, select, false);
 				}
 			}
 		}
 
-		private T ProcessSingle(Page page, string content, bool isEntire)
+		private T ProcessSingle(Page page, SelectedNode content, bool isEntire)
 		{
 			var instance = Activator.CreateInstance(_actualType);
 			foreach (FieldExtractor fieldExtractor in _fieldExtractors)
@@ -334,16 +335,16 @@ namespace Java2Dotnet.Spider.Extension.Model
 					switch (fieldExtractor.Source)
 					{
 						case ExtractSource.RawHtml:
-							value = page.HtmlDocument.SelectDocumentForList(fieldExtractor.Selector);
+							value = page.HtmlDocument.SelectList(fieldExtractor.Selector).Value;
 							break;
 						case ExtractSource.Html:
-							value = isEntire ? page.HtmlDocument.SelectDocumentForList(fieldExtractor.Selector) : fieldExtractor.Selector.SelectList(content);
+							value = isEntire ? page.HtmlDocument.SelectList(fieldExtractor.Selector).Value : fieldExtractor.Selector.SelectList(content)?.ToStringList();
 							break;
 						case ExtractSource.Json:
-							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).GetAll() : fieldExtractor.Selector.SelectList(content);
+							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).Value : fieldExtractor.Selector.SelectList(content)?.ToStringList();
 							break;
 						case ExtractSource.Url:
-							value = fieldExtractor.Selector.SelectList(page.Url);
+							value = fieldExtractor.Selector.SelectList(new SelectedNode() { Result = page.Url, Type = ResultType.String })?.ToStringList();
 							break;
 						case ExtractSource.Enviroment:
 							{
@@ -351,7 +352,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 								break;
 							}
 						default:
-							value = fieldExtractor.Selector.SelectList(content);
+							value = fieldExtractor.Selector.SelectList(content)?.ToStringList();
 							break;
 					}
 					if ((value == null || value.Count == 0) && fieldExtractor.NotNull)
@@ -411,34 +412,31 @@ namespace Java2Dotnet.Spider.Extension.Model
 				else
 				{
 					string value;
+
 					switch (fieldExtractor.Source)
 					{
 						case ExtractSource.RawHtml:
-							value = page.HtmlDocument.SelectDocument(fieldExtractor.Selector);
+							value = page.HtmlDocument.Select(fieldExtractor.Selector).Value;
 							break;
 						case ExtractSource.Html:
-							value = isEntire ? page.HtmlDocument.SelectDocument(fieldExtractor.Selector) : fieldExtractor.Selector.Select(content);
+							value = isEntire ? page.HtmlDocument.Select(fieldExtractor.Selector).Value : fieldExtractor.Selector.Select(content)?.ToString();
 							break;
 						case ExtractSource.Json:
-							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).Value : fieldExtractor.Selector.Select(content);
+							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).Value : fieldExtractor.Selector.Select(content)?.ToString();
 							break;
 						case ExtractSource.Url:
-							value = fieldExtractor.Selector.Select(page.Url);
+							value = fieldExtractor.Selector.Select(new SelectedNode() { Result = page.Url, Type = ResultType.String })?.ToString();
 							break;
 						case ExtractSource.Enviroment:
 							{
-								//EnviromentSelector selector = fieldExtractor.Selector as EnviromentSelector;
-								//if (selector != null)
-								//{
-								//	value = selector.GetValue(page)?.ToString();
-								//}
 								value = GetEnviromentValue(fieldExtractor.Expression, page).ToString();
 								break;
 							}
 						default:
-							value = fieldExtractor.Selector.Select(content);
+							value = fieldExtractor.Selector.Select(content)?.ToString();
 							break;
 					}
+
 					if (value == null && fieldExtractor.NotNull)
 					{
 						return default(T);

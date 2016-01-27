@@ -11,7 +11,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 {
 	public class BaseModelSpider : Core.Spider
 	{
-		public const string PipelineMode = "PipelineMode";
+		public const string PipelineModel = "PipelineModel";
 
 		protected BaseModelSpider(string identify, IPageProcessor pageProcessor, IScheduler scheduler) : base(identify, pageProcessor, scheduler)
 		{
@@ -36,7 +36,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 		public void SetPipelineModel(PipelineModel model)
 		{
-			Settings.Add(PipelineMode, model);
+			Settings.Add(PipelineModel, model);
 		}
 	}
 }

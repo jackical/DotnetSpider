@@ -32,12 +32,27 @@ namespace Java2Dotnet.Spider.Core.Selector
 			throw new NotImplementedException();
 		}
 
-		public IList<string> SelectList(string text)
+		public IList<SelectedNode> SelectList(SelectedNode text)
 		{
 			throw new NotImplementedException();
 		}
 
-		public string Select(string text)
+		public SelectedNode Select(List<SelectedNode> text)
+		{
+			throw new NotImplementedException();
+		}
+
+		public List<SelectedNode> SelectList(List<SelectedNode> text)
+		{
+			throw new NotImplementedException();
+		}
+
+		public SelectedNode Select(SelectedNode text)
+		{
+			throw new NotImplementedException();
+		}
+
+		List<SelectedNode> ISelector.SelectList(SelectedNode text)
 		{
 			throw new NotImplementedException();
 		}

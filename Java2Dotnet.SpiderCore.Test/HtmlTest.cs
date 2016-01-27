@@ -9,10 +9,10 @@ namespace Java2Dotnet.Spider.Core.Test
 		[TestMethod]
 		public void TestRegexSelector()
 		{
-			Html selectable = new Html("aaaaaaab","");
+			Html selectable = new Html("aaaaaaab", "");
 			//        Assert.assertEquals("abbabbab", (selectable.regex("(.*)").replace("aa(a)", "$1bb").toString()));
-			string value = selectable.Regex("(.*)").Replace("aa(a)", "$1bb").ToString();
-			Assert.AreEqual("abbabbab", value);
+			string value = selectable.Regex("(.*)").Value;
+			Assert.AreEqual("aaaaaaab", value);
 
 		}
 	}

@@ -12,11 +12,11 @@ namespace Java2Dotnet.Spider.Core.Test.Selector
 		[TestMethod]
 		public void TestChain()
 		{
-			Html selectable = new Html(_html,"");
-			IList<string> linksWithoutChain = selectable.Links().GetAll();
+			Html selectable = new Html(_html, "");
+			List<string> linksWithoutChain = selectable.Links().Value;
 			ISelectable xpath = selectable.XPath("//div");
-			IList<string> linksWithChainFirstCall = xpath.Links().GetAll();
-			IList<string> linksWithChainSecondCall = xpath.Links().GetAll();
+			List<string> linksWithChainFirstCall = xpath.Links().Value;
+			List<string> linksWithChainSecondCall = xpath.Links().Value;
 			Assert.AreEqual(linksWithoutChain.Count, linksWithChainFirstCall.Count);
 			Assert.AreEqual(linksWithChainFirstCall.Count, linksWithChainSecondCall.Count);
 		}
@@ -24,9 +24,12 @@ namespace Java2Dotnet.Spider.Core.Test.Selector
 		[TestMethod]
 		public void TestNodes()
 		{
-			Html selectable = new Html(_html,"");
-			IList<ISelectable> links = selectable.XPath("//a").Nodes();
-			Assert.AreEqual(links[0].Links().Value, "http://whatever.com/aaa");
+			Html selectable = new Html(_html, "");
+			IList<ISelectable> links = selectable.XPath(".//a/@href").Nodes();
+			Assert.AreEqual(links[0].Value, "http://whatever.com/aaa");
+
+			List<string> links1 = selectable.XPath(".//a/@href").Value;
+			Assert.AreEqual(links1[0], "http://whatever.com/aaa");
 		}
 	}
 }

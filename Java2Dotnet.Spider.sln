@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{A78FD295-23CE-49AB-8145-ACEBF51DE684}"
 	ProjectSection(SolutionItems) = preProject
@@ -39,6 +39,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooKeeperNet", "Libraries\ZooKeeperNet\ZooKeeperNet.csproj", "{5C6774FB-2350-46B2-B1DF-1CCC757C7727}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooKeeperNet.Recipes", "Libraries\ZooKeeperNet.Recipes\ZooKeeperNet.Recipes.csproj", "{9E641549-7F84-45E4-9543-537052494EC6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ECE36CDD-7370-426F-A75E-2E9D843AD20F}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.txt = ReadMe.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

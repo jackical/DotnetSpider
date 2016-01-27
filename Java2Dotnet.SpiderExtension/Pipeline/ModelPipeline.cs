@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Pipeline;
 
@@ -17,6 +18,12 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		public ModelPipeline(IPageModelPipeline<T> pageModelPipeline)
 		{
 			_actuallyType = typeof(T);
+
+			TypeAttributes typeAttribute = _actuallyType.Attributes & (TypeAttributes.Public | TypeAttributes.NestedPublic);
+			if (typeAttribute != TypeAttributes.Public && typeAttribute != TypeAttributes.NestedPublic)
+			{
+				throw new SpiderExceptoin("DataObject type should be a public class.");
+			}
 
 			PageModelPipeline = pageModelPipeline;
 		}

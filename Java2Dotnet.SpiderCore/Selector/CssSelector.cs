@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
 
@@ -21,7 +22,7 @@ namespace Java2Dotnet.Spider.Core.Selector
 			_attrName = attrName;
 		}
 
-		protected string GetText(HtmlAgilityPack.HtmlNode element)
+		protected string GetText(HtmlNode element)
 		{
 			StringBuilder accum = new StringBuilder();
 			foreach (var node in element.ChildNodes)
@@ -34,47 +35,19 @@ namespace Java2Dotnet.Spider.Core.Selector
 			return accum.ToString();
 		}
 
-		public override string Select(HtmlAgilityPack.HtmlNode element)
+		public override SelectedNode Select(HtmlNode element)
 		{
-			IList<HtmlAgilityPack.HtmlNode> elements = SelectElements(element);
-			if (elements == null || elements.Count == 0)
-			{
-				return null;
-			}
-			return GetValue(elements[0]);
-		}
-
-		public override IList<string> SelectList(HtmlAgilityPack.HtmlNode element)
-		{
-			IList<string> strings = new List<string>();
-			IList<HtmlAgilityPack.HtmlNode> elements = SelectElements(element);
+			IList<HtmlNode> elements = element.QuerySelectorAll(_selectorText);
 			if (elements != null && elements.Count > 0)
 			{
-				foreach (HtmlAgilityPack.HtmlNode e in elements)
-				{
-					string value = GetValue(e);
-					if (value != null)
-					{
-						strings.Add(value);
-					}
-				}
-			}
-			return strings;
-		}
-
-		public override HtmlAgilityPack.HtmlNode SelectElement(HtmlAgilityPack.HtmlNode element)
-		{
-			IList<HtmlAgilityPack.HtmlNode> elements = element.QuerySelectorAll(_selectorText);
-			if (elements != null && elements.Count > 0)
-			{
-				return elements[0];
+				return new SelectedNode() { Type = ResultType.Node, Result = elements[0] };
 			}
 			return null;
 		}
 
-		public override IList<HtmlAgilityPack.HtmlNode> SelectElements(HtmlAgilityPack.HtmlNode element)
+		public override List<SelectedNode> SelectList(HtmlNode element)
 		{
-			return element.QuerySelectorAll(_selectorText);
+			return element.QuerySelectorAll(_selectorText).Select(e => new SelectedNode() { Type = ResultType.Node, Result = e }).ToList();
 		}
 
 		public override bool HasAttribute()
@@ -82,7 +55,7 @@ namespace Java2Dotnet.Spider.Core.Selector
 			return _attrName != null;
 		}
 
-		private string GetValue(HtmlAgilityPack.HtmlNode element)
+		private string GetValue(HtmlNode element)
 		{
 			if (_attrName == null)
 			{

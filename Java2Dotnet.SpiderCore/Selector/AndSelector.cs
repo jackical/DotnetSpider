@@ -19,7 +19,7 @@ namespace Java2Dotnet.Spider.Core.Selector
 			_selectors = selectors;
 		}
 
-		public string Select(string text)
+		public SelectedNode Select(SelectedNode text)
 		{
 			foreach (ISelector selector in _selectors)
 			{
@@ -32,9 +32,9 @@ namespace Java2Dotnet.Spider.Core.Selector
 			return text;
 		}
 
-		public IList<string> SelectList(string text)
+		public List<SelectedNode> SelectList(SelectedNode text)
 		{
-			IList<string> results = new List<string>();
+			List<SelectedNode> results = new List<SelectedNode>();
 			bool first = true;
 			foreach (ISelector selector in _selectors)
 			{
@@ -45,8 +45,8 @@ namespace Java2Dotnet.Spider.Core.Selector
 				}
 				else
 				{
-					List<string> resultsTemp = new List<string>();
-					foreach (string result in results)
+					List<SelectedNode> resultsTemp = new List<SelectedNode>();
+					foreach (var result in results)
 					{
 						resultsTemp.AddRange(selector.SelectList(result));
 					}

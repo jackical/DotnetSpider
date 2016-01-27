@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using log4net;
@@ -7,103 +6,77 @@ namespace Java2Dotnet.Spider.Core.Selector
 {
 	public abstract class AbstractSelectable : ISelectable
 	{
-		protected static readonly ILog Logger = LogManager.GetLogger("Selectable");
+		protected static readonly ILog Logger = LogManager.GetLogger("AbstractSelectable");
 
-		protected abstract IList<string> GetSourceTexts();
-		public abstract ISelectable XPath(string xpath);
-		public abstract ISelectable Css(string selector);
-		public abstract ISelectable Css(string selector, string attrName);
-		public abstract ISelectable SmartContent();
-		public abstract ISelectable Links();
+		public List<SelectedNode> Elements { get; protected set; } = new List<SelectedNode>();
+
+		public abstract ISelectable Select(ISelector selector);
+		public abstract ISelectable SelectList(ISelector selector);
 		public abstract IList<ISelectable> Nodes();
 
-		public ISelectable Select(ISelector selector, IList<string> strings)
+		public ISelectable Css(string selector)
 		{
-			IList<string> results = strings.Select(selector.Select).Where(result => result != null).ToList();
-			return new PlainText(results);
+			CssSelector cssSelector = Selectors.Css(selector);
+			return Select(cssSelector);
 		}
 
-		protected ISelectable SelectList(ISelector selector, IList<string> strings)
+		public ISelectable Css(string selector, string attrName)
 		{
-			List<string> results = new List<string>();
-			foreach (string str in strings)
-			{
-				IList<string> result = selector.SelectList(str);
-				results.AddRange(result);
-			}
-			return new PlainText(results);
+			var cssSelector = Selectors.Css(selector, attrName);
+			return Select(cssSelector);
 		}
 
-		public IList<string> GetAll()
+		public ISelectable SmartContent()
 		{
-			return GetSourceTexts();
+			SmartContentSelector smartContentSelector = Selectors.SmartContent();
+			return Select(smartContentSelector);
 		}
 
-		public string Value
+		public ISelectable Links()
 		{
-			get
-			{
-				if (GetAll() != null && GetAll().Count > 0)
-				{
-					return GetAll()[0];
-				}
-				else
-				{
-					return null;
-				}
-			}
+			return XPath(".//a/@href");
 		}
 
-		public ISelectable Select(ISelector selector)
+		public ISelectable XPath(string xpath)
 		{
-			return Select(selector, GetSourceTexts());
-		}
-
-		public ISelectable SelectList(ISelector selector)
-		{
-			return SelectList(selector, GetSourceTexts());
+			XPathSelector xpathSelector = Selectors.XPath(xpath);
+			return SelectList(xpathSelector);
 		}
 
 		public ISelectable Regex(string regex)
 		{
 			RegexSelector regexSelector = Selectors.Regex(regex);
-			return SelectList(regexSelector, GetSourceTexts());
+			return Select(regexSelector);
 		}
 
 		public ISelectable Regex(string regex, int group)
 		{
 			RegexSelector regexSelector = Selectors.Regex(regex, group);
-			return SelectList(regexSelector, GetSourceTexts());
+			return Select(regexSelector);
 		}
 
-		public ISelectable Replace(string regex, string replacement)
+		public ISelectable JsonPath(string jsonPath)
 		{
-			ReplaceSelector replaceSelector = new ReplaceSelector(regex, replacement);
-			return Select(replaceSelector, GetSourceTexts());
+			JsonPathSelector jsonPathSelector = new JsonPathSelector(jsonPath);
+			return SelectList(jsonPathSelector);
 		}
 
-		public string GetFirstSourceText()
+		public dynamic Value
 		{
-			if (GetSourceTexts() != null && GetSourceTexts().Count > 0)
+			get
 			{
-				return GetSourceTexts()[0];
+				if (Elements == null || Elements.Count == 0)
+				{
+					return null;
+				}
+
+				if (Elements.Count == 1)
+				{
+					return Elements[0].ToString();
+				}
+
+				return Elements.Select(selectedNode => selectedNode.ToString()).ToList();
 			}
-			return null;
-		}
-
-		public override string ToString()
-		{
-			return Value;
-		}
-
-		public bool Exist()
-		{
-			return GetSourceTexts() != null && GetSourceTexts().Count > 0;
-		}
-
-		public virtual ISelectable JsonPath(string jsonPath)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

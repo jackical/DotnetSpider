@@ -22,7 +22,7 @@ namespace Java2Dotnet.Spider.Core.Processor
 
 		public void Process(Page page)
 		{
-			IList<string> requests = page.HtmlDocument.Links().Regex(_urlPattern).GetAll();
+			List<string> requests = page.HtmlDocument.Links().Regex(_urlPattern).Value;
 			//add urls to fetch
 			page.AddTargetRequests(requests);
 			//extract by XPath

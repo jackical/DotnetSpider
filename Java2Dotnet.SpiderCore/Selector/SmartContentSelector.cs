@@ -8,13 +8,14 @@ namespace Java2Dotnet.Spider.Core.Selector
 	[Experimental]
 	public class SmartContentSelector : ISelector
 	{
-		public string Select(string html)
+		public SelectedNode Select(SelectedNode node)
 		{
+			string html = node.ToString();
 			html = html.Replace("(?is)<!DOCTYPE.*?>", "");
-			html = html.Replace("(?is)<!--.*?-->", "");				// remove html comment
+			html = html.Replace("(?is)<!--.*?-->", "");             // remove html comment
 			html = html.Replace("(?is)<script.*?>.*?</script>", ""); // remove javascript
 			html = html.Replace("(?is)<style.*?>.*?</style>", "");   // remove css
-			html = html.Replace("&.{2,5};|&#.{2,5};", " ");			// remove special char
+			html = html.Replace("&.{2,5};|&#.{2,5};", " ");         // remove special char
 			html = html.Replace("(?is)<.*?>", "");
 			List<string> lines;
 			int blocksWidth = 3;
@@ -77,10 +78,20 @@ namespace Java2Dotnet.Spider.Core.Selector
 					boolstart = boolend = false;
 				}
 			}
-			return text.ToString();
+			return new SelectedNode() { Type = ResultType.String, Result = text.ToString() };
 		}
 
-		public IList<string> SelectList(string text)
+		public List<SelectedNode> SelectList(SelectedNode text)
+		{
+			throw new NotImplementedException();
+		}
+
+		public SelectedNode Select(List<SelectedNode> text)
+		{
+			throw new NotImplementedException();
+		}
+
+		public List<SelectedNode> SelectList(List<SelectedNode> text)
 		{
 			throw new NotImplementedException();
 		}

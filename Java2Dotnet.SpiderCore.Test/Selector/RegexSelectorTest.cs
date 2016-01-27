@@ -21,7 +21,7 @@ namespace Java2Dotnet.Spider.Core.Test.Selector
 			string regex = "\\(.+";
 			string source = "(hello world";
 			RegexSelector regexSelector = new RegexSelector(regex);
-			string select = regexSelector.Select(source);
+			string select = regexSelector.Select(source).Result;
 			Assert.AreEqual(select, source);
 		}
 	}

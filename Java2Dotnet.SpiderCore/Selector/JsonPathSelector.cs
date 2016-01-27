@@ -18,9 +18,9 @@ namespace Java2Dotnet.Spider.Core.Selector
 			_jsonPathStr = jsonPathStr;
 		}
 
-		public string Select(string text)
+		public SelectedNode Select(SelectedNode text)
 		{
-			IList<string> result = SelectList(text);
+			IList<SelectedNode> result = SelectList(text);
 			if (result.Count > 0)
 			{
 				return result[0];
@@ -28,20 +28,57 @@ namespace Java2Dotnet.Spider.Core.Selector
 			return null;
 		}
 
-		public IList<string> SelectList(string text)
+		public SelectedNode Select(string text)
 		{
-			List<string> list = new List<string>();
-			JObject o = (JObject)JsonConvert.DeserializeObject(text);
-			var items = o.SelectTokens(_jsonPathStr);
-
-			if (items == null)
+			IList<SelectedNode> result = SelectList(new SelectedNode() { Type = ResultType.String, Result = text });
+			if (result.Count > 0)
 			{
-				return list;
+				return result[0];
 			}
+			return null;
+		}
 
-			list.AddRange(items.Select(item => item.ToString()));
+		public IList<SelectedNode> SelectList(string text)
+		{
+			return SelectList(new SelectedNode() { Type = ResultType.String, Result = text });
+		}
 
-			return list;
+		public List<SelectedNode> SelectList(SelectedNode text)
+		{
+			if (text != null)
+			{
+				if (text.Type == ResultType.Json)
+				{
+					var jToken = text.Result as JToken;
+					if (jToken != null)
+					{
+						var items = jToken.SelectTokens(_jsonPathStr);
+
+						if (items == null)
+						{
+							return new List<SelectedNode>();
+						}
+
+						return items.Select(item => new SelectedNode { Type = ResultType.Json, Result = item }).ToList();
+					}
+					throw new SpiderExceptoin("SelectedNode is not a JToken");
+				}
+				else
+				{
+					List<SelectedNode> list = new List<SelectedNode>();
+					JObject o = (JObject)JsonConvert.DeserializeObject(text.ToString());
+					var items = o.SelectTokens(_jsonPathStr).ToList();
+
+					list.AddRange(items.Select(item => new SelectedNode { Type = ResultType.Json, Result = item }));
+
+					return list;
+				}
+
+			}
+			else
+			{
+				return new List<SelectedNode>();
+			}
 		}
 	}
 }

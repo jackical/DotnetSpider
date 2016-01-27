@@ -49,7 +49,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 					string html = GetHtml(bufferedReader);
 					page = new Page(request);
 					page.Url = request.Url.ToString();
-					page.HtmlDocument = Html.Create(html);
+					page.HtmlDocument = new Html(html);
 				}
 			}
 			catch (IOException e)

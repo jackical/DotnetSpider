@@ -107,12 +107,13 @@ namespace Java2Dotnet.Spider.Extension
 			}
 			catch (Exception e)
 			{
+				Console.WriteLine(e);
 				Logger.Error(e.Message, e);
 				return null;
 			}
 			finally
 			{
-				Console.WriteLine("Release lock.");
+				Console.WriteLine("Release locker.");
 				db.LockRelease(key, 0);
 			}
 		}

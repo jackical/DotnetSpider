@@ -56,9 +56,11 @@ namespace Java2Dotnet.Spider.Samples
 
 			//SingleSample.RunTask();
 
-			GanjiPostSpider spider = new GanjiPostSpider();
-			spider.Run();
+			//GanjiPostSpider spider = new GanjiPostSpider();
+			//spider.Run();
 
+			YoukuVipBll bll=new YoukuVipBll();
+			bll.RunTask("VipMovie");
 			//News163.Run();
 			//OschinaAnswer.Run();
 

@@ -36,26 +36,31 @@ namespace Java2Dotnet.Spider.Core.Selector
 		{
 		}
 
-		public string Select(string text)
+		public SelectedNode Select(SelectedNode text)
 		{
-			return SelectGroup(text).Get(_group);
+			return new SelectedNode { Type = ResultType.String, Result = SelectGroup(text).Get(_group) };
 		}
 
-		public IList<string> SelectList(string text)
+		public SelectedNode Select(string text)
 		{
-			IList<RegexResult> results = SelectGroupList(text);
-			return results.Select(result => result.Get(_group)).ToList();
+			return new SelectedNode { Type = ResultType.String, Result = SelectGroup(new SelectedNode() { Type = ResultType.String, Result = text }).Get(_group) };
 		}
 
-		public RegexResult SelectGroup(string text)
+		public List<SelectedNode> SelectList(SelectedNode text)
 		{
-			var match = _regex.Match(text);
+			IList<RegexResult> results = SelectGroupList(text.ToString());
+			return results.Select(result => new SelectedNode { Type = ResultType.String, Result = result.Get(_group) }).ToList();
+		}
+
+		private RegexResult SelectGroup(SelectedNode text)
+		{
+			var match = _regex.Match(text.ToString());
 			return new RegexResult(_regex.ToString(), (from Group g in match.Groups select g.Value).ToList());
 		}
 
-		public IList<RegexResult> SelectGroupList(string text)
+		private List<RegexResult> SelectGroupList(string text)
 		{
-			IList<RegexResult> resultList = new List<RegexResult>();
+			List<RegexResult> resultList = new List<RegexResult>();
 
 			var matches = _regex.Matches(text);
 			if (matches.Count > 0)

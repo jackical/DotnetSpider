@@ -20,17 +20,17 @@ namespace Java2Dotnet.Spider.Core.Selector
 			_selectors = selectors;
 		}
 
-		public string Select(string text)
+		public SelectedNode Select(SelectedNode text)
 		{
 			return _selectors.Select(selector => selector.Select(text)).FirstOrDefault(result => result != null);
 		}
 
-		public IList<string> SelectList(string text)
+		public List<SelectedNode> SelectList(SelectedNode text)
 		{
-			List<string> results = new List<string>();
+			List<SelectedNode> results = new List<SelectedNode>();
 			foreach (ISelector selector in _selectors)
 			{
-				IList<string> strings = selector.SelectList(text);
+				IList<SelectedNode> strings = selector.SelectList(text);
 				results.AddRange(strings);
 			}
 			return results;
