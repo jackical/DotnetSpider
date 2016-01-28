@@ -1,6 +1,6 @@
 ﻿namespace Java2Dotnet.Spider.Extension
 {
-	public interface IRedisSpider
+	public interface ISpiderTask
 	{
 		void Run();
 		string Name { get; }

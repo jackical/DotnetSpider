@@ -21,7 +21,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		public static readonly string SetPrefix = "set-";
 		public static readonly string TaskList = "task";
 		public static readonly string ItemPrefix = "item-";
-		public ConnectionMultiplexer Redis { get; }
+		private ConnectionMultiplexer Redis { get; }
 
 		public RedisScheduler(string host, string password = null, int port = 6379) : this(ConnectionMultiplexer.Connect(new ConfigurationOptions()
 		{
@@ -169,7 +169,9 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 				if (!string.IsNullOrEmpty(json))
 				{
-					return JsonConvert.DeserializeObject<Request>(json);
+					var result = JsonConvert.DeserializeObject<Request>(json);
+					db.HashDelete(hashId, field);
+					return result;
 				}
 
 				// 严格意义上说不会走到这里, 一定会有JSON数据,详情看Push方法

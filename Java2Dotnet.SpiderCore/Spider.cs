@@ -63,6 +63,7 @@ namespace Java2Dotnet.Spider.Core
 		private bool _runningExit;
 		private static readonly Regex IdentifyRegex = new Regex(@"^[\d\w\s-/]+$");
 		private static bool _printedInfo;
+		private bool _waitingToExit;
 
 		/// <summary>
 		/// Create a spider with pageProcessor.
@@ -333,21 +334,25 @@ namespace Java2Dotnet.Spider.Core
 			{
 				if (ShowConsoleStatus)
 				{
-					IMonitorableScheduler monitor = (IMonitorableScheduler)Scheduler;
-					while (true)
+					IMonitorableScheduler monitor = Scheduler as IMonitorableScheduler;
+					if (monitor != null)
 					{
-						try
+						while (true)
 						{
-							if (Stat == Status.Running)
+							try
 							{
-								Console.WriteLine($"Left: {monitor.GetLeftRequestsCount(this)} Total: {monitor.GetTotalRequestsCount(this)} AliveThread: {ThreadPool.ThreadAlive} ThreadNum: {ThreadPool.ThreadNum }");
+								if (Stat == Status.Running && !_waitingToExit)
+								{
+									Console.WriteLine(
+										$"Left: {monitor.GetLeftRequestsCount(this)} Total: {monitor.GetTotalRequestsCount(this)} AliveThread: {ThreadPool.ThreadAlive} ThreadNum: {ThreadPool.ThreadNum}");
+								}
 							}
+							catch
+							{
+								// ignored
+							}
+							Thread.Sleep(2000);
 						}
-						catch
-						{
-							// ignored
-						}
-						Thread.Sleep(2000);
 					}
 				}
 			});
@@ -442,6 +447,8 @@ namespace Java2Dotnet.Spider.Core
 					}
 				}
 			}
+
+			_waitingToExit = true;
 
 			ThreadPool.WaitToExit();
 			FinishedTime = DateTime.Now;

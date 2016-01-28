@@ -19,7 +19,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 	{
 		private static SpiderMonitor _instanse;
 		private static readonly object Locker = new object();
-		private Dictionary<ISpider, MonitorSpiderListener> _data = new Dictionary<ISpider, MonitorSpiderListener>();
+		private readonly Dictionary<ISpider, MonitorSpiderListener> _data = new Dictionary<ISpider, MonitorSpiderListener>();
 
 		private SpiderMonitor()
 		{
@@ -95,7 +95,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 								// ignored
 							}
 
-							Thread.Sleep(1000);
+							Thread.Sleep(3000);
 						}
 						redis.Close();
 					});

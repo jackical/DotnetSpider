@@ -46,6 +46,16 @@ namespace Java2Dotnet.Spider.WebDriver
 			}
 		}
 
+		public WebDriverDownloader(Browser browser = Browser.Phantomjs) : this(browser, 300)
+		{
+		}
+
+		public WebDriverDownloader(Browser browser = Browser.Phantomjs,
+			Func<RemoteWebDriver, bool> login = null) : this(browser, 200, null)
+		{
+			Login = login;
+		}
+
 		public override Page Download(Request request, ISpider spider)
 		{
 			WebDriverItem driverService = null;

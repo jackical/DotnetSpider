@@ -91,7 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractRedisSpider.cs" />
+    <Compile Include="AbstractSpiderTask.cs" />
     <Compile Include="DbSupport\DataProviderManager.cs" />
     <Compile Include="DbSupport\Dapper\Attributes\Deleted.cs" />
     <Compile Include="DbSupport\Dapper\Attributes\KeyProperty.cs" />
@@ -114,6 +114,7 @@
     <Compile Include="DbSupport\MySqlDataProvider.cs" />
     <Compile Include="DbSupport\MysqlFileRepository.cs" />
     <Compile Include="DbSupport\SqlServerDataProvider.cs" />
+    <Compile Include="Downloader\FileDownloader.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="IRedisSpider.cs" />
     <Compile Include="Model\Attribute\BaseExtractBy.cs" />
@@ -197,6 +198,10 @@
     <ProjectReference Include="..\Java2Dotnet.Spider.Redial\Java2Dotnet.Spider.Redial.csproj">
       <Project>{d1ac9b1c-bf83-47c8-b831-d32076a0701b}</Project>
       <Name>Java2Dotnet.Spider.Redial</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Java2Dotnet.Spider.Validation\Java2Dotnet.Spider.Validation.csproj">
+      <Project>{254cd41a-0f6f-484b-92fd-97fd8af7bd86}</Project>
+      <Name>Java2Dotnet.Spider.Validation</Name>
     </ProjectReference>
     <ProjectReference Include="..\Java2Dotnet.SpiderCore\Java2Dotnet.Spider.Core.csproj">
       <Project>{1d4f80ab-81b0-4e9c-945e-2715a068115c}</Project>

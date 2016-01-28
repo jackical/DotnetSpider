@@ -10,7 +10,7 @@ using Java2Dotnet.Spider.Extension;
 
 namespace Java2Dotnet.Spider.Samples
 {
-	public class GanjiPostSpider : AbstractRedisSpider
+	public class GanjiPostSpiderTaskTask : AbstractSpiderTask
 	{
 		public override string Name => "Ganji Post Dayly " + DateTime.Now.ToString("yyyy_MM_dd");
 
