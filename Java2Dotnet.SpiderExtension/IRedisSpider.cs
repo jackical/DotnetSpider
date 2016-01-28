@@ -2,7 +2,7 @@
 {
 	public interface ISpiderTask
 	{
-		void Run();
+		void Run(params string[] args);
 		string Name { get; }
 	}
 }

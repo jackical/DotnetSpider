@@ -9,6 +9,7 @@ using Java2Dotnet.Spider.Redial;
 using Java2Dotnet.Spider.Redial.RedialManager;
 using Java2Dotnet.Spider.Extension.Utils;
 using System.Threading;
+using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.DbSupport;
 using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Validation;
@@ -42,7 +43,7 @@ namespace Java2Dotnet.Spider.Extension
 			_redis = RedisProvider.GetProvider();
 		}
 
-		public void Run()
+		public void Run(params string[] args)
 		{
 			try
 			{
@@ -53,7 +54,7 @@ namespace Java2Dotnet.Spider.Extension
 					CheckValidations();
 				}
 
-				Spider = Prepare();
+				Spider = Prepare(args);
 				Spider?.Run();
 
 				if (!string.IsNullOrEmpty(_validateReportTo))
@@ -136,7 +137,7 @@ namespace Java2Dotnet.Spider.Extension
 			}
 		}
 
-		private Core.Spider Prepare()
+		private Core.Spider Prepare(params string[] args)
 		{
 			switch (AtomicType)
 			{
@@ -158,6 +159,17 @@ namespace Java2Dotnet.Spider.Extension
 			}
 
 			IDatabase db = _redis.GetDatabase(0);
+
+			if (args != null && args.Length == 1)
+			{
+				if (args[0] == "rerun")
+				{
+					db.HashDelete(InitStatusSetName, Name);
+					db.HashDelete(ValidateStatusName, Name);
+					db.KeyDelete("set-" + Encrypt.Md5Encrypt(Name));
+				}
+			}
+
 			string key = "locker-" + Name;
 			try
 			{
@@ -173,6 +185,7 @@ namespace Java2Dotnet.Spider.Extension
 				if (needInitStartRequest)
 				{
 					Console.WriteLine("Preparing site...");
+
 					PrepareSite();
 				}
 				else
