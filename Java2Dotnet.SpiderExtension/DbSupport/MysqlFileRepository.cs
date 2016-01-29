@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper.Attributes;
-using Java2Dotnet.Spider.Extension.Model;
 
 namespace Java2Dotnet.Spider.Extension.DbSupport
 {

@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using Java2Dotnet.Spider.Extension.DbSupport.Dapper;
 
 namespace Java2Dotnet.Spider.Extension.DbSupport
 {

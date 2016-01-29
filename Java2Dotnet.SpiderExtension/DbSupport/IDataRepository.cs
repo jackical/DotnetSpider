@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using Java2Dotnet.Spider.Extension.Model;
 
 namespace Java2Dotnet.Spider.Extension.DbSupport

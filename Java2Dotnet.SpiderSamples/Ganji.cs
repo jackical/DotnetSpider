@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Text;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Utils;

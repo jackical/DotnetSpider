@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Configuration;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.DbSupport;
 using Java2Dotnet.Spider.Extension.Model;
-using MongoDB.Driver;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
 {

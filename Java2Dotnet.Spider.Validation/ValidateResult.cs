@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Java2Dotnet.Spider.Validation
+﻿namespace Java2Dotnet.Spider.Validation
 {
 	public class ValidateResult
 	{

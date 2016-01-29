@@ -7,7 +7,6 @@ using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Redial;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-using System;
 
 namespace Java2Dotnet.Spider.Extension.Scheduler
 {
