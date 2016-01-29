@@ -11,7 +11,6 @@ namespace Java2Dotnet.Spider.Extension.DbSupport
 	public class MysqlFileRepository<T> where T : new()
 	{
 		private readonly string _path;
-		private readonly Type _type;
 		private readonly List<PropertyInfo> _propertyInfos;
 
 		public MysqlFileRepository(string path)
@@ -21,8 +20,8 @@ namespace Java2Dotnet.Spider.Extension.DbSupport
 				throw new SpiderExceptoin("File does not exist.");
 			}
 			_path = path;
-			_type = typeof(T);
-			_propertyInfos = _type.GetProperties(BindingFlags.Public).Where(p => p.GetCustomAttribute<NonStored>() == null).ToList();
+			var type = typeof(T);
+			_propertyInfos = type.GetProperties(BindingFlags.Public).Where(p => p.GetCustomAttribute<NonStored>() == null).ToList();
 		}
 
 		public List<T> GetAll()
@@ -42,13 +41,12 @@ namespace Java2Dotnet.Spider.Extension.DbSupport
 
 					for (int i = 0; i < _propertyInfos.Count; ++i)
 					{
-						_propertyInfos[i].SetValue(t,columns[i]);
+						_propertyInfos[i].SetValue(t, Convert.ChangeType(columns[i], _propertyInfos[i].PropertyType));
 					}
 					list.Add(t);
 				}
 			}
 			return list;
 		}
-
 	}
 }
