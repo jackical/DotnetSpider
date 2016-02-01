@@ -33,7 +33,6 @@ namespace Java2Dotnet.Spider.Core.Downloader
 
 			ICollection<int> acceptStatCode = site.AcceptStatCode;
 			var charset = site.Encoding;
-			var headers = site.Headers;
 
 			//Logger.InfoFormat("Downloading page {0}", request.Url);
 
@@ -42,7 +41,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			HttpWebResponse response = null;
 			try
 			{
-				var httpWebRequest = GetHttpWebRequest(request, site, headers);
+				var httpWebRequest = GetHttpWebRequest(request, site);
 
 				response = RedialManagerUtils.Execute("downloader-download", h =>
 				{
@@ -124,7 +123,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			return httpWebRequest;
 		}
 
-		private HttpWebRequest GetHttpWebRequest(Request request, Site site, IDictionary headers)
+		private HttpWebRequest GetHttpWebRequest(Request request, Site site)
 		{
 			if (site == null) return null;
 
@@ -132,23 +131,22 @@ namespace Java2Dotnet.Spider.Core.Downloader
 
 			httpWebRequest.UserAgent = site.UserAgent ?? "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0Mozilla/5.0 (Windows NT 10.0; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0";
 			httpWebRequest.Accept = site.Accept ?? "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
-			httpWebRequest.Referer = site.Referer ?? "";
+		
 			if (site.IsUseGzip)
 			{
 				httpWebRequest.Headers.Add("Accept-Encoding", "gzip");
 			}
 
 			// headers
-			if (headers != null)
+			if (site.Headers != null)
 			{
-				var enumerator = headers.GetEnumerator();
-				while (enumerator.MoveNext())
+				foreach (var header in site.Headers)
 				{
-					var key = enumerator.Key;
-					var value = enumerator.Value;
-					httpWebRequest.Headers.Add(key.ToString(), value.ToString());
+					httpWebRequest.Headers.Add(header.Key, header.Value);
 				}
 			}
+
+			httpWebRequest.Referer = request.Referer ?? "";
 
 			// cookie
 			httpWebRequest = GeneratorCookie(httpWebRequest, site);

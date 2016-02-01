@@ -31,7 +31,7 @@ namespace Java2Dotnet.Spider.Core.Test.Example
 			ModelMysqlFileSpider<OschinaBlog> spider = new ModelMysqlFileSpider<OschinaBlog>(Guid.NewGuid().ToString(), new Site()
 			{
 				Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-				Referer = "http://my.oschina.net/flashsword/blog",
+				//Referer = "http://my.oschina.net/flashsword/blog",
 				Headers = new Dictionary<string, string>()
 				{
 					{ "Upgrade-Insecure-Requests","1" }

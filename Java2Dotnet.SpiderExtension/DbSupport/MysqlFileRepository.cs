@@ -21,7 +21,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport
 			}
 			_path = path;
 			var type = typeof(T);
-			_propertyInfos = type.GetProperties(BindingFlags.Public).Where(p => p.GetCustomAttribute<NonStored>() == null).ToList();
+			_propertyInfos = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttribute<NonStored>() == null).ToList();
 		}
 
 		public List<T> GetAll()
@@ -41,12 +41,13 @@ namespace Java2Dotnet.Spider.Extension.DbSupport
 
 					for (int i = 0; i < _propertyInfos.Count; ++i)
 					{
-						_propertyInfos[i].SetValue(t, Convert.ChangeType(columns[i], _propertyInfos[i].PropertyType));
+						_propertyInfos[i].SetValue(t, Convert.ChangeType(columns[i].Replace("'", ""), _propertyInfos[i].PropertyType));
 					}
 					list.Add(t);
 				}
 			}
 			return list;
 		}
+
 	}
 }

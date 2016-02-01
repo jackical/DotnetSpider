@@ -311,7 +311,6 @@ namespace Java2Dotnet.Spider.Extension.Model
 						if (obj != null)
 						{
 							result.Add(obj);
-
 						}
 					}
 					return result;
@@ -348,7 +347,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 							break;
 						case ExtractSource.Enviroment:
 							{
-								value = GetEnviromentValue(fieldExtractor.Expression, page).ToString();
+								value = GetEnviromentValue(fieldExtractor.Expression, page)?.ToString();
 								break;
 							}
 						default:
@@ -429,7 +428,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 							break;
 						case ExtractSource.Enviroment:
 							{
-								value = GetEnviromentValue(fieldExtractor.Expression, page).ToString();
+								value = GetEnviromentValue(fieldExtractor.Expression, page)?.ToString();
 								break;
 							}
 						default:

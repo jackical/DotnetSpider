@@ -233,6 +233,7 @@ namespace Java2Dotnet.Spider.Extension
 		protected abstract Core.Spider InitSpider();
 
 		public abstract string Name { get; }
+
 		public virtual AtomicType AtomicType { get; } = AtomicType.Null;
 	}
 }

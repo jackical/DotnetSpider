@@ -42,6 +42,8 @@ namespace Java2Dotnet.Spider.Core
 			Depth = grade;
 		}
 
+		public string Referer { get; set; }
+
 		/// <summary>
 		/// Set the priority of request for sorting. 
 		/// Need a scheduler supporting priority. 
@@ -143,7 +145,8 @@ namespace Java2Dotnet.Spider.Core
 			Request newObj = new Request(Url, Depth, extras)
 			{
 				Method = Method,
-				Priority = Priority
+				Priority = Priority,
+				Referer = Referer
 			};
 			return newObj;
 		}
