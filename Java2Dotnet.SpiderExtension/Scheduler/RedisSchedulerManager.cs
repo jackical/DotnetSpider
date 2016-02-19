@@ -54,6 +54,9 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			db.KeyDelete(taskIdentify);
 			db.KeyDelete("locker-" + taskIdentify);
 			db.SortedSetRemove(RedisScheduler.TaskList, taskIdentify);
+			db.HashDelete(AbstractSpiderTask.InitStatusSetName, taskIdentify);
+			db.HashDelete(AbstractSpiderTask.ValidateStatusName, taskIdentify);
+			db.KeyDelete("set-" + Encrypt.Md5Encrypt(taskIdentify));
 		}
 
 		private string GetSetKey(string identify)

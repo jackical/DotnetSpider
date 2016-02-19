@@ -9,9 +9,9 @@ namespace Java2Dotnet.Spider.Core.Test
 		public void TestOrderOfEntries()
 		{
 			ResultItems resultItems = new ResultItems();
-			resultItems.AddResultItem("a", "a");
-			resultItems.AddResultItem("b", "b");
-			resultItems.AddResultItem("c", "c");
+			resultItems.AddOrUpdateResultItem("a", "a");
+			resultItems.AddOrUpdateResultItem("b", "b");
+			resultItems.AddOrUpdateResultItem("c", "c");
 
 			dynamic a = resultItems.GetResultItem("a");
 			dynamic b = resultItems.GetResultItem("b");

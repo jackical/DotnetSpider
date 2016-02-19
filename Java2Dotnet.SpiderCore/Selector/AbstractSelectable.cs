@@ -72,7 +72,7 @@ namespace Java2Dotnet.Spider.Core.Selector
 
 				if (Elements.Count == 1)
 				{
-					return Elements[0].ToString();
+					return Elements[0]?.ToString();
 				}
 
 				return Elements.Select(selectedNode => selectedNode.ToString()).ToList();

@@ -11,8 +11,8 @@ namespace Java2Dotnet.Spider.Core
 	/// </summary>
 	public class Site
 	{
-		private readonly Dictionary<string, string> _cookies = new Dictionary<string, string>();
-		//private readonly Dictionary<string, Dictionary<string, string>> _cookies = new Dictionary<string, Dictionary<string, string>>();
+		//private readonly Dictionary<string, string> _cookies = new Dictionary<string, string>();
+
 		private readonly List<Request> _startRequests = new List<Request>();
 		private Dictionary<string, string> _headers;
 		private ProxyPool _httpProxyPool = new ProxyPool();
@@ -33,12 +33,6 @@ namespace Java2Dotnet.Spider.Core
 		/// User agent
 		/// </summary>
 		public string Accept { get; set; }
-
-		/// <summary>
-		/// Get cookies of all domains
-		/// </summary>
-		/// <returns></returns>
-		public Dictionary<string, string> AllCookies => _cookies;
 
 		/// <summary>
 		/// Set the domain of site.
@@ -98,6 +92,8 @@ namespace Java2Dotnet.Spider.Core
 		/// </summary>
 		public int CycleRetryTimes { get; set; } = 20;
 
+		public string Cookie { get; set; }
+
 		/// <summary>
 		/// Set or Get up httpProxy for this site
 		/// </summary>
@@ -108,25 +104,6 @@ namespace Java2Dotnet.Spider.Core
 		/// Default is true, you can set it to false to disable gzip.
 		/// </summary>
 		public bool IsUseGzip { get; set; }
-
-		/// <summary>
-		/// Add a cookie with domain
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public Site AddCookie(string key, string value)
-		{
-			if (_cookies.ContainsKey(key))
-			{
-				_cookies[key] = value;
-			}
-			else
-			{
-				_cookies.Add(key, value);
-			}
-			return this;
-		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void ClearStartRequests()
@@ -222,7 +199,7 @@ namespace Java2Dotnet.Spider.Core
 			if (!AcceptStatCode?.Equals(site.AcceptStatCode) ?? site.AcceptStatCode != null)
 				return false;
 			if (!Encoding?.Equals(site.Encoding) ?? site.Encoding != null) return false;
-			if (!_cookies?.Equals(site._cookies) ?? site._cookies != null)
+			if (!Cookie?.Equals(site.Cookie) ?? site.Cookie != null)
 				return false;
 			if (!Domain?.Equals(site.Domain) ?? site.Domain != null) return false;
 			if (!_headers?.Equals(site._headers) ?? site._headers != null) return false;
@@ -237,7 +214,7 @@ namespace Java2Dotnet.Spider.Core
 		{
 			int result = Domain?.GetHashCode() ?? 0;
 			result = 31 * result + (UserAgent?.GetHashCode() ?? 0);
-			result = 31 * result + (_cookies?.GetHashCode() ?? 0);
+			result = 31 * result + (Cookie?.GetHashCode() ?? 0);
 			result = 31 * result + (Encoding?.GetHashCode() ?? 0);
 			result = 31 * result + (_startRequests?.GetHashCode() ?? 0);
 			result = 31 * result + SleepTime;
@@ -254,7 +231,7 @@ namespace Java2Dotnet.Spider.Core
 			return "Site{" +
 					"domain='" + Domain + '\'' +
 					", userAgent='" + UserAgent + '\'' +
-					", cookies=" + _cookies +
+					", cookies=" + Cookie +
 					", charset='" + Encoding + '\'' +
 					", startRequests=" + _startRequests +
 					", sleepTime=" + SleepTime +

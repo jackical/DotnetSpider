@@ -298,7 +298,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 			{
 				if (_typeExtractor.Multi)
 				{
-					IList<SelectedNode> list = _typeExtractor.Selector.SelectList(new SelectedNode() { Result = page.RawText, Type = ResultType.String });
+					IList<SelectedNode> list = _typeExtractor.Selector.SelectList(new SelectedNode { Result = page.RawText, Type = ResultType.String });
 					if (_typeExtractor.Count < long.MaxValue)
 					{
 						list = list.Take((int)_typeExtractor.Count).ToList();
@@ -317,7 +317,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 				}
 				else
 				{
-					SelectedNode select = _typeExtractor.Selector.Select(new SelectedNode() { Type = ResultType.String, Result = page.RawText });
+					SelectedNode select = _typeExtractor.Selector.Select(new SelectedNode { Type = ResultType.String, Result = page.RawText });
 					return ProcessSingle(page, select, false);
 				}
 			}
@@ -331,29 +331,44 @@ namespace Java2Dotnet.Spider.Extension.Model
 				if (fieldExtractor.Multi)
 				{
 					IList<string> value;
+					dynamic result;
 					switch (fieldExtractor.Source)
 					{
 						case ExtractSource.RawHtml:
-							value = page.HtmlDocument.SelectList(fieldExtractor.Selector).Value;
-							break;
+							{
+								result = page.HtmlDocument.SelectList(fieldExtractor.Selector)?.Value;
+								break;
+							}
 						case ExtractSource.Html:
-							value = isEntire ? page.HtmlDocument.SelectList(fieldExtractor.Selector).Value : fieldExtractor.Selector.SelectList(content)?.ToStringList();
-							break;
+							{
+								result = isEntire ? page.HtmlDocument.SelectList(fieldExtractor.Selector)?.Value : fieldExtractor.Selector.SelectList(content)?.ToStringList();
+								break;
+							}
 						case ExtractSource.Json:
-							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).Value : fieldExtractor.Selector.SelectList(content)?.ToStringList();
+							result = isEntire ? page.Json.SelectList(fieldExtractor.Selector)?.Value : fieldExtractor.Selector.SelectList(content)?.ToStringList();
 							break;
 						case ExtractSource.Url:
-							value = fieldExtractor.Selector.SelectList(new SelectedNode() { Result = page.Url, Type = ResultType.String })?.ToStringList();
+							result = fieldExtractor.Selector.SelectList(new SelectedNode { Result = page.Url, Type = ResultType.String })?.ToStringList();
 							break;
 						case ExtractSource.Enviroment:
 							{
-								value = GetEnviromentValue(fieldExtractor.Expression, page)?.ToString();
+								result = GetEnviromentValue(fieldExtractor.Expression, page)?.ToString();
 								break;
 							}
 						default:
-							value = fieldExtractor.Selector.SelectList(content)?.ToStringList();
+							result = fieldExtractor.Selector.SelectList(content)?.ToStringList();
 							break;
 					}
+
+					if (result is string)
+					{
+						value = result == null ? null : new List<string> { result };
+					}
+					else
+					{
+						value = result;
+					}
+
 					if ((value == null || value.Count == 0) && fieldExtractor.NotNull)
 					{
 						return default(T);
@@ -415,13 +430,13 @@ namespace Java2Dotnet.Spider.Extension.Model
 					switch (fieldExtractor.Source)
 					{
 						case ExtractSource.RawHtml:
-							value = page.HtmlDocument.Select(fieldExtractor.Selector).Value;
+							value = page.HtmlDocument.Select(fieldExtractor.Selector)?.Value;
 							break;
 						case ExtractSource.Html:
-							value = isEntire ? page.HtmlDocument.Select(fieldExtractor.Selector).Value : fieldExtractor.Selector.Select(content)?.ToString();
+							value = isEntire ? page.HtmlDocument.Select(fieldExtractor.Selector)?.Value : fieldExtractor.Selector.Select(content)?.ToString();
 							break;
 						case ExtractSource.Json:
-							value = isEntire ? page.GetJson().SelectList(fieldExtractor.Selector).Value : fieldExtractor.Selector.Select(content)?.ToString();
+							value = isEntire ? page.Json.SelectList(fieldExtractor.Selector)?.Value : fieldExtractor.Selector.Select(content)?.ToString();
 							break;
 						case ExtractSource.Url:
 							value = fieldExtractor.Selector.Select(new SelectedNode() { Result = page.Url, Type = ResultType.String })?.ToString();

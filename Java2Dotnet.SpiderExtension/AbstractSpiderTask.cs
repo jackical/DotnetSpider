@@ -22,8 +22,8 @@ namespace Java2Dotnet.Spider.Extension
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(AbstractSpiderTask));
 
 		private RedisScheduler _scheduler;
-		private const string InitStatusSetName = "init-status";
-		private const string ValidateStatusName = "validate-status";
+		public const string InitStatusSetName = "init-status";
+		public const string ValidateStatusName = "validate-status";
 		private readonly string _validateReportTo = ConfigurationManager.AppSettings["validationReportTo"];
 		private readonly ConnectionMultiplexer _redis;
 

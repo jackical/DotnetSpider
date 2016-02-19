@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -10,6 +9,7 @@ using System.Web;
 using HtmlAgilityPack;
 using Java2Dotnet.Spider.Core.Proxy;
 using Java2Dotnet.Spider.Core.Utils;
+using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Redial;
 
 namespace Java2Dotnet.Spider.Core.Downloader
@@ -21,6 +21,8 @@ namespace Java2Dotnet.Spider.Core.Downloader
 	public class HttpClientDownloader : BaseDownloader
 	{
 		//private static AutomicLong _exceptionCount = new AutomicLong(0);
+		public Action<Request> CustomizeRequestBeforeGenerate;
+		public bool DecodeContentAsUrl;
 
 		public override Page Download(Request request, ISpider spider)
 		{
@@ -41,11 +43,31 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			HttpWebResponse response = null;
 			try
 			{
+				if (CustomizeRequestBeforeGenerate != null)
+				{
+					SingleExecutor.Execute(() =>
+					{
+						CustomizeRequestBeforeGenerate(request);
+					});
+				}
+
 				var httpWebRequest = GetHttpWebRequest(request, site);
 
 				response = RedialManagerUtils.Execute("downloader-download", h =>
 				{
-					HttpWebRequest tmpHttpWebRequest = h as HttpWebRequest;
+					HttpWebRequest tmpHttpWebRequest = (HttpWebRequest)h;
+
+					if (HttpConstant.Method.Post.Equals(request.Method) && !string.IsNullOrEmpty(request.PostBody))
+					{
+						var data = spider.Site.Encoding.GetBytes(request.PostBody);
+						tmpHttpWebRequest.ContentLength = data.Length;
+						using (Stream newStream = tmpHttpWebRequest.GetRequestStream())
+						{
+							newStream.Write(data, 0, data.Length);
+							newStream.Close();
+						}
+					}
+
 					return (HttpWebResponse)tmpHttpWebRequest?.GetResponse();
 				}, httpWebRequest);
 
@@ -110,28 +132,28 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			return acceptStatCode.Contains(statusCode);
 		}
 
-		private HttpWebRequest GeneratorCookie(HttpWebRequest httpWebRequest, Site site)
-		{
-			CookieContainer cookieContainer = new CookieContainer();
+		//private HttpWebRequest GeneratorCookie(HttpWebRequest httpWebRequest, Site site)
+		//{
+		//	StringBuilder builder = new StringBuilder();
+		//	foreach (var cookie in site.AllCookies)
+		//	{
+		//		builder.Append($"{cookie.Key}={cookie.Value};");
+		//	}
+		//	httpWebRequest.Headers.Add("Cookie", builder.ToString());
 
-			foreach (var cookie in site.AllCookies)
-			{
-				cookieContainer.Add(new Cookie(cookie.Key, cookie.Value));
-			}
-			httpWebRequest.CookieContainer = cookieContainer;
-
-			return httpWebRequest;
-		}
+		//	return httpWebRequest;
+		//}
 
 		private HttpWebRequest GetHttpWebRequest(Request request, Site site)
 		{
 			if (site == null) return null;
 
 			HttpWebRequest httpWebRequest = SelectRequestMethod(request);
-
+			httpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
 			httpWebRequest.UserAgent = site.UserAgent ?? "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0Mozilla/5.0 (Windows NT 10.0; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0";
-			httpWebRequest.Accept = site.Accept ?? "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
-		
+			httpWebRequest.Accept = site.Accept ?? "application/json, text/javascript, */*; q=0.01";
+			httpWebRequest.ServicePoint.Expect100Continue = false;
+
 			if (site.IsUseGzip)
 			{
 				httpWebRequest.Headers.Add("Accept-Encoding", "gzip");
@@ -145,13 +167,14 @@ namespace Java2Dotnet.Spider.Core.Downloader
 					httpWebRequest.Headers.Add(header.Key, header.Value);
 				}
 			}
-
+			httpWebRequest.Headers["Cookie"] = site.Cookie;
 			httpWebRequest.Referer = request.Referer ?? "";
 
 			// cookie
-			httpWebRequest = GeneratorCookie(httpWebRequest, site);
+			//httpWebRequest = GeneratorCookie(httpWebRequest, site);
 
 			//check:
+			httpWebRequest.ServicePoint.Expect100Continue = false;
 			httpWebRequest.Timeout = site.Timeout;
 			httpWebRequest.ContinueTimeout = site.Timeout;
 			httpWebRequest.ReadWriteTimeout = site.Timeout;
@@ -184,6 +207,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			if (request.Method.ToUpper().Equals(HttpConstant.Method.Post))
 			{
 				webrequest.Method = HttpConstant.Method.Post;
+				//webrequest.Headers["X-Requested-With"] = "XMLHttpRequest";
 				return webrequest;
 			}
 			if (request.Method.ToUpper().Equals(HttpConstant.Method.Head))
@@ -216,7 +240,12 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			{
 				throw new SpiderExceptoin($"Download {request.Url} failed.");
 			}
-			content = HttpUtility.UrlDecode(HttpUtility.HtmlDecode(content), charset);
+
+			if (DecodeContentAsUrl)
+			{
+				content = HttpUtility.UrlDecode(HttpUtility.HtmlDecode(content), charset);
+			}
+
 			Page page = new Page(request);
 			page.RawText = content;
 			page.TargetUrl = response.ResponseUri.ToString();

@@ -38,8 +38,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BasicFormatsForCore, Version=2.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FiddlerCore.4.6.2.0\lib\net40\BasicFormatsForCore.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="BCMakeCert, Version=2.0.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FiddlerCore.4.6.2.0\lib\net40\BCMakeCert.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="CertMaker, Version=4.5.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FiddlerCore.4.6.2.0\lib\net40\CertMaker.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FiddlerCore4, Version=4.6.2.0, Culture=neutral, PublicKeyToken=67cb91587178ac5a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FiddlerCore.4.6.2.0\lib\net40\FiddlerCore4.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
@@ -163,6 +179,7 @@
     <Compile Include="Scheduler\ISchedulerManager.cs" />
     <Compile Include="Scheduler\RedisSchedulerManager.cs" />
     <Compile Include="Scheduler\SpiderStatus.cs" />
+    <Compile Include="Utils\FiddlerClient.cs" />
     <Compile Include="Utils\DoubleKeyDictionary.cs" />
     <Compile Include="Utils\RedisProvider.cs" />
   </ItemGroup>

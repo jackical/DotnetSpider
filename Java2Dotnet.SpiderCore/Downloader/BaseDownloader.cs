@@ -1,4 +1,5 @@
 ﻿using System;
+using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Redial;
 using log4net;
 
@@ -10,6 +11,9 @@ namespace Java2Dotnet.Spider.Core.Downloader
 		public int ThreadNum { set; get; }
 
 		protected static readonly ILog Logger = LogManager.GetLogger(typeof(BaseDownloader));
+		protected SingleExecutor SingleExecutor = new SingleExecutor();
+
+		public Action CustomizeCookie;
 
 		public virtual Page Download(Request request, ISpider spider)
 		{
@@ -46,6 +50,14 @@ namespace Java2Dotnet.Spider.Core.Downloader
 					case DownloadValidationResult.Success:
 						{
 							break;
+						}
+					case DownloadValidationResult.FailedAndNeedUpdateCookie:
+						{
+							SingleExecutor.Execute(() =>
+							{
+								CustomizeCookie?.Invoke();
+							});
+							throw new SpiderExceptoin("Cookie validate failed.");
 						}
 					case DownloadValidationResult.Miss:
 						{

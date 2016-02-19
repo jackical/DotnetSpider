@@ -69,7 +69,7 @@ namespace Java2Dotnet.Spider.Core
 		/// <param name="field"></param>
 		public void AddResultItem(string key, dynamic field)
 		{
-			ResultItems.AddResultItem(key, field);
+			ResultItems.AddOrUpdateResultItem(key, field);
 		}
 
 		/// <summary>
@@ -89,10 +89,7 @@ namespace Java2Dotnet.Spider.Core
 		/// Get json content of page
 		/// </summary>
 		/// <returns></returns>
-		public Json GetJson()
-		{
-			return _json ?? (_json = new Json(RawText));
-		}
+		public Json Json => _json ?? (_json = new Json(RawText));
 
 		/// <summary>
 		/// Add urls to fetch

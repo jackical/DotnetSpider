@@ -44,6 +44,8 @@ namespace Java2Dotnet.Spider.Core
 
 		public string Referer { get; set; }
 
+		public string Origin { get; set; }
+
 		/// <summary>
 		/// Set the priority of request for sorting. 
 		/// Need a scheduler supporting priority. 
@@ -59,6 +61,8 @@ namespace Java2Dotnet.Spider.Core
 		/// The http method of the request. Get for default.
 		/// </summary>
 		public string Method { get; set; }
+
+		public string PostBody { get; set; }
 
 		public Uri Url { get; set; }
 
@@ -146,7 +150,9 @@ namespace Java2Dotnet.Spider.Core
 			{
 				Method = Method,
 				Priority = Priority,
-				Referer = Referer
+				Referer = Referer,
+				PostBody = PostBody,
+				Origin = Origin
 			};
 			return newObj;
 		}

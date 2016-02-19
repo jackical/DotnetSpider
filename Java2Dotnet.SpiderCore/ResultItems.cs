@@ -18,9 +18,16 @@ namespace Java2Dotnet.Spider.Core
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public ResultItems AddResultItem(string key, dynamic value)
+		public ResultItems AddOrUpdateResultItem(string key, dynamic value)
 		{
-			_fields.Add(key, value);
+			if (_fields.ContainsKey(key))
+			{
+				_fields[key] = value;
+			}
+			else
+			{
+				_fields.Add(key, value);
+			}
 			return this;
 		}
 

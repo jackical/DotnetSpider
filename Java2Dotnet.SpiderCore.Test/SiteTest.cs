@@ -16,7 +16,7 @@ namespace Java2Dotnet.Spider.Core.Test
 		[TestMethod]
 		public void TestAddCookies()
 		{
-			Site.AddCookie(wName, wValue);
+			//Site.AddCookie(wName, wValue);
 			//Site.AddCookie(wDomain, wName, wValue);
 			//Assert.IsNotNull(Site.AllCookies[wDomain]);
 			//Assert.IsNotNull(Site.AllCookies[wDomain][wName]);

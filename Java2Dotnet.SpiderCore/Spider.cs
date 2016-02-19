@@ -31,7 +31,7 @@ namespace Java2Dotnet.Spider.Core
 		public DateTime StartTime { get; private set; }
 		public DateTime FinishedTime { get; private set; } = DateTime.MinValue;
 		public Site Site { get; protected set; }
-		public Func<string, string> SubDownloadedHtml;
+		public Action<Page> CustomizePage;
 		public bool ShowControl { get; set; }
 		public bool SaveStatusToRedis { get; set; }
 		public string Identify { get; }
@@ -383,15 +383,13 @@ namespace Java2Dotnet.Spider.Core
 
 				if (request == null)
 				{
-					if (ThreadPool.ThreadAlive == 0 && IsExitWhenComplete)
+					if (ThreadPool.ThreadAlive == 0)
 					{
-						Stat = Status.Finished;
-						break;
-					}
-
-					if (_waitCount > _waitCountLimit)
-					{
-						break;
+						if (_waitCount > _waitCountLimit && IsExitWhenComplete)
+						{
+							Stat = Status.Finished;
+							break;
+						}
 					}
 
 					// wait until new url added
@@ -584,11 +582,8 @@ namespace Java2Dotnet.Spider.Core
 						return;
 					}
 
-					// 处理HTML截取
-					if (SubDownloadedHtml != null)
-					{
-						page.RawText = SubDownloadedHtml(page.RawText);
-					}
+					// 修正Page数据
+					CustomizePage?.Invoke(page);
 
 					// 解析页面数据
 					// PageProcess中2种错误：1 下载的HTML有误 2是实现的IPageProcessor有误

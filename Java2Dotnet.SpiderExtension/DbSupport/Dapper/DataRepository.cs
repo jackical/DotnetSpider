@@ -110,6 +110,14 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 			}
 		}
 
+		public List<T> Query(string sql)
+		{
+			using (IDbConnection conn = DbProviderUtil.Provider.CreateConnection())
+			{
+				return conn.Query<T>(sql, null, null, false, 99999, CommandType.Text).ToList();
+			}
+		}
+
 		public void CreateTable()
 		{
 			using (IDbConnection conn = DbProviderUtil.Provider.CreateConnection())

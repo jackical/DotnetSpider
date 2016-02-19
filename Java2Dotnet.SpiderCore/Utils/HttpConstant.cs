@@ -7,25 +7,25 @@ namespace Java2Dotnet.Spider.Core.Utils
 	{
 		public static class Method
 		{
-			public static readonly string Get = "GET";
+			public const  string Get = "GET";
 
-			public static readonly string Head = "HEAD";
+			public const string Head = "HEAD";
 
-			public static readonly string Post = "POST";
+			public const string Post = "POST";
 
-			public static readonly string Put = "PUT";
+			public const string Put = "PUT";
 
-			public static readonly string Delete = "DELETE";
+			public const string Delete = "DELETE";
 
-			public static readonly string Trace = "TRACE";
+			public const string Trace = "TRACE";
 
-			public static readonly string Connect = "CONNECT";
+			public const string Connect = "CONNECT";
 		}
 
 		public static class Header
 		{
-			public static readonly string Referer = "Referer";
-			public static readonly string UserAgent = "User-Agent";
+			public const string Referer = "Referer";
+			public const string UserAgent = "User-Agent";
 		}
 	}
 }

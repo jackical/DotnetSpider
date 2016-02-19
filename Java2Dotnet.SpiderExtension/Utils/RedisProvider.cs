@@ -29,7 +29,7 @@ namespace Java2Dotnet.Spider.Extension.Utils
 			}
 			catch (Exception e)
 			{
-				throw new SpiderExceptoin("Can't init redis provider: " + e.ToString());
+				throw new SpiderExceptoin("Can't init redis provider: " + e);
 			}
 		}
 	}

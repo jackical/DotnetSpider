@@ -5,6 +5,7 @@
 		Success,
 		FailedAndNeedRedial,
 		Failed,
+		FailedAndNeedUpdateCookie,
 		Miss
 	}
 
