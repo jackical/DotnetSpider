@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Java2Dotnet.Spider.Core.Selector;
+using Java2Dotnet.Spider.Core.Selector.Html;
+using Java2Dotnet.Spider.Core.Selector.Json;
 using Java2Dotnet.Spider.Core.Utils;
 
 namespace Java2Dotnet.Spider.Core
@@ -13,8 +15,9 @@ namespace Java2Dotnet.Spider.Core
 	{
 		public const string Images = "580c9065-0f44-47e9-94ea-b172d5a730c0";
 
-		private Html _html;
-		private Json _json;
+		private HtmlSelectable _htmlSelectable;
+		private JsonSelectable _jsonSelectable;
+		private string _content;
 
 		/// <summary>
 		/// Url of current page
@@ -42,7 +45,19 @@ namespace Java2Dotnet.Spider.Core
 
 		public int StatusCode { get; set; }
 
-		public string RawText { get; set; }
+		public string Content
+		{
+			get { return _content; }
+			set
+			{
+				if (!Equals(value, _content))
+				{
+					_content = value;
+					_htmlSelectable = null;
+					_jsonSelectable = null;
+				}
+			}
+		}
 
 		public bool MissTargetUrls { get; set; }
 
@@ -76,20 +91,9 @@ namespace Java2Dotnet.Spider.Core
 		/// Get html content of page
 		/// </summary>
 		/// <returns></returns>
-		public Html HtmlDocument
-		{
-			get
-			{
-				return _html ?? (_html = new Html(RawText, Request.Url));
-			}
-			set { _html = value; }
-		}
+		public HtmlSelectable HtmlSelectable => _htmlSelectable ?? (_htmlSelectable = new HtmlSelectable(Content, Request.Url.ToString()));
 
-		/// <summary>
-		/// Get json content of page
-		/// </summary>
-		/// <returns></returns>
-		public Json Json => _json ?? (_json = new Json(RawText));
+		public JsonSelectable JsonSelectable => _jsonSelectable ?? (_jsonSelectable = new JsonSelectable(Content));
 
 		/// <summary>
 		/// Add urls to fetch
@@ -156,7 +160,7 @@ namespace Java2Dotnet.Spider.Core
 
 		public override string ToString()
 		{
-			return $"Page{{request='{Request}', resultItems='{ResultItems}', rawText='{RawText}', url={Url}, statusCode={StatusCode}, targetRequests={TargetRequests}}}";
+			return $"Page{{request='{Request}', resultItems='{ResultItems}', content='{Content}', url={Url}, statusCode={StatusCode}, targetRequests={TargetRequests}}}";
 		}
 	}
 }

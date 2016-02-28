@@ -15,15 +15,14 @@
  *  limitations under the License.
  *
  */
+
+using System.IO;
+using System.Text;
 using ZooKeeperNet.IO;
 
-namespace Org.Apache.Jute
+namespace ZooKeeperNet.Jute
 {
-	using System.IO;
-    using System.Text;
-    using ZooKeeperNet;
-
-    public class BinaryInputArchive : IInputArchive
+	public class BinaryInputArchive : IInputArchive
     {
         private readonly EndianBinaryReader reader;
 

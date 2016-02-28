@@ -15,9 +15,10 @@
  *  limitations under the License.
  *
  */
+
 using ZooKeeperNet.IO;
 
-namespace Org.Apache.Jute
+namespace ZooKeeperNet.Jute
 {
     public class RecordWriter
     {

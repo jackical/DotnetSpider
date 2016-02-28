@@ -134,11 +134,11 @@
     <Compile Include="Environment.cs" />
     <Compile Include="IRedisSpider.cs" />
     <Compile Include="Model\Attribute\BaseExtractBy.cs" />
-    <Compile Include="Model\Attribute\ComboExtract.cs" />
     <Compile Include="Model\Attribute\PropertyExtractBy.cs" />
     <Compile Include="Model\Attribute\TargetUrlFormatter.cs" />
     <Compile Include="Model\Attribute\HelpUrl.cs" />
     <Compile Include="Model\Attribute\Download.cs" />
+    <Compile Include="Model\IPageModelExtractor.cs" />
     <Compile Include="Model\ModelSpider.cs" />
     <Compile Include="Model\Attribute\RequestStoping.cs" />
     <Compile Include="Model\BaseModelSpider.cs" />
@@ -152,7 +152,6 @@
     <Compile Include="Model\ModelMongoDbSpider.cs" />
     <Compile Include="Model\ModelMysqlFileSpider.cs" />
     <Compile Include="Model\SpiderEntity.cs" />
-    <Compile Include="Model\ExtractSource.cs" />
     <Compile Include="Model\Formatter\CustomizeFormatter.cs" />
     <Compile Include="Model\Formatter\FormatterFactory.cs" />
     <Compile Include="Model\Formatter\IObjectFormatter.cs" />
@@ -161,6 +160,7 @@
     <Compile Include="Model\Formatter\PrefixFormatter.cs" />
     <Compile Include="Model\Formatter\RegexFormatter.cs" />
     <Compile Include="Model\Formatter\Types.cs" />
+    <Compile Include="Model\TargetUrlExtractInfo.cs" />
     <Compile Include="Model\TypeExtractor.cs" />
     <Compile Include="Monitor\Form1.cs">
       <SubType>Form</SubType>
@@ -201,7 +201,6 @@
     <Compile Include="Model\FieldExtractor.cs" />
     <Compile Include="Utils\ExtractorUtils.cs" />
     <Compile Include="Model\Attribute\Formatter.cs" />
-    <Compile Include="Model\Attribute\ExtractByUrl.cs" />
     <Compile Include="Model\Attribute\TargetUrl.cs" />
     <Compile Include="Model\Formatter\BasicTypeFormatter.cs" />
     <Compile Include="Model\AfterExtractor.cs" />

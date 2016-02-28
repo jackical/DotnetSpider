@@ -81,9 +81,9 @@ namespace Java2Dotnet.Spider.WebDriver
 				//中文乱码URL
 				Uri uri = request.Url;
 				string query = uri.Query;
-				string realUrl = uri.Scheme + "://" + uri.DnsSafeHost + uri.AbsolutePath + (string.IsNullOrEmpty(query)
-					? ""
-					: ("?" + HttpUtility.UrlPathEncode(uri.Query.Substring(1, uri.Query.Length - 1))));
+				string realUrl = uri.Scheme + "://" + uri.DnsSafeHost + ":" + uri.Port + uri.AbsolutePath + (string.IsNullOrEmpty(query)
+									? ""
+									: ("?" + HttpUtility.UrlPathEncode(uri.Query.Substring(1, uri.Query.Length - 1))));
 
 				if (UrlFormat != null)
 				{
@@ -100,7 +100,7 @@ namespace Java2Dotnet.Spider.WebDriver
 				AfterNavigate?.Invoke((RemoteWebDriver)driverService.WebDriver);
 
 				Page page = new Page(request);
-				page.RawText = driverService.WebDriver.PageSource;
+				page.Content = driverService.WebDriver.PageSource;
 				page.Url = request.Url.ToString();
 				page.TargetUrl = driverService.WebDriver.Url;
 				page.Title = driverService.WebDriver.Title;

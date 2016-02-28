@@ -18,10 +18,10 @@
 */
 
 using System;
-using Org.Apache.Jute;
 using log4net;
+using ZooKeeperNet.Jute;
 
-namespace Org.Apache.Zookeeper.Proto
+namespace ZooKeeperNet.Generate
 {
 public class GetDataResponse : IRecord, IComparable 
 {
@@ -31,13 +31,13 @@ private static ILog log = LogManager.GetLogger(typeof(GetDataResponse));
   public GetDataResponse(
   byte[] data
 ,
-  Org.Apache.Zookeeper.Data.Stat stat
+  Stat stat
 ) {
 Data=data;
 Stat=stat;
   }
   public byte[] Data { get; set; } 
-  public Org.Apache.Zookeeper.Data.Stat Stat { get; set; } 
+  public Stat Stat { get; set; } 
   public void Serialize(IOutputArchive a_, String tag) {
     a_.StartRecord(this,tag);
     a_.WriteBuffer(Data,"data");
@@ -47,7 +47,7 @@ Stat=stat;
   public void Deserialize(IInputArchive a_, String tag) {
     a_.StartRecord(tag);
     Data=a_.ReadBuffer("data");
-    Stat= new Org.Apache.Zookeeper.Data.Stat();
+    Stat= new Stat();
     a_.ReadRecord(Stat,"stat");
     a_.EndRecord(tag);
 }

@@ -1,4 +1,5 @@
 ﻿using Java2Dotnet.Spider.Core.Selector;
+using Java2Dotnet.Spider.Core.Selector.Html;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Java2Dotnet.Spider.Core.Test
@@ -9,9 +10,9 @@ namespace Java2Dotnet.Spider.Core.Test
 		[TestMethod]
 		public void TestRegexSelector()
 		{
-			Html selectable = new Html("aaaaaaab", "");
+			HtmlSelectable htmlSelectable = new HtmlSelectable("aaaaaaab", "");
 			//        Assert.assertEquals("abbabbab", (selectable.regex("(.*)").replace("aa(a)", "$1bb").toString()));
-			string value = selectable.Regex("(.*)").Value;
+			string value = htmlSelectable.Regex("(.*)").Value;
 			Assert.AreEqual("aaaaaaab", value);
 
 		}

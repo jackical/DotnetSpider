@@ -15,7 +15,10 @@
  *  limitations under the License.
  *
  */
+
+using ZooKeeperNet.Generate;
 using ZooKeeperNet.IO;
+using ZooKeeperNet.Jute;
 
 namespace ZooKeeperNet
 {
@@ -23,8 +26,6 @@ namespace ZooKeeperNet
     using System.Text;
     using System.Threading;
     using log4net;
-    using Org.Apache.Jute;
-    using Org.Apache.Zookeeper.Proto;
     using System;
 
     public class Packet

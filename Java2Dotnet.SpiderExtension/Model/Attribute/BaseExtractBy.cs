@@ -36,12 +36,6 @@
 			}
 		}
 
-		/// <summary>
-		///The source for extracting. 
-		///It works only if you already added 'ExtractBy' to Class.   
-		/// </summary>
-		public ExtractSource Source { get; set; }
-
 		public long Count { get; set; } = long.MaxValue;
 	}
 }

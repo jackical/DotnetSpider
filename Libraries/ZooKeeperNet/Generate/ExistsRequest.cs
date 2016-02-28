@@ -18,10 +18,10 @@
 */
 
 using System;
-using Org.Apache.Jute;
 using log4net;
+using ZooKeeperNet.Jute;
 
-namespace Org.Apache.Zookeeper.Proto
+namespace ZooKeeperNet.Generate
 {
 public class ExistsRequest : IRecord, IComparable 
 {

@@ -6,22 +6,13 @@ namespace Java2Dotnet.Spider.Core.Test.Selector
 	[TestClass]
 	public class JsonTest
 	{
-		private string _text = "callback({\"name\":\"json\"});";
-
-		private string _textWithBrackerInContent = "callback({\"name\":\"json)\"})";
+		private string _text = "{\"name\":\"json\"}";
 
 		[TestMethod]
-		public void TestRemovePadding()
+		public void Test01()
 		{
-			string name = new Json(_text, "callback").JsonPath("$.name").Value;
-			Assert.AreEqual(name, "json");
-		}
-
-		[TestMethod]
-		public void TestRemovePaddingForQuotes()
-		{
-			string name = new Json(_textWithBrackerInContent, "callback").JsonPath("$.name").Value;
-			Assert.AreEqual(name, "json)");
+			//string name = new Selectable(_text,"").JsonPath("$.name").Value;
+			//Assert.AreEqual(name, "json");
 		}
 	}
 }

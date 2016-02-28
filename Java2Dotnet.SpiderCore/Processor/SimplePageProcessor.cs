@@ -22,14 +22,14 @@ namespace Java2Dotnet.Spider.Core.Processor
 
 		public void Process(Page page)
 		{
-			List<string> requests = page.HtmlDocument.Links().Regex(_urlPattern).Value;
+			List<string> requests = page.HtmlSelectable.XPath(".//a/@href").Regex(_urlPattern).Value;
 			//add urls to fetch
 			page.AddTargetRequests(requests);
 			//extract by XPath
-			page.AddResultItem("title", page.HtmlDocument.XPath("//title"));
-			page.AddResultItem("html", page.HtmlDocument.ToString());
+			page.AddResultItem("title", page.HtmlSelectable.XPath("//title"));
+			page.AddResultItem("html", page.HtmlSelectable.ToString());
 			//extract by Readability
-			page.AddResultItem("content", page.HtmlDocument.SmartContent());
+			page.AddResultItem("content", page.HtmlSelectable.SmartContent());
 		}
 
 		/// <summary>

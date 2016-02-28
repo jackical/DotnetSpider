@@ -15,7 +15,7 @@
  *  limitations under the License.
  *
  */
-namespace Org.Apache.Jute
+namespace ZooKeeperNet.Jute
 {
     public interface IIndex
     {

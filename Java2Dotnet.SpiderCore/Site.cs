@@ -11,8 +11,6 @@ namespace Java2Dotnet.Spider.Core
 	/// </summary>
 	public class Site
 	{
-		//private readonly Dictionary<string, string> _cookies = new Dictionary<string, string>();
-
 		private readonly List<Request> _startRequests = new List<Request>();
 		private Dictionary<string, string> _headers;
 		private ProxyPool _httpProxyPool = new ProxyPool();
@@ -183,47 +181,6 @@ namespace Java2Dotnet.Spider.Core
 				Headers.Add(key, value);
 			}
 			return this;
-		}
-
-		public override bool Equals(object o)
-		{
-			if (this == o) return true;
-			if (o == null || GetType() != o.GetType()) return false;
-
-			Site site = (Site)o;
-
-			if (CycleRetryTimes != site.CycleRetryTimes) return false;
-			if (RetryTimes != site.RetryTimes) return false;
-			if (SleepTime != site.SleepTime) return false;
-			if (Timeout != site.Timeout) return false;
-			if (!AcceptStatCode?.Equals(site.AcceptStatCode) ?? site.AcceptStatCode != null)
-				return false;
-			if (!Encoding?.Equals(site.Encoding) ?? site.Encoding != null) return false;
-			if (!Cookie?.Equals(site.Cookie) ?? site.Cookie != null)
-				return false;
-			if (!Domain?.Equals(site.Domain) ?? site.Domain != null) return false;
-			if (!_headers?.Equals(site._headers) ?? site._headers != null) return false;
-			if (!_startRequests?.Equals(site._startRequests) ?? site._startRequests != null)
-				return false;
-			if (!UserAgent?.Equals(site.UserAgent) ?? site.UserAgent != null) return false;
-
-			return true;
-		}
-
-		public override int GetHashCode()
-		{
-			int result = Domain?.GetHashCode() ?? 0;
-			result = 31 * result + (UserAgent?.GetHashCode() ?? 0);
-			result = 31 * result + (Cookie?.GetHashCode() ?? 0);
-			result = 31 * result + (Encoding?.GetHashCode() ?? 0);
-			result = 31 * result + (_startRequests?.GetHashCode() ?? 0);
-			result = 31 * result + SleepTime;
-			result = 31 * result + RetryTimes;
-			result = 31 * result + CycleRetryTimes;
-			result = 31 * result + Timeout;
-			result = 31 * result + (AcceptStatCode?.GetHashCode() ?? 0);
-			result = 31 * result + (_headers?.GetHashCode() ?? 0);
-			return result;
 		}
 
 		public override string ToString()

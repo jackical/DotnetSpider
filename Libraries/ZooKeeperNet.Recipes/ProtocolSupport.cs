@@ -1,13 +1,14 @@
-﻿namespace ZooKeeperNet.Recipes
+﻿using ZooKeeperNet.Generate;
+
+namespace ZooKeeperNet.Recipes
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using System.Threading;
     using log4net;
-    using Org.Apache.Zookeeper.Data;
- 
-    public abstract class ProtocolSupport : IDisposable
+
+	public abstract class ProtocolSupport : IDisposable
     {
         protected static readonly ILog LOG = LogManager.GetLogger(typeof(ProtocolSupport));
 

@@ -4,7 +4,6 @@ using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Downloader;
 using Java2Dotnet.Spider.Core.Pipeline;
 using Java2Dotnet.Spider.Core.Processor;
-using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Core.Utils;
 
 namespace Java2Dotnet.Spider.Extension.Downloader
@@ -49,7 +48,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 					string html = GetHtml(bufferedReader);
 					page = new Page(request);
 					page.Url = request.Url.ToString();
-					page.HtmlDocument = new Html(html);
+					page.Content = html;
 				}
 			}
 			catch (IOException e)

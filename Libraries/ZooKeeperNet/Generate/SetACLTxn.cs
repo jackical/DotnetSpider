@@ -18,10 +18,10 @@
 */
 
 using System;
-using Org.Apache.Jute;
 using log4net;
+using ZooKeeperNet.Jute;
 
-namespace Org.Apache.Zookeeper.Txn
+namespace ZooKeeperNet.Generate
 {
 public class SetACLTxn : IRecord, IComparable 
 {
@@ -31,7 +31,7 @@ private static ILog log = LogManager.GetLogger(typeof(SetACLTxn));
   public SetACLTxn(
   string path
 ,
-  System.Collections.Generic.IEnumerable<Org.Apache.Zookeeper.Data.ACL> acl
+  System.Collections.Generic.IEnumerable<ACL> acl
 ,
   int version
 ) {
@@ -40,7 +40,7 @@ Acl=acl;
 Version=version;
   }
   public string Path { get; set; } 
-  public System.Collections.Generic.IEnumerable<Org.Apache.Zookeeper.Data.ACL> Acl { get; set; } 
+  public System.Collections.Generic.IEnumerable<ACL> Acl { get; set; } 
   public int Version { get; set; } 
   public void Serialize(IOutputArchive a_, String tag) {
     a_.StartRecord(this,tag);
@@ -61,10 +61,10 @@ Version=version;
     Path=a_.ReadString("path");
     {
       IIndex vidx1 = a_.StartVector("acl");
-      if (vidx1!= null) {          var tmpLst=new System.Collections.Generic.List<Org.Apache.Zookeeper.Data.ACL>();
+      if (vidx1!= null) {          var tmpLst=new System.Collections.Generic.List<ACL>();
           for (; !vidx1.Done(); vidx1.Incr()) {
-    Org.Apache.Zookeeper.Data.ACL e1;
-    e1= new Org.Apache.Zookeeper.Data.ACL();
+    ACL e1;
+    e1= new ACL();
     a_.ReadRecord(e1,"e1");
             tmpLst.Add(e1);
           }

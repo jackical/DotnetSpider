@@ -13,7 +13,7 @@ namespace Java2Dotnet.Spider.Samples.Model
 		[PropertyExtractBy(Expression = "//div[@class='mainContent sep-10']/tidyText()")]
 		public string Content { get; set; }
 
-		[ExtractByUrl]
+		//[ExtractByUrl]
 		public string Url { get; set; }
 
 		public static void Run()

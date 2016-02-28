@@ -1,14 +1,15 @@
-﻿namespace ZooKeeperNet.Recipes
+﻿using ZooKeeperNet.Generate;
+
+namespace ZooKeeperNet.Recipes
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using log4net;
-    using Org.Apache.Zookeeper.Data;
 
 
-    public class DistributedQueue
+	public class DistributedQueue
     {
         private static readonly ILog LOG = LogManager.GetLogger(typeof(DistributedQueue));
 

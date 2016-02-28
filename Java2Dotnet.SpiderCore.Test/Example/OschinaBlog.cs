@@ -28,17 +28,18 @@ namespace Java2Dotnet.Spider.Core.Test.Example
 		{
 			//results will be saved to "/data/webmagic/" in json format
 			//OoSpider.Create(new Site(), new JsonFilePageModelPipeline("/data/webmagic/"), typeof(OschinaBlog)).AddStartUrl("http://my.oschina.net/flashsword/blog").Run();
-			ModelMysqlFileSpider<OschinaBlog> spider = new ModelMysqlFileSpider<OschinaBlog>(Guid.NewGuid().ToString(), new Site()
+			ModelMysqlFileSpider<OschinaBlog> spider = new ModelMysqlFileSpider<OschinaBlog>(Guid.NewGuid().ToString(), new Site
 			{
 				Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-				//Referer = "http://my.oschina.net/flashsword/blog",
+				UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36",
 				Headers = new Dictionary<string, string>()
 				{
-					{ "Upgrade-Insecure-Requests","1" }
+					{ "Upgrade-Insecure-Requests","1" },
+					{ "Cache-Control","max-age=0" },
 				},
 				Encoding = Encoding.UTF8
 			});
-			spider.AddStartUrl("http://my.oschina.net/flashsword/blog");
+			spider.AddStartUrl("http://my.oschina.net/flashsword/blog?fromerr=XZc4yHVr");
 			spider.Run();
 		}
 	}

@@ -7,10 +7,9 @@ namespace Java2Dotnet.Spider.Extension.Model
 	/// </summary>
 	public class Extractor
 	{
-		public Extractor(ISelector selector, string expression, ExtractSource source, bool notNull, long count = long.MaxValue)
+		public Extractor(ISelector selector, string expression,  bool notNull, int count = int.MaxValue)
 		{
 			Selector = selector;
-			Source = source;
 			NotNull = notNull;
 			Count = count;
 			Expression = expression;
@@ -18,11 +17,9 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 		public string Expression { get; }
 
-		public long Count { get; }
+		public int Count { get; }
 
 		public ISelector Selector { get; }
-
-		public ExtractSource Source { get; }
 
 		public bool NotNull { get; }
 	}

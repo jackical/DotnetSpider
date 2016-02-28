@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using Java2Dotnet.Spider.Core.Utils;
 
-namespace Java2Dotnet.Spider.Core.Selector
+namespace Java2Dotnet.Spider.Core.Selector.Html
 {
 	[Experimental]
 	public class SmartContentSelector : ISelector
 	{
-		public SelectedNode Select(SelectedNode node)
+		public string Select(string node)
 		{
-			string html = node.ToString();
+			string html = node ;
 			html = html.Replace("(?is)<!DOCTYPE.*?>", "");
 			html = html.Replace("(?is)<!--.*?-->", "");             // remove html comment
 			html = html.Replace("(?is)<script.*?>.*?</script>", ""); // remove javascript
@@ -78,20 +78,10 @@ namespace Java2Dotnet.Spider.Core.Selector
 					boolstart = boolend = false;
 				}
 			}
-			return new SelectedNode() { Type = ResultType.String, Result = text.ToString() };
+			return  text.ToString();
 		}
 
-		public List<SelectedNode> SelectList(SelectedNode text)
-		{
-			throw new NotImplementedException();
-		}
-
-		public SelectedNode Select(List<SelectedNode> text)
-		{
-			throw new NotImplementedException();
-		}
-
-		public List<SelectedNode> SelectList(List<SelectedNode> text)
+		public List<string> SelectList(string text)
 		{
 			throw new NotImplementedException();
 		}

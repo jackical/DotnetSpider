@@ -21,6 +21,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		public static readonly string TaskList = "task";
 		public static readonly string ItemPrefix = "item-";
 		private ConnectionMultiplexer Redis { get; }
+		private readonly IDatabase _db;
 
 		public RedisScheduler(string host, string password = null, int port = 6379) : this(ConnectionMultiplexer.Connect(new ConfigurationOptions()
 		{
@@ -39,16 +40,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		public RedisScheduler(ConnectionMultiplexer redis) : this()
 		{
 			Redis = redis;
-		}
-
-		public override void Init(ISpider spider)
-		{
-			RedialManagerUtils.Execute("rds-init", () =>
-			{
-				IDatabase db = Redis.GetDatabase(0);
-				// redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
-				db.SortedSetAdd(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
-			});
+			_db = Redis.GetDatabase(0);
 		}
 
 		private RedisScheduler()
@@ -56,12 +48,20 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			DuplicateRemover = this;
 		}
 
+		public override void Init(ISpider spider)
+		{
+			RedialManagerUtils.Execute("rds-init", () =>
+			{
+				// redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
+				_db.SortedSetAdd(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
+			});
+		}
+
 		public void ResetDuplicateCheck(ISpider spider)
 		{
 			RedialManagerUtils.Execute("rds-reset", () =>
 			{
-				IDatabase db = Redis.GetDatabase(0);
-				db.KeyDelete(GetSetKey(spider));
+				_db.KeyDelete(GetSetKey(spider));
 			});
 		}
 
@@ -79,11 +79,10 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			return SafeExecutor.Execute(30, () =>
 			{
-				IDatabase db = Redis.GetDatabase(0);
-				bool isDuplicate = db.SetContains(GetSetKey(spider), request.Url.ToString());
+				bool isDuplicate = _db.SetContains(GetSetKey(spider), request.Url.ToString());
 				if (!isDuplicate)
 				{
-					db.SetAdd(GetSetKey(spider), request.Url.ToString());
+					_db.SetAdd(GetSetKey(spider), request.Url.ToString());
 				}
 				return isDuplicate;
 			});
@@ -94,8 +93,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			SafeExecutor.Execute(30, () =>
 			{
-				IDatabase db = Redis.GetDatabase(0);
-				db.SetAdd(GetQueueKey(spider), request.Url.ToString());
+				_db.SetAdd(GetQueueKey(spider), request.Url.ToString());
 
 				// 没有必要判断浪费性能了, 这里不可能为空。最少会有一个层级数据 Grade
 				//if (request.Extras != null && request.Extras.Count > 0)
@@ -103,7 +101,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 				string field = Encrypt.Md5Encrypt(request.Url.ToString());
 				string value = JsonConvert.SerializeObject(request);
 
-				db.HashSet(ItemPrefix + spider.Identify, field, value);
+				_db.HashSet(ItemPrefix + spider.Identify, field, value);
 			});
 		}
 
@@ -120,8 +118,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			return RedialManagerUtils.Execute("rds-getleftcount", () =>
 			{
-				IDatabase db = Redis.GetDatabase(0);
-				long size = db.SetLength(GetQueueKey(spider));
+				long size = _db.SetLength(GetQueueKey(spider));
 				return (int)size;
 			});
 		}
@@ -130,8 +127,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			return RedialManagerUtils.Execute("rds-gettotalcount", () =>
 			{
-				IDatabase db = Redis.GetDatabase(0);
-				long size = db.SetLength(GetSetKey(spider));
+				long size = _db.SetLength(GetSetKey(spider));
 
 				return (int)size;
 			});
@@ -144,12 +140,11 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		private Request DoPoll(ISpider spider)
 		{
-			IDatabase db = Redis.GetDatabase(0);
 			return SafeExecutor.Execute(30, () =>
 			{
 				//string url = redis.PopItemWithLowestScoreFromSortedSet(GetQueueKey(spider));
 
-				var value = db.SetPop(GetQueueKey(spider));
+				var value = _db.SetPop(GetQueueKey(spider));
 				if (!value.HasValue)
 				{
 					return null;
@@ -161,7 +156,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 				string json = null;
 
 				//redis 有可能取数据失败
-				for (int i = 0; i < 10 && string.IsNullOrEmpty(json = db.HashGet(hashId, field)); ++i)
+				for (int i = 0; i < 10 && string.IsNullOrEmpty(json = _db.HashGet(hashId, field)); ++i)
 				{
 					Thread.Sleep(150);
 				}
@@ -169,7 +164,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 				if (!string.IsNullOrEmpty(json))
 				{
 					var result = JsonConvert.DeserializeObject<Request>(json);
-					db.HashDelete(hashId, field);
+					_db.HashDelete(hashId, field);
 					return result;
 				}
 

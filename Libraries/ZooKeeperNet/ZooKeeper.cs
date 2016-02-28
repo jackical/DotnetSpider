@@ -15,15 +15,16 @@
  *  limitations under the License.
  *
  */
- namespace ZooKeeperNet
+
+using ZooKeeperNet.Generate;
+
+namespace ZooKeeperNet
 {
     using System;
     using System.Linq;
     using System.Collections.Generic;
     using System.Diagnostics;
     using log4net;
-    using Org.Apache.Zookeeper.Data;
-    using Org.Apache.Zookeeper.Proto;
     using System.Threading;
     using System.Text;
 

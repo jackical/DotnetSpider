@@ -25,7 +25,7 @@ namespace Java2Dotnet.Spider.Core.Test.Model
 		public void testMultiModel_should_not_skip_when_match()
 		{
 			Page page = new Page(new Request("http://codecraft.us/foo", 1, null));
-			page.RawText = "<div foo='foo'></div><div bar='bar'></div>";
+			page.Content = "<div foo='foo'></div><div bar='bar'></div>";
 			page.Url = ("http://codecraft.us/foo");
 			ModelPageProcessor modelPageProcessor = new ModelPageProcessor<ModelFoo, ModelBar>(new Site());
 			modelPageProcessor.Process(page);

@@ -18,10 +18,10 @@
 */
 
 using System;
-using Org.Apache.Jute;
 using log4net;
+using ZooKeeperNet.Jute;
 
-namespace Org.Apache.Zookeeper.Txn
+namespace ZooKeeperNet.Generate
 {
 public class MultiTxn : IRecord, IComparable 
 {
@@ -29,11 +29,11 @@ private static ILog log = LogManager.GetLogger(typeof(MultiTxn));
   public MultiTxn() {
   }
   public MultiTxn(
-  System.Collections.Generic.IEnumerable<Org.Apache.Zookeeper.Txn.Txn> txns
+  System.Collections.Generic.IEnumerable<Txn> txns
 ) {
 Txns=txns;
   }
-  public System.Collections.Generic.IEnumerable<Org.Apache.Zookeeper.Txn.Txn> Txns { get; set; } 
+  public System.Collections.Generic.IEnumerable<Txn> Txns { get; set; } 
   public void Serialize(IOutputArchive a_, String tag) {
     a_.StartRecord(this,tag);
     {
@@ -50,10 +50,10 @@ Txns=txns;
     a_.StartRecord(tag);
     {
       IIndex vidx1 = a_.StartVector("txns");
-      if (vidx1!= null) {          var tmpLst=new System.Collections.Generic.List<Org.Apache.Zookeeper.Txn.Txn>();
+      if (vidx1!= null) {          var tmpLst=new System.Collections.Generic.List<Txn>();
           for (; !vidx1.Done(); vidx1.Incr()) {
-    Org.Apache.Zookeeper.Txn.Txn e1;
-    e1= new Org.Apache.Zookeeper.Txn.Txn();
+    Txn e1;
+    e1= new Txn();
     a_.ReadRecord(e1,"e1");
             tmpLst.Add(e1);
           }

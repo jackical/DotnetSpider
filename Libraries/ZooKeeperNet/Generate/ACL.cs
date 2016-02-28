@@ -18,10 +18,10 @@
 */
 
 using System;
-using Org.Apache.Jute;
 using log4net;
+using ZooKeeperNet.Jute;
 
-namespace Org.Apache.Zookeeper.Data
+namespace ZooKeeperNet.Generate
 {
 public class ACL : IRecord, IComparable 
 {
@@ -31,13 +31,13 @@ private static ILog log = LogManager.GetLogger(typeof(ACL));
   public ACL(
   int perms
 ,
-  Org.Apache.Zookeeper.Data.ZKId id
+  ZKId id
 ) {
 Perms=perms;
 Id=id;
   }
   public int Perms { get; set; } 
-  public Org.Apache.Zookeeper.Data.ZKId Id { get; set; } 
+  public ZKId Id { get; set; } 
   public void Serialize(IOutputArchive a_, String tag) {
     a_.StartRecord(this,tag);
     a_.WriteInt(Perms,"perms");
@@ -47,7 +47,7 @@ Id=id;
   public void Deserialize(IInputArchive a_, String tag) {
     a_.StartRecord(tag);
     Perms=a_.ReadInt("perms");
-    Id= new Org.Apache.Zookeeper.Data.ZKId();
+    Id= new ZKId();
     a_.ReadRecord(Id,"id");
     a_.EndRecord(tag);
 }

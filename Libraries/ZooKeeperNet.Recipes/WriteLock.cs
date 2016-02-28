@@ -1,13 +1,14 @@
-﻿namespace ZooKeeperNet.Recipes
+﻿using ZooKeeperNet.Generate;
+
+namespace ZooKeeperNet.Recipes
 {
     using System.Collections.Generic;
     using System;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading;
-    using Org.Apache.Zookeeper.Data;
 
-    public class WriteLock : ProtocolSupport
+	public class WriteLock : ProtocolSupport
     {
         private readonly string dir;
         private readonly byte[] data = new[] { (byte)12, (byte)34 };

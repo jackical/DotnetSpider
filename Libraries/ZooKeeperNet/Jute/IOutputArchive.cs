@@ -15,11 +15,12 @@
  *  limitations under the License.
  *
  */
-namespace Org.Apache.Jute
-{
-    using System.Collections.Generic;
 
-    public interface IOutputArchive
+using System.Collections.Generic;
+
+namespace ZooKeeperNet.Jute
+{
+	public interface IOutputArchive
     {
         void WriteByte(byte b, string tag);
         void WriteBool(bool b, string tag);

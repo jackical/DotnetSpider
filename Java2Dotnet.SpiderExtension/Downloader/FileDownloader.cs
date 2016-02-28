@@ -12,7 +12,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 		public Page Download(Request request, ISpider spider)
 		{
 			Page page = new Page(request);
-			page.RawText = File.ReadAllText(request.Url.LocalPath);
+			page.Content = File.ReadAllText(request.Url.LocalPath);
 			page.TargetUrl = request.Url.ToString();
 			page.Url = request.Url.ToString();
 			page.StatusCode = 200;

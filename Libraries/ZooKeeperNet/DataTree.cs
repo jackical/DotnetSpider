@@ -15,13 +15,15 @@
  *  limitations under the License.
  *
  */
- namespace ZooKeeperNet
+
+using ZooKeeperNet.Generate;
+using ZooKeeperNet.Jute;
+
+namespace ZooKeeperNet
 {
     using System;
     using System.Collections.Generic;
     using log4net;
-    using Org.Apache.Jute;
-    using Org.Apache.Zookeeper.Data;
     using System.Text;
     using System.Collections.Concurrent;
     using System.Threading;

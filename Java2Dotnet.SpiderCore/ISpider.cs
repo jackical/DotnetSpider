@@ -18,8 +18,6 @@ namespace Java2Dotnet.Spider.Core
 		/// </summary>
 		Site Site { get; }
 
-		//void Start();
-
 		void Run();
 
 		void Stop();

@@ -6,7 +6,7 @@ namespace Java2Dotnet.Spider.Extension.Model.Attribute
 	/// Define the url patterns for class.
 	/// All urls matching the pattern will be crawled and extracted for new objects.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class TargetUrl : System.Attribute
 	{
 		/// <summary>
@@ -19,17 +19,14 @@ namespace Java2Dotnet.Spider.Extension.Model.Attribute
 
 		/// <summary>
 		/// Define the region for url extracting.
-		/// Only support XPath, JsonPath
+		/// Only support XPath, when source is json, let it be null.
 		/// </summary>
 		public string SourceRegion { get; }
 
-		public ExtractType ExtractType { get; }
-
-		public TargetUrl(string[] value, string sourceRegion = null, ExtractType extractType = ExtractType.XPath)
+		public TargetUrl(string[] value, string sourceRegion = null)
 		{
 			Value = value;
 			SourceRegion = sourceRegion;
-			ExtractType = extractType;
 		}
 	}
 }

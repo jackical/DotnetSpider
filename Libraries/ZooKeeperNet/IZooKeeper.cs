@@ -15,13 +15,15 @@
  *  limitations under the License.
  *
  */
+
+using ZooKeeperNet.Generate;
+
 namespace ZooKeeperNet
 {
     using System;
     using System.Collections.Generic;
-    using Org.Apache.Zookeeper.Data;
 
-    public interface IZooKeeper
+	public interface IZooKeeper
     {
         /// <summary>
         /// Unique ID representing the instance of the client

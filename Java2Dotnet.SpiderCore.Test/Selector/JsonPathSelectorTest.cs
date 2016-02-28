@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Java2Dotnet.Spider.Core.Selector;
+using Java2Dotnet.Spider.Core.Selector.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Java2Dotnet.Spider.Core.Test.Selector
@@ -33,14 +34,14 @@ namespace Java2Dotnet.Spider.Core.Test.Selector
 		{
 			JsonPathSelector jsonPathSelector = new JsonPathSelector("$.store.book[*].author");
 			string select = jsonPathSelector.Select(_text).ToString();
-			IList<string> list = jsonPathSelector.SelectList(_text).ToStringList();
+			IList<string> list = jsonPathSelector.SelectList(_text);
 			Assert.AreEqual(select, "Nigel Rees");
 			Assert.IsTrue(list.Contains("Nigel Rees"));
 			Assert.IsTrue(list.Contains("Evelyn Waugh"));
 
 			jsonPathSelector = new JsonPathSelector("$.store.book[?(@.category == 'reference')]");
-			list = jsonPathSelector.SelectList(_text).ToStringList();
-			select = jsonPathSelector.Select(_text).Result.ToString();
+			list = jsonPathSelector.SelectList(_text);
+			select = jsonPathSelector.Select(_text);
 
 			//			{
 			//				"category": "reference",

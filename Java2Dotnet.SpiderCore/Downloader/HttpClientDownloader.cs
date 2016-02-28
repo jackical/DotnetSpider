@@ -9,7 +9,6 @@ using System.Web;
 using HtmlAgilityPack;
 using Java2Dotnet.Spider.Core.Proxy;
 using Java2Dotnet.Spider.Core.Utils;
-using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Redial;
 
 namespace Java2Dotnet.Spider.Core.Downloader
@@ -247,7 +246,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			}
 
 			Page page = new Page(request);
-			page.RawText = content;
+			page.Content = content;
 			page.TargetUrl = response.ResponseUri.ToString();
 			page.Url = request.Url.ToString();
 			page.StatusCode = statusCode;

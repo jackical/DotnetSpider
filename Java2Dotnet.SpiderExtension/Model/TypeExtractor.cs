@@ -8,8 +8,8 @@ namespace Java2Dotnet.Spider.Extension.Model
 	/// </summary>
 	public class TypeExtractor : Extractor
 	{
-		public TypeExtractor(ISelector selector, string expression, ExtractSource source, bool multi, long count = long.MaxValue, RequestStoping requestStoping=null)
-			: base(selector, expression, source, false, count)
+		public TypeExtractor(ISelector selector, string expression, bool multi, int count = int.MaxValue, RequestStoping requestStoping=null)
+			: base(selector, expression, false, count)
 		{
 			Multi = multi;
 			RequestStoping = requestStoping;

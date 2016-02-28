@@ -9,8 +9,8 @@ namespace Java2Dotnet.Spider.Extension.Model
 	/// </summary>
 	public class FieldExtractor : Extractor
 	{
-		public FieldExtractor(PropertyInfo field, ISelector selector, string expression, ExtractSource source, bool notNull, bool multi, long count = long.MaxValue)
-			: base(selector, expression, source, notNull, count)
+		public FieldExtractor(PropertyInfo field, ISelector selector, string expression, bool notNull, bool multi, int count = int.MaxValue)
+			: base(selector, expression, notNull, count)
 		{
 			Field = field;
 			//Stopper = stopper;

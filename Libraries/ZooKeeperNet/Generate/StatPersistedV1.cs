@@ -18,10 +18,10 @@
 */
 
 using System;
-using Org.Apache.Jute;
 using log4net;
+using ZooKeeperNet.Jute;
 
-namespace Org.Apache.Zookeeper.Data
+namespace ZooKeeperNet.Generate
 {
 public class StatPersistedV1 : IRecord, IComparable 
 {

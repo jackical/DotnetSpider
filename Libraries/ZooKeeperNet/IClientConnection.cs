@@ -15,13 +15,15 @@
  *  limitations under the License.
  *
  */
+
+using ZooKeeperNet.Generate;
+using ZooKeeperNet.Jute;
+
 namespace ZooKeeperNet
 {
     using System;
-    using Org.Apache.Jute;
-    using Org.Apache.Zookeeper.Proto;
 
-    public interface IClientConnection : IStartable, IDisposable
+	public interface IClientConnection : IStartable, IDisposable
     {
         /// <summary>
         /// Gets or sets the session timeout.

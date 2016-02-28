@@ -1,3 +1,5 @@
+using Java2Dotnet.Spider.Core.Selector.Html;
+
 namespace Java2Dotnet.Spider.Core.Selector
 {
 	/// <summary>
@@ -35,14 +37,14 @@ namespace Java2Dotnet.Spider.Core.Selector
 			return new XPathSelector(expr);
 		}
 
-		public static AndSelector And(params ISelector[] selectors)
-		{
-			return new AndSelector(selectors);
-		}
+		//public static AndSelector And(params ISelector[] selectors)
+		//{
+		//	return new AndSelector(selectors);
+		//}
 
-		public static OrSelector Or(params ISelector[] selectors)
-		{
-			return new OrSelector(selectors);
-		}
+		//public static OrSelector Or(params ISelector[] selectors)
+		//{
+		//	return new OrSelector(selectors);
+		//}
 	}
 }

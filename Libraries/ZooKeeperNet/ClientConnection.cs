@@ -16,6 +16,9 @@
  *
  */
 
+using ZooKeeperNet.Generate;
+using ZooKeeperNet.Jute;
+
 namespace ZooKeeperNet
 {
     using System;
@@ -26,10 +29,8 @@ namespace ZooKeeperNet
     using System.Text;
     using System.Threading;
     using log4net;
-    using Org.Apache.Jute;
-    using Org.Apache.Zookeeper.Proto;
 
-    public class ClientConnection : IClientConnection
+	public class ClientConnection : IClientConnection
     {
         private static readonly ILog LOG = LogManager.GetLogger(typeof(ClientConnection));
 

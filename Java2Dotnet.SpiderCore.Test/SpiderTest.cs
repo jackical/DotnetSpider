@@ -118,7 +118,7 @@ namespace Java2Dotnet.Spider.Core.Test
 			public Page Download(Request request, ISpider spider)
 			{
 				var page = new Page(request);
-				page.RawText = "";
+				page.Content = "";
 				return page;
 			}
 

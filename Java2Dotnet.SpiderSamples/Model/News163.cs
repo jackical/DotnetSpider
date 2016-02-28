@@ -8,10 +8,10 @@ namespace Java2Dotnet.Spider.Samples.Model
 	[TargetUrl(new[] { "http://news.163.com/\\d+/\\d+/\\d+/\\w+*.html" })]
 	public class News163 : IMultiPageModel
 	{
-		[ExtractByUrl("http://news\\.163\\.com/\\d+/\\d+/\\d+/([^_]*).*\\.html")]
+		//[ExtractByUrl("http://news\\.163\\.com/\\d+/\\d+/\\d+/([^_]*).*\\.html")]
 		public string PageKey { get; set; }
 
-		[ExtractByUrl(Expession = "http://news\\.163\\.com/\\d+/\\d+/\\d+/\\w+_(\\d+)\\.html", NotNull = false)]
+		//[ExtractByUrl(Expession = "http://news\\.163\\.com/\\d+/\\d+/\\d+/\\w+_(\\d+)\\.html", NotNull = false)]
 		public string Page { get; set; }
 
 		////div[@class=\"ep-pages\"]/a[substring(@href,string-length(@href)-5)='.html']

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Java2Dotnet.Spider.Core.Selector;
+using Java2Dotnet.Spider.Core.Selector.Html;
+using Java2Dotnet.Spider.Core.Selector.Json;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
 
@@ -29,7 +31,7 @@ namespace Java2Dotnet.Spider.Extension.Utils
 					selector = new JsonPathSelector(value);
 					break;
 				case ExtractType.Enviroment:
-					selector = null;
+					selector = new EnviromentSelector(value);
 					break;
 				default:
 					selector = GetXpathSelector(value);
@@ -47,7 +49,7 @@ namespace Java2Dotnet.Spider.Extension.Utils
 		public static TypeExtractor GetTypeExtractor(TypeExtractBy extractBy)
 		{
 			ISelector selector = GetSelector(extractBy);
-			return new TypeExtractor(selector, extractBy.Expression, extractBy.Source, extractBy.Multi);
+			return new TypeExtractor(selector, extractBy.Expression, extractBy.Multi);
 		}
 
 		private static ISelector GetXpathSelector(string value)

@@ -15,15 +15,15 @@
  *  limitations under the License.
  *
  */
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using ZooKeeperNet.IO;
 
-namespace Org.Apache.Jute
+namespace ZooKeeperNet.Jute
 {
-    using System.Collections.Generic;
-    using System.Text;
-    using System.Linq;
-
-    public class BinaryOutputArchive : IOutputArchive
+	public class BinaryOutputArchive : IOutputArchive
     {
         private readonly EndianBinaryWriter writer;
 

@@ -18,10 +18,10 @@
 */
 
 using System;
-using Org.Apache.Jute;
 using log4net;
+using ZooKeeperNet.Jute;
 
-namespace Org.Apache.Zookeeper.Server.Quorum
+namespace ZooKeeperNet.Generate
 {
 public class QuorumPacket : IRecord, IComparable 
 {
@@ -35,7 +35,7 @@ private static ILog log = LogManager.GetLogger(typeof(QuorumPacket));
 ,
   byte[] data
 ,
-  System.Collections.Generic.IEnumerable<Org.Apache.Zookeeper.Data.ZKId> authinfo
+  System.Collections.Generic.IEnumerable<ZKId> authinfo
 ) {
 Type=type;
 Zxid=zxid;
@@ -45,7 +45,7 @@ Authinfo=authinfo;
   public int Type { get; set; } 
   public long Zxid { get; set; } 
   public byte[] Data { get; set; } 
-  public System.Collections.Generic.IEnumerable<Org.Apache.Zookeeper.Data.ZKId> Authinfo { get; set; } 
+  public System.Collections.Generic.IEnumerable<ZKId> Authinfo { get; set; } 
   public void Serialize(IOutputArchive a_, String tag) {
     a_.StartRecord(this,tag);
     a_.WriteInt(Type,"type");
@@ -68,10 +68,10 @@ Authinfo=authinfo;
     Data=a_.ReadBuffer("data");
     {
       IIndex vidx1 = a_.StartVector("authinfo");
-      if (vidx1!= null) {          var tmpLst=new System.Collections.Generic.List<Org.Apache.Zookeeper.Data.ZKId>();
+      if (vidx1!= null) {          var tmpLst=new System.Collections.Generic.List<ZKId>();
           for (; !vidx1.Done(); vidx1.Incr()) {
-    Org.Apache.Zookeeper.Data.ZKId e1;
-    e1= new Org.Apache.Zookeeper.Data.ZKId();
+    ZKId e1;
+    e1= new ZKId();
     a_.ReadRecord(e1,"e1");
             tmpLst.Add(e1);
           }
