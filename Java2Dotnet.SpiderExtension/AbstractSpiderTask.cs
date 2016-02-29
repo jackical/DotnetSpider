@@ -57,6 +57,8 @@ namespace Java2Dotnet.Spider.Extension
 				Spider = Prepare(args);
 				Spider?.Run();
 
+				RunAfterSpiderFinished();
+
 				if (!string.IsNullOrEmpty(_validateReportTo))
 				{
 					DoValidate();
@@ -229,10 +231,14 @@ namespace Java2Dotnet.Spider.Extension
 		}
 
 		protected abstract void PrepareSite();
-		protected virtual Site Site { get; } = new Site();
+		protected abstract Site Site { get; }
 		protected abstract Core.Spider InitSpider();
 
 		public abstract string Name { get; }
+
+		protected virtual void RunAfterSpiderFinished()
+		{
+		}
 
 		public virtual AtomicType AtomicType { get; } = AtomicType.Null;
 	}

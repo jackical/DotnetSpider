@@ -182,6 +182,8 @@ namespace Java2Dotnet.Spider.Extension.Model
 						targetUrlExtractInfo.TargetUrlFormatter = (IObjectFormatter)Activator.CreateInstance(formatter.FormatterType);
 						targetUrlExtractInfo.TargetUrlFormatter.InitParam(formatter.Value);
 					}
+
+					TargetUrlExtractInfos.Add(targetUrlExtractInfo);
 				}
 			}
 
