@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -10,48 +13,50 @@ using OpenQA.Selenium.Remote;
 
 namespace Java2Dotnet.Spider.WebDriver
 {
-	public class WebDriverDownloader : BaseDownloader
+	public class FiddlerDownloader : BaseDownloader
 	{
 		private volatile WebDriverPool _webDriverPool;
 		private readonly int _webDriverWaitTime;
-		private readonly Browser _browser;
-		protected Option Option;
+		private readonly Option _option;
 		private static bool _isLogined;
+		private readonly FiddlerClient _fiddlerClient;
 
 		public Func<RemoteWebDriver, bool> Login;
 		public Func<string, string> UrlFormat;
 		public Func<RemoteWebDriver, bool> AfterNavigate;
 
-		public WebDriverDownloader(Browser browser = Browser.Phantomjs, int webDriverWaitTime = 200, Option option = null)
+		public FiddlerDownloader(string urlParten, int webDriverWaitTime = 200, Option option = null)
 		{
-			Option = option ?? new Option();
+			// Fiddler只能单线程, 否则可能会造成数据不对应.
+			ThreadNum = 1;
+			_option = option ?? new Option();
+			_option.Proxy = "127.0.0.1:30000";
 			_webDriverWaitTime = webDriverWaitTime;
-			_browser = browser;
 
-			if (browser == Browser.Firefox)
+			Task.Factory.StartNew(() =>
 			{
-				Task.Factory.StartNew(() =>
+				while (true)
 				{
-					while (true)
+					IntPtr maindHwnd = WindowsFormUtil.FindWindow(null, "plugin-container.exe - 应用程序错误");
+					if (maindHwnd != IntPtr.Zero)
 					{
-						IntPtr maindHwnd = WindowsFormUtil.FindWindow(null, "plugin-container.exe - 应用程序错误");
-						if (maindHwnd != IntPtr.Zero)
-						{
-							WindowsFormUtil.SendMessage(maindHwnd, WindowsFormUtil.WmClose, 0, 0);
-						}
-						Thread.Sleep(500);
+						WindowsFormUtil.SendMessage(maindHwnd, WindowsFormUtil.WmClose, 0, 0);
 					}
-					// ReSharper disable once FunctionNeverReturns
-				});
-			}
+					Thread.Sleep(500);
+				}
+				// ReSharper disable once FunctionNeverReturns
+			});
+
+			_fiddlerClient = new FiddlerClient(30000, urlParten);
+			_fiddlerClient.StartCapture();
 		}
 
-		public WebDriverDownloader(Browser browser = Browser.Phantomjs) : this(browser, 300)
+		public FiddlerDownloader(string urlParten) : this(urlParten, 300)
 		{
 		}
 
-		public WebDriverDownloader(Browser browser = Browser.Phantomjs,
-			Func<RemoteWebDriver, bool> login = null) : this(browser, 200, null)
+		public FiddlerDownloader(string urlParten,
+			Func<RemoteWebDriver, bool> login = null) : this(urlParten, 200, null)
 		{
 			Login = login;
 		}
@@ -76,14 +81,10 @@ namespace Java2Dotnet.Spider.WebDriver
 					}
 				}
 
-				//Logger.Info("Downloading page " + request.Url);
-
 				//中文乱码URL
 				Uri uri = request.Url;
 				string query = uri.Query;
-				string realUrl = uri.Scheme + "://" + uri.DnsSafeHost + ":" + uri.Port + uri.AbsolutePath + (string.IsNullOrEmpty(query)
-									? ""
-									: ("?" + HttpUtility.UrlPathEncode(uri.Query.Substring(1, uri.Query.Length - 1))));
+				string realUrl = uri.Scheme + "://" + uri.DnsSafeHost + ":" + uri.Port + uri.AbsolutePath + (string.IsNullOrEmpty(query) ? "" : ("?" + HttpUtility.UrlPathEncode(uri.Query.Substring(1, uri.Query.Length - 1))));
 
 				if (UrlFormat != null)
 				{
@@ -100,7 +101,8 @@ namespace Java2Dotnet.Spider.WebDriver
 				AfterNavigate?.Invoke((RemoteWebDriver)driverService.WebDriver);
 
 				Page page = new Page(request);
-				page.Content = driverService.WebDriver.PageSource;
+				page.Content = _fiddlerClient.ResponseBodyString;
+				_fiddlerClient.Clear();
 				page.Url = request.Url.ToString();
 				page.TargetUrl = driverService.WebDriver.Url;
 				page.Title = driverService.WebDriver.Title;
@@ -120,6 +122,7 @@ namespace Java2Dotnet.Spider.WebDriver
 
 		public override void Dispose()
 		{
+			_fiddlerClient.Dispose();
 			Pool?.CloseAll();
 		}
 
@@ -129,7 +132,7 @@ namespace Java2Dotnet.Spider.WebDriver
 			{
 				if (_webDriverPool == null)
 				{
-					_webDriverPool = new WebDriverPool(_browser, ThreadNum, Option);
+					_webDriverPool = new WebDriverPool(Browser.Firefox, ThreadNum, _option);
 				}
 				return _webDriverPool;
 			}

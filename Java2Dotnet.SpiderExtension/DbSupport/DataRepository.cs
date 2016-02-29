@@ -3,9 +3,10 @@ using System.Data;
 using System.Linq;
 using Dapper;
 using Java2Dotnet.Spider.Core;
+using Java2Dotnet.Spider.Extension.DbSupport.Dapper;
 using Java2Dotnet.Spider.Extension.Model;
 
-namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
+namespace Java2Dotnet.Spider.Extension.DbSupport
 {
 	public sealed class DataRepository<T> : IDataRepository<T> where T : ISpiderEntity
 	{

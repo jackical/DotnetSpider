@@ -115,7 +115,7 @@
     <Compile Include="DbSupport\Dapper\Attributes\Scheme.cs" />
     <Compile Include="DbSupport\Dapper\Attributes\StatusProperty.cs" />
     <Compile Include="DbSupport\Dapper\Attributes\StoredAs.cs" />
-    <Compile Include="DbSupport\Dapper\DataRepository.cs" />
+    <Compile Include="DbSupport\DataRepository.cs" />
     <Compile Include="DbSupport\IDataRepository.cs" />
     <Compile Include="DbSupport\Dapper\ISqlGenerator.cs" />
     <Compile Include="DbSupport\Dapper\MSSqlGenerator.cs" />

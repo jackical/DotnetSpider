@@ -72,7 +72,6 @@
     <Compile Include="Selector\BaseSelectable.cs" />
     <Compile Include="Selector\IBaseSelectable.cs" />
     <Compile Include="Selector\Json\ISelectable.cs" />
-    <Compile Include="Selector\SelectedNode.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="SpiderExceptoin.cs" />
     <Compile Include="Page.cs" />

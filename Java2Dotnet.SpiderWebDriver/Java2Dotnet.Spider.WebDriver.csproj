@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Browser.cs" />
+    <Compile Include="FiddlerDownloader.cs" />
     <Compile Include="Option.cs" />
     <Compile Include="WebDriverItem.cs" />
     <Compile Include="WebDriverPool.cs" />

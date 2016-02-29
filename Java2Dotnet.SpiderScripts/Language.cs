@@ -5,6 +5,7 @@
 		public static Language Javascript = new Language("javascript", "Java2Dotnet.Spider.Scripts.Resource.js.define.js", "");
 		public static Language Ruby = new Language("ruby", "js/ruby/defines.rb", "");
 		public static Language Python = new Language("python", "python/defines.py", "");
+		public static Language S = new Language("s", "", "");
 
 		private readonly string _engineName;
 		private readonly string _defineFile;
