@@ -179,7 +179,6 @@
     <Compile Include="Scheduler\ISchedulerManager.cs" />
     <Compile Include="Scheduler\RedisSchedulerManager.cs" />
     <Compile Include="Scheduler\SpiderStatus.cs" />
-    <Compile Include="Utils\FiddlerClient.cs" />
     <Compile Include="Utils\DoubleKeyDictionary.cs" />
     <Compile Include="Utils\RedisProvider.cs" />
   </ItemGroup>
