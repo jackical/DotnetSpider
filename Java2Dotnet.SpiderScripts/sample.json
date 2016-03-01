@@ -1,4 +1,15 @@
 ﻿{
-	"thread": "1",
-	""
+	"name": {
+		"datatype": "varchar(100)",
+		"expression": "/a[1]",
+		"type": "xpath"
+	},
+	"url": {
+		"datatype": "text",
+		"expression": "/a[1]/@href",
+		"type": "xpath"
+	},
+	"tier": {
+
+	}
 }

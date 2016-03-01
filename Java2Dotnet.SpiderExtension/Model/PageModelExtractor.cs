@@ -146,14 +146,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 		{
 			var targetUrlAttributes = _actualType.GetCustomAttributes<TargetUrl>().ToList();
 
-			if (targetUrlAttributes.Count == 0)
-			{
-				TargetUrlExtractInfos.Add(new TargetUrlExtractInfo
-				{
-					Patterns = new List<Regex> { new Regex("(.*)") }
-				});
-			}
-			else
+			if (targetUrlAttributes.Count > 0)
 			{
 				foreach (var targetUrlAttribute in targetUrlAttributes)
 				{
@@ -201,21 +194,35 @@ namespace Java2Dotnet.Spider.Extension.Model
 			bool matched = false;
 			if (page.Url != null)
 			{
-				foreach (var targetUrlExtractInfo in TargetUrlExtractInfos)
+				if (TargetUrlExtractInfos != null)
 				{
-					foreach (Regex targetPattern in targetUrlExtractInfo.Patterns)
+					if (TargetUrlExtractInfos.Count == 0)
 					{
-						string url = page.Url;
-						//check
-						if (targetPattern.IsMatch(url))
+						matched = true;
+					}
+					else
+					{
+						foreach (var targetUrlExtractInfo in TargetUrlExtractInfos)
 						{
-							matched = true;
-						}
-						else
-						{
-							Logger.Warn($"Url {url} is not match your TargetUrl attribute. Cause select 0 element.");
+							foreach (Regex targetPattern in targetUrlExtractInfo.Patterns)
+							{
+								string url = page.Url;
+								//check
+								if (targetPattern.IsMatch(url))
+								{
+									matched = true;
+								}
+								else
+								{
+									Logger.Warn($"Url {url} is not match your TargetUrl attribute. Cause select 0 element.");
+								}
+							}
 						}
 					}
+				}
+				else
+				{
+					matched = true;
 				}
 			}
 
