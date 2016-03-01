@@ -34,11 +34,19 @@ namespace Java2Dotnet.Spider.Core.Selector.Json
 			if (text != null)
 			{
 				List<string> list = new List<string>();
-				JObject o = (JObject)JsonConvert.DeserializeObject(text);
-				var items = o.SelectTokens(_jsonPathStr).ToList();
+				JObject o = JsonConvert.DeserializeObject(text) as JObject;
 
-				list.AddRange(items.Select(i => i.ToString()));
-
+				if (o != null)
+				{
+					var items = o.SelectTokens(_jsonPathStr).ToList();
+					list.AddRange(items.Select(i => i.ToString()));
+				}
+				else
+				{
+					JArray a = JsonConvert.DeserializeObject(text) as JArray;
+					var items = a.SelectTokens(_jsonPathStr).ToList();
+					list.AddRange(items.Select(i => i.ToString()));
+				}
 				return list;
 			}
 			else
