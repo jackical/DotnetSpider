@@ -70,16 +70,16 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MongoDB.Bson, Version=2.2.2.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Bson.2.2.2\lib\net45\MongoDB.Bson.dll</HintPath>
+    <Reference Include="MongoDB.Bson, Version=2.2.3.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.2.3\lib\net45\MongoDB.Bson.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=2.2.2.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.2.2.2\lib\net45\MongoDB.Driver.dll</HintPath>
+    <Reference Include="MongoDB.Driver, Version=2.2.3.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.2.2.3\lib\net45\MongoDB.Driver.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MongoDB.Driver.Core, Version=2.2.2.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.Core.2.2.2\lib\net45\MongoDB.Driver.Core.dll</HintPath>
+    <Reference Include="MongoDB.Driver.Core, Version=2.2.3.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.Core.2.2.3\lib\net45\MongoDB.Driver.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
@@ -105,9 +105,16 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WebDriver, Version=2.48.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selenium.WebDriver.2.48.2\lib\net40\WebDriver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractSpiderTask.cs" />
+    <Compile Include="Configuration\JsonSpider.cs" />
+    <Compile Include="Configuration\JsonSpiderValidation.cs" />
+    <Compile Include="Configuration\Macros.cs" />
     <Compile Include="DbSupport\DataProviderManager.cs" />
     <Compile Include="DbSupport\Dapper\Attributes\Deleted.cs" />
     <Compile Include="DbSupport\Dapper\Attributes\KeyProperty.cs" />
@@ -116,6 +123,7 @@
     <Compile Include="DbSupport\Dapper\Attributes\StatusProperty.cs" />
     <Compile Include="DbSupport\Dapper\Attributes\StoredAs.cs" />
     <Compile Include="DbSupport\DataRepository.cs" />
+    <Compile Include="DbSupport\DataType.cs" />
     <Compile Include="DbSupport\IDataRepository.cs" />
     <Compile Include="DbSupport\Dapper\ISqlGenerator.cs" />
     <Compile Include="DbSupport\Dapper\MSSqlGenerator.cs" />
@@ -138,6 +146,9 @@
     <Compile Include="Model\Attribute\TargetUrlFormatter.cs" />
     <Compile Include="Model\Attribute\HelpUrl.cs" />
     <Compile Include="Model\Attribute\Download.cs" />
+    <Compile Include="Model\EntityGeneralSpider.cs" />
+    <Compile Include="Model\IEntityExtractor.cs" />
+    <Compile Include="Model\EntityExtractor.cs" />
     <Compile Include="Model\IPageModelExtractor.cs" />
     <Compile Include="Model\ModelSpider.cs" />
     <Compile Include="Model\Attribute\RequestStoping.cs" />
@@ -171,15 +182,22 @@
     <Compile Include="Monitor\ISpiderStatus.cs" />
     <Compile Include="MultiPageModel.cs" />
     <Compile Include="Pipeline\CollectorModelPipeline.cs" />
+    <Compile Include="Pipeline\EntityMongoDbPipeline.cs" />
+    <Compile Include="Pipeline\EntityGeneralPipeline.cs" />
+    <Compile Include="Pipeline\EntityPipeline.cs" />
+    <Compile Include="Pipeline\IEntityPipeline.cs" />
     <Compile Include="Pipeline\MongoDBPipeline.cs" />
     <Compile Include="Pipeline\MySqlFilePipeline.cs" />
     <Compile Include="Pipeline\ImagePipeline.cs" />
     <Compile Include="Pipeline\PipelineModel.cs" />
+    <Compile Include="Pipeline\Scheme.cs" />
+    <Compile Include="Processor\EntityProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduler\ISchedulerManager.cs" />
     <Compile Include="Scheduler\RedisSchedulerManager.cs" />
     <Compile Include="Scheduler\SpiderStatus.cs" />
     <Compile Include="Utils\DoubleKeyDictionary.cs" />
+    <Compile Include="Utils\CommonLoginUtil.cs" />
     <Compile Include="Utils\RedisProvider.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 
 namespace Java2Dotnet.Spider.Core.Selector
 {
-	public class EnviromentSelector : ISelector
+	internal class EnviromentSelector : ISelector
 	{
 		public string Field { get; private set; }
 
@@ -11,12 +11,12 @@ namespace Java2Dotnet.Spider.Core.Selector
 			Field = field;
 		}
 
-		public string Select(string text)
+		public dynamic Select(dynamic text)
 		{
 			throw new SpiderExceptoin("EnviromentSelector does not support SelectList method now.");
 		}
 
-		public List<string> SelectList(string text)
+		public List<dynamic> SelectList(dynamic text)
 		{
 			throw new SpiderExceptoin("EnviromentSelector does not support SelectList method now.");
 		}

@@ -1,5 +1,3 @@
-using Java2Dotnet.Spider.Core.Selector.Html;
-
 namespace Java2Dotnet.Spider.Core.Selector
 {
 	/// <summary>
@@ -7,32 +5,32 @@ namespace Java2Dotnet.Spider.Core.Selector
 	/// </summary>
 	public class Selectors
 	{
-		public static RegexSelector Regex(string expr)
+		internal static RegexSelector Regex(string expr)
 		{
 			return new RegexSelector(expr);
 		}
 
-		public static CssSelector Css(string expr)
+		internal static CssHtmlSelector Css(string expr)
 		{
-			return new CssSelector(expr);
+			return new CssHtmlSelector(expr);
 		}
 
-		public static CssSelector Css(string expr, string attrName)
+		internal static CssHtmlSelector Css(string expr, string attrName)
 		{
-			return new CssSelector(expr, attrName);
+			return new CssHtmlSelector(expr, attrName);
 		}
 
-		public static RegexSelector Regex(string expr, int group)
+		internal static RegexSelector Regex(string expr, int group)
 		{
 			return new RegexSelector(expr, group);
 		}
 
-		public static SmartContentSelector SmartContent()
+		internal static SmartContentSelector SmartContent()
 		{
 			return new SmartContentSelector();
 		}
 
-		public static XPathSelector XPath(string expr)
+		internal static XPathSelector XPath(string expr)
 		{
 			return new XPathSelector(expr);
 		}

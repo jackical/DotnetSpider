@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]> 
+<html class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]> 
+<html class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]> 
+<html class="no-js ie8"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html webdriver="true" class="js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths"><!--<![endif]--><!-- the "no-js" class is for Modernizr. --><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+    <meta charset="utf-8"> 
+    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+     Remove this if you use the .htaccess -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="description" content="淘宝指数, 淘宝消费者数据研究平台">
+<meta name="author" content="shu@taobao.com">
+<title>女装 - 指数榜单 - 淘宝指数 - 淘宝消费者数据研究平台</title>
+<link rel="stylesheet" href="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/common.css" media="all">
+
+
+  <link rel="stylesheet" href="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/top.css" media="all">
+
+
+
+<script src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/index_002.js" async="" type="text/javascript"></script><script src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/agp_heat.js" async="" type="text/javascript"></script><script src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/common.js"></script>
+
+<script>
+  var App = new Scape();
+  var logServer = 'http://s.data.taobao.com';
+</script>
+<link rel="search" type="application/opensearchdescription+xml" href="http://shu.taobao.com/assets/opensearch.xml" title="淘宝指数">
+ 
+     
+    <script src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/top.js"></script>
+ 
+     
+    <script> 
+        (function () { 
+            var l = location.href; 
+            if (l.indexOf('taobao.com') != -1) { 
+                document.domain = 'taobao.com'; 
+            } else if (l.indexOf('taobao.net') != -1) { 
+                document.domain = 'taobao.net'; 
+            } 
+        })(); 
+        var CSRF_TOKEN = "WsgsMf1e-yuueVT5bAuldIo9ih25NpaNCdDI"; 
+    </script> 
+</head> 
+<body class="top "><script exparams="category=&amp;userid=1942432517&amp;aplus&amp;yunid=&amp;wxX6T6zZsdCq4O7&amp;asid=AAEJpNdWmNlmWemWPWU=" src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/aplus_v2.js" id="tb-beacon-aplus"></script><script>
+with(document)with(body)with(insertBefore(createElement("script"),firstChild))setAttribute("exparams","category=&userid=1942432517&aplus&yunid=&wxX6T6zZsdCq4O7&asid=AAEJpNdWmNlmWemWPWU=",id="tb-beacon-aplus",src=(location>"https"?"//g":"//g")+".alicdn.com/alilog/mlog/aplus_v2.js")
+</script>
+ 
+<script>NProgress.start();</script> 
+<div id="site-nav">
+  <div class="site-nav-main clearfix">
+    <div class="taobao">
+      <a href="http://www.taobao.com/" log="topbanner_taobao">淘宝网</a>|
+    </div>
+    <div class="login-info">
+
+
+  pe1788,<a href="http://shu.taobao.com/logout">退出</a>
+  
+  
+</div>
+    <ul class="about-info clearfix sm-ua">
+        <li class="tms_notice"></li>
+        <li><a href="http://shu.taobao.com/top" log="topbanner_toppage">排行榜</a></li>
+        <li><a href="http://shu.taobao.com/about" log="topbanner_about">关于淘宝指数</a></li>
+        <li><a href="http://shu.taobao.com/feedback" target="_blank" log="topbanner_feedback">建议反馈</a></li>
+        <li class="last"><a class="follow-me" target="_blank" href="http://weibo.com/tbindex" log="topbanner_follow"><img src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/T1iTjQXXXbXXc_eAHa-19-18.png">关注我们</a></li>
+    </ul>
+  </div>
+</div>
+<div class="update-browser">
+    <span>
+    亲爱的林杉皮业， 建议您<img src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/T1mx7PXXBdXXcgG474-104-34.png">以获得正常的使用效果。
+    </span>
+</div>
+
+
+<a class="sycm-btn" href="http://tsw.taobao.com/task/questionnaire.htm?taskId=1409" target="_blank" style="display:block;width:100%;height:48px;">
+  <img style="width:100%;height:48px;" src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/TB1LQK7LFXXXXbjaXXXXXXXXXXX-1200-48.jpg">
+</a>
+
+
+
+<div class="notice-sycm">
+    <a href="http://tb.cn/UrMbCcx" target="_blank">
+        <span>生意参谋，选词助手，全网搜索，一网打尽！
+        </span>
+        
+            <span class="sycm-link">立即体验&gt;&gt;</span>
+        
+    </a>
+</div>
+
+
+<script>
+function doCloseOfflineDialog() {
+  $('#indexOfflineDialog').fadeOut();
+}
+</script>
+
+
+
+<script>
+$(document).ready(function(){
+  var clientWidth = document.body.clientWidth;
+  var dom = $('#indexOfflineDialog .index-offline-notice');
+  if (dom && dom.length > 0) {
+    var dialogWidth = $(dom).width();
+    var left = (clientWidth - dialogWidth) / 2;
+    $(dom).css({
+      'left': left + 'px'
+    });
+    $('#indexOfflineDialog').fadeIn();
+  }
+});
+</script>
+ 
+<header class="header clearfix"> 
+    <div class="col-main"> 
+        <h1 class="main-wrap"> 
+            <a href="http://shu.taobao.com/"><img src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/T1lbbQXb4gXXXr14rm-192-36.png" alt="淘宝指数"> 
+                <small class="beta">beta 2.0</small> 
+            </a> 
+        </h1> 
+    </div> 
+     
+    <div class="col-sub"> 
+        
+<form action="/trendindex" method="GET" class="clearfix">
+  
+  <input autocomplete="off" name="query" id="q" x-webkit-speech="" x-webkit-grammar="builtin:translate" role="textbox" aria-autocomplete="list" aria-haspopup="true" class="autocomplete ac_input" placeholder="请输入您想查询的关键字" type="text">
+  <input class="submit" id="query-btn" value="搜索" log="search_submit" type="submit">
+</form> 
+    </div> 
+     
+</header> 
+<div id="nav"> 
+     
+</div> 
+<div class="page-main clearfix">
+  <div class="clearfix">
+    <div class="col-main type_category">
+      <nav class="type clearfix sm-ua">
+        <ul>
+          <li class="search"><a href="http://shu.taobao.com/top/16/search" class="title" log="top_tab">搜索排行</a></li>
+          <li class="market"><a href="http://shu.taobao.com/top/16/market" class="title" log="top_tab">成交排行</a></li>
+        </ul>
+        <div class="time">统计时间: 20160225 - 20160302</div>
+      </nav>
+      
+          <nav class="second_nav">
+            <ul>
+              <li class="market first"><a href="http://shu.taobao.com/top/16/market" class="title" log="top_market_tab">品类排行</a></li>
+              <li class="brand"><a href="http://shu.taobao.com/top/16/brand" class="title" log="top_market_tab">品牌排行</a></li>
+              <li class="category"><a href="http://shu.taobao.com/top/16/category" class="title" log="top_market_tab">行业排行</a></li>
+            </ul>
+          </nav>
+      
+      <div id="rank-section" class="main-wrap clearfix">
+    <div class="info">
+    
+        <div>热销子行业：为该类目下，最近一周的热门子类目（按成交量排序）</div>
+        <div>涨幅：为最近一周与之前一周成交量的比较</div>
+    
+    </div>
+    
+    <div class="mod odd mod-1 sm-ua">
+            <h3 class="title">女装</h3>
+            <div class="head">
+                <span class="rank">排行</span>
+                <span class="key">热销子行业</span>
+                <span class="rise">涨幅</span>
+                
+            </div>
+        <ol>
+            
+            <li class="up " data-rise="36.5629411409988">
+                <span class="rank"><small class="rank">1</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E8%A1%AC%E8%A1%AB" title="衬衫" log="top_key">衬衫</a>        
+                
+                </span>
+                <span class="rise">36.56%</span>
+                
+            </li>
+            
+            <li class="down " data-rise="-11.88878378697748">
+                <span class="rank"><small class="rank">2</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%AF%9B%E5%91%A2%E5%A4%96%E5%A5%97" title="毛呢外套" log="top_key">毛呢外套</a>        
+                
+                </span>
+                <span class="rise">-11.89%</span>
+                
+            </li>
+            
+            <li class="up " data-rise="46.00912325985098">
+                <span class="rank"><small class="rank">3</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E7%9F%AD%E5%A4%96%E5%A5%97" title="短外套" log="top_key">短外套</a>        
+                
+                </span>
+                <span class="rise">46.01%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="33.484058200193765">
+                <span class="rank"><small class="rank">4</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E7%89%9B%E4%BB%94%E8%A3%A4" title="牛仔裤" log="top_key">牛仔裤</a>        
+                
+                </span>
+                <span class="rise">33.48%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="43.971157908286315">
+                <span class="rank"><small class="rank">5</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=T%E6%81%A4" title="T恤" log="top_key">T恤</a>        
+                
+                </span>
+                <span class="rise">43.97%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="29.34893618633249">
+                <span class="rank"><small class="rank">6</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E4%BC%91%E9%97%B2%E8%A3%A4" title="休闲裤" log="top_key">休闲裤</a>        
+                
+                </span>
+                <span class="rise">29.35%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="28.00741607987307">
+                <span class="rank"><small class="rank">7</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%AF%9B%E9%92%88%E7%BB%87%E8%A1%AB" title="毛针织衫" log="top_key">毛针织衫</a>        
+                
+                </span>
+                <span class="rise">28.01%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="26.474134664324936">
+                <span class="rank"><small class="rank">8</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E7%9A%AE%E8%A1%A3" title="皮衣" log="top_key">皮衣</a>        
+                
+                </span>
+                <span class="rise">26.47%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="4.257783897147373">
+                <span class="rank"><small class="rank">9</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%AF%9B%E8%A1%A3" title="毛衣" log="top_key">毛衣</a>        
+                
+                </span>
+                <span class="rise">4.26%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="36.691829386977275">
+                <span class="rank"><small class="rank">10</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E9%A3%8E%E8%A1%A3" title="风衣" log="top_key">风衣</a>        
+                
+                </span>
+                <span class="rise">36.69%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="21.863158274921446">
+                <span class="rank"><small class="rank">11</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%89%93%E5%BA%95%E8%A3%A4" title="打底裤" log="top_key">打底裤</a>        
+                
+                </span>
+                <span class="rise">21.86%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="23.92771319627819">
+                <span class="rank"><small class="rank">12</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E5%8D%AB%E8%A1%A3" title="卫衣/绒衫" log="top_key">卫衣</a>        
+                
+                /
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E7%BB%92%E8%A1%AB" title="卫衣/绒衫" log="top_key">绒衫</a>        
+                
+                </span>
+                <span class="rise">23.93%</span>
+                
+            </li>
+            
+            <li class="down grey" data-rise="-26.340035275337375">
+                <span class="rank"><small class="rank">13</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E7%BE%BD%E7%BB%92%E6%9C%8D" title="羽绒服" log="top_key">羽绒服</a>        
+                
+                </span>
+                <span class="rise">-26.34%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="21.696361329853723">
+                <span class="rank"><small class="rank">14</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E5%8D%8A%E8%BA%AB%E8%A3%99" title="半身裙" log="top_key">半身裙</a>        
+                
+                </span>
+                <span class="rise">21.70%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="26.28069189961627">
+                <span class="rank"><small class="rank">15</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E4%B8%AD%E8%80%81%E5%B9%B4%E5%A5%B3%E8%A3%85" title="中老年女装" log="top_key">中老年女装</a>        
+                
+                </span>
+                <span class="rise">26.28%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="55.86711268987934">
+                <span class="rank"><small class="rank">16</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E4%BC%91%E9%97%B2%E8%BF%90%E5%8A%A8%E5%A5%97%E8%A3%85" title="休闲运动套装" log="top_key">休闲运动套装</a>        
+                
+                </span>
+                <span class="rise">55.87%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="30.519986984459294">
+                <span class="rank"><small class="rank">17</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E8%95%BE%E4%B8%9D%E8%A1%AB" title="蕾丝衫/雪纺衫" log="top_key">蕾丝衫</a>        
+                
+                /
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E9%9B%AA%E7%BA%BA%E8%A1%AB" title="蕾丝衫/雪纺衫" log="top_key">雪纺衫</a>        
+                
+                </span>
+                <span class="rise">30.52%</span>
+                
+            </li>
+            
+            <li class="down grey" data-rise="-21.740827142870163">
+                <span class="rank"><small class="rank">18</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%A3%89%E8%A1%A3" title="棉衣/棉服" log="top_key">棉衣</a>        
+                
+                /
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%A3%89%E6%9C%8D" title="棉衣/棉服" log="top_key">棉服</a>        
+                
+                </span>
+                <span class="rise">-21.74%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="35.386271155793615">
+                <span class="rank"><small class="rank">19</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E5%A4%A7%E7%A0%81%E5%A5%B3%E8%A3%85" title="大码女装" log="top_key">大码女装</a>        
+                
+                </span>
+                <span class="rise">35.39%</span>
+                
+            </li>
+            
+            <li class="down grey" data-rise="-30.060720742936333">
+                <span class="rank"><small class="rank">20</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E7%9A%AE%E8%8D%89" title="皮草" log="top_key">皮草</a>        
+                
+                </span>
+                <span class="rise">-30.06%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="44.24610203401922">
+                <span class="rank"><small class="rank">21</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%97%B6%E5%B0%9A%E5%A5%97%E8%A3%85" title="时尚套装" log="top_key">时尚套装</a>        
+                
+                </span>
+                <span class="rise">44.25%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="41.63697443086182">
+                <span class="rank"><small class="rank">22</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E8%A5%BF%E8%A3%85" title="西装" log="top_key">西装</a>        
+                
+                </span>
+                <span class="rise">41.64%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="43.01324167394004">
+                <span class="rank"><small class="rank">23</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E9%A9%AC%E5%A4%B9" title="马夹" log="top_key">马夹</a>        
+                
+                </span>
+                <span class="rise">43.01%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="11.401370682360323">
+                <span class="rank"><small class="rank">24</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E7%A4%BC%E6%9C%8D" title="礼服/晚装" log="top_key">礼服</a>        
+                
+                /
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%99%9A%E8%A3%85" title="礼服/晚装" log="top_key">晚装</a>        
+                
+                </span>
+                <span class="rise">11.40%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="7.437068413955912">
+                <span class="rank"><small class="rank">25</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E5%A9%9A%E7%BA%B1" title="婚纱" log="top_key">婚纱</a>        
+                
+                </span>
+                <span class="rise">7.44%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="39.72213421673141">
+                <span class="rank"><small class="rank">26</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E8%83%8C%E5%BF%83%E5%90%8A%E5%B8%A6" title="背心吊带" log="top_key">背心吊带</a>        
+                
+                </span>
+                <span class="rise">39.72%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="11.881085372664758">
+                <span class="rank"><small class="rank">27</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%97%97%E8%A2%8D" title="旗袍" log="top_key">旗袍</a>        
+                
+                </span>
+                <span class="rise">11.88%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="29.624491218220264">
+                <span class="rank"><small class="rank">28</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E8%81%8C%E4%B8%9A%E5%A5%B3%E8%A3%A4%E5%A5%97%E8%A3%85" title="职业女裤套装" log="top_key">职业女裤套装</a>        
+                
+                </span>
+                <span class="rise">29.62%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="40.918943661545036">
+                <span class="rank"><small class="rank">29</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E8%81%8C%E4%B8%9A%E5%A5%B3%E8%A3%99%E5%A5%97%E8%A3%85" title="职业女裙套装" log="top_key">职业女裙套装</a>        
+                
+                </span>
+                <span class="rise">40.92%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="19.08179628473486">
+                <span class="rank"><small class="rank">30</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%B0%91%E6%97%8F%E6%9C%8D%E8%A3%85" title="民族服装/舞台装" log="top_key">民族服装</a>        
+                
+                /
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E8%88%9E%E5%8F%B0%E8%A3%85" title="民族服装/舞台装" log="top_key">舞台装</a>        
+                
+                </span>
+                <span class="rise">19.08%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="60.74680864708382">
+                <span class="rank"><small class="rank">31</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E9%85%92%E5%BA%97%E5%B7%A5%E4%BD%9C%E5%88%B6%E6%9C%8D" title="酒店工作制服" log="top_key">酒店工作制服</a>        
+                
+                </span>
+                <span class="rise">60.75%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="28.945160429873773">
+                <span class="rank"><small class="rank">32</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E5%8C%BB%E6%8A%A4%E5%88%B6%E6%9C%8D" title="医护制服" log="top_key">医护制服</a>        
+                
+                </span>
+                <span class="rise">28.95%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="26.93395256588282">
+                <span class="rank"><small class="rank">33</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E8%A5%BF%E8%A3%85%E8%A3%A4" title="西装裤/正装裤" log="top_key">西装裤</a>        
+                
+                /
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%AD%A3%E8%A3%85%E8%A3%A4" title="西装裤/正装裤" log="top_key">正装裤</a>        
+                
+                </span>
+                <span class="rise">26.93%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="6.222472752992962">
+                <span class="rank"><small class="rank">34</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E4%B8%8A%E8%A1%A3" title="上衣" log="top_key">上衣</a>        
+                
+                </span>
+                <span class="rise">6.22%</span>
+                
+            </li>
+            
+            <li class="down grey" data-rise="-30.29019560840245">
+                <span class="rank"><small class="rank">35</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%A3%89%E8%A3%A4" title="棉裤/羽绒裤" log="top_key">棉裤</a>        
+                
+                /
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E7%BE%BD%E7%BB%92%E8%A3%A4" title="棉裤/羽绒裤" log="top_key">羽绒裤</a>        
+                
+                </span>
+                <span class="rise">-30.29%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="21.64510493478463">
+                <span class="rank"><small class="rank">36</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E5%AD%A6%E7%94%9F%E6%A0%A1%E6%9C%8D" title="学生校服" log="top_key">学生校服</a>        
+                
+                </span>
+                <span class="rise">21.65%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="68.79335614388395">
+                <span class="rank"><small class="rank">37</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E6%8A%B9%E8%83%B8" title="抹胸" log="top_key">抹胸</a>        
+                
+                </span>
+                <span class="rise">68.79%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="9.489565596939356">
+                <span class="rank"><small class="rank">38</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E8%A3%A4%E5%AD%90" title="裤子" log="top_key">裤子</a>        
+                
+                </span>
+                <span class="rise">9.49%</span>
+                
+            </li>
+            
+            <li class="up grey" data-rise="8.43762577188246">
+                <span class="rank"><small class="rank">39</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E8%A3%99%E5%AD%90" title="裙子" log="top_key">裙子</a>        
+                
+                </span>
+                <span class="rise">8.44%</span>
+                
+            </li>
+            
+            <li class="NaN grey" data-rise="NaN">
+                <span class="rank"><small class="rank">40</small></span>
+                <span class="key">
+                
+                
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E5%B0%8F%E8%83%8C%E5%BF%83" title="小背心/小吊带【已关闭】" log="top_key">小背心</a>        
+                
+                /
+                
+                        <a target="blank" href="http://shu.taobao.com/searchindex?query=%E5%B0%8F%E5%90%8A%E5%B8%A6%E3%80%90%E5%B7%B2%E5%85%B3%E9%97%AD%E3%80%91" title="小背心/小吊带【已关闭】" log="top_key">小吊带【已…</a>        
+                
+                </span>
+                <span class="rise">NaN%</span>
+                
+            </li>
+            
+        </ol>
+    </div>
+    
+</div>
+    </div>
+    <div class="col-sub">
+      <div id="cate-section">
+        <h3>热销类目</h3>
+        <ul>
+        
+          <li class="click">
+            <small class="rank">1</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/16/category">女装</a>
+          </li>
+        
+          <li>
+            <small class="rank">2</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/1512/category">手机</a>
+          </li>
+        
+          <li>
+            <small class="rank">3</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/1801/category">美容护肤</a>
+          </li>
+        
+          <li>
+            <small class="rank">4</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/50008090/category">数码配件</a>
+          </li>
+        
+          <li>
+            <small class="rank">5</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/30/category">男装</a>
+          </li>
+        
+          <li>
+            <small class="rank">6</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/50006842/category">箱包</a>
+          </li>
+        
+          <li>
+            <small class="rank">7</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/50006843/category">女鞋</a>
+          </li>
+        
+          <li>
+            <small class="rank">8</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/50002766/category">零食</a>
+          </li>
+        
+          <li>
+            <small class="rank">9</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/26/category">汽车用品</a>
+          </li>
+        
+          <li>
+            <small class="rank">10</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/11/category">电脑周边</a>
+          </li>
+        
+          <li>
+            <small class="rank">11</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/1101/category">笔记本电脑</a>
+          </li>
+        
+          <li>
+            <small class="rank">12</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/25/category">玩具</a>
+          </li>
+        
+          <li>
+            <small class="rank">13</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/1625/category">内衣</a>
+          </li>
+        
+          <li>
+            <small class="rank">14</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/50008163/category">床上用品</a>
+          </li>
+        
+          <li>
+            <small class="rank">15</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/50010728/category">运动健身</a>
+          </li>
+        
+          <li>
+            <small class="rank">16</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/50011740/category">流行男鞋</a>
+          </li>
+        
+          <li>
+            <small class="rank">17</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/50008164/category">住宅家具</a>
+          </li>
+        
+          <li>
+            <small class="rank">18</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/50008165/category">童装</a>
+          </li>
+        
+          <li>
+            <small class="rank">19</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/50013886/category">户外用品</a>
+          </li>
+        
+          <li>
+            <small class="rank">20</small>
+            <a log="top_left_cat" href="http://shu.taobao.com/top/50010788/category">彩妆</a>
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<footer class="footer">
+	<p>Copyright ©2003-2016 Taobao.com 版权所有</p>
+</footer>
+ 
+<div id="backtotop" style="display: none; left: 1461.5px;" log="backtotop">返回顶部</div> 
+<div style="left: 1461.5px;" id="feedback_btn" log="feedback">建议反馈</div> 
+<div id="feedback" class="clearfix"> 
+    <form action="/feedback"> 
+        <textarea name="text" rows="8"></textarea> 
+ 
+        <p> 
+            <span>&nbsp;</span> 
+            <input name="submit" class="submit" style="right: 150px;" value="提 交" type="button"> 
+            <input name="cancel" class="cancel" style="right: 92px;" value="取 消" type="button"> 
+            <input name="find_more" class="find_more" value="查看更多" type="button"> 
+        </p> 
+    </form> 
+</div> 
+  <!--
+  <script src="/public/2592155_tongji.js"></script>
+  <noscript><a href="http://www.linezing.com"><img src="http://img.tongji.linezing.com/2592155/tongji.gif"/></a></noscript>
+  --> 
+﻿<script>
+var sm = {};
+sm.ua = "";
+var UA_Opt = {};
+UA_Opt.LogVal = "sm.ua";
+UA_Opt.MaxMCLog = 3;
+UA_Opt.MaxMPLog = 3;
+UA_Opt.MaxKSLog = 3;
+UA_Opt.Token = new Date().getTime() + ":" + Math.random();
+UA_Opt.SendMethod = 8;
+UA_Opt.Flag = 14222;
+</script>
+<script src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/ua.js"></script> 
+ 
+<div style="height: 0px; width: 0px; overflow: hidden;"><object style="height:0;width:0;overflow:hidden;" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab" id="JSocket" height="0" width="0"><param name="allowScriptAccess" value="always"><param name="movie" value="http://acjs.aliyun.com/flash/JSocket.swf"> <embed src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/JSocket.swf" name="JSocket" allowscriptaccess="always" type="application/x-shockwave-flash" pluginspage="http://www.adobe.com/go/getflashplayer_cn" height="0" width="0"></object></div><script src="%E5%A5%B3%E8%A3%85%20-%20%E6%8C%87%E6%95%B0%E6%A6%9C%E5%8D%95%20-%20%E6%B7%98%E5%AE%9D%E6%8C%87%E6%95%B0%20-%20%E6%B7%98%E5%AE%9D%E6%B6%88%E8%B4%B9%E8%80%85%E6%95%B0%E6%8D%AE%E7%A0%94%E7%A9%B6%E5%B9%B3%E5%8F%B0_files/index.js"></script></body></html>

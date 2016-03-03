@@ -74,7 +74,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 				request.PutExtra(Request.StatusCode, statusCode);
 				if (StatusAccept(acceptStatCode, statusCode))
 				{
-					Page page = HandleResponse(request, charset, response, statusCode);
+					Page page = HandleResponse(request, charset, response, statusCode, site);
 
 					//page.SetRawText(File.ReadAllText(@"C:\Users\Lewis\Desktop\taobao.html"));
 
@@ -101,7 +101,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			{
 				if (!(e is RedialException))
 				{
-					Page page = new Page(request) { Exception = e };
+					Page page = new Page(request, site.ContentType) { Exception = e };
 
 					ValidatePage(page);
 				}
@@ -232,7 +232,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 			throw new ArgumentException("Illegal HTTP Method " + request.Method);
 		}
 
-		private Page HandleResponse(Request request, Encoding charset, HttpWebResponse response, int statusCode)
+		private Page HandleResponse(Request request, Encoding charset, HttpWebResponse response, int statusCode,Site site)
 		{
 			string content = GetContent(charset, response);
 			if (string.IsNullOrEmpty(content))
@@ -245,7 +245,7 @@ namespace Java2Dotnet.Spider.Core.Downloader
 				content = HttpUtility.UrlDecode(HttpUtility.HtmlDecode(content), charset);
 			}
 
-			Page page = new Page(request);
+			Page page = new Page(request, site.ContentType);
 			page.Content = content;
 			page.TargetUrl = response.ResponseUri.ToString();
 			page.Url = request.Url.ToString();

@@ -199,7 +199,7 @@ namespace Java2Dotnet.Spider.Extension
 
 				var spider = InitSpider();
 
-				if (spider.Identify != Name || spider.Scheduler != Scheduler || !Equals(spider.Site, Site))
+				if (spider.Identity != Name || spider.Scheduler != Scheduler || !Equals(spider.Site, Site))
 				{
 					throw new SpiderExceptoin("AbstractRedisSpider should only use default Name, Site, Scheduler.");
 				}

@@ -24,13 +24,13 @@ namespace Java2Dotnet.Spider.Extension.Test
 			redisScheduler.Dispose();
 
 			RedisSchedulerManager m = new RedisSchedulerManager("localhost");
-			m.RemoveTask(spider.Identify);
+			m.RemoveTask(spider.Identity);
 		}
 	}
 
 	internal class TestSpider : ISpider
 	{
-		public string Identify => "1";
+		public string Identity => "1";
 
 		public Site Site => null;
 		public void Start()

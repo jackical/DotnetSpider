@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using Java2Dotnet.Spider.Core.Utils;
 
-namespace Java2Dotnet.Spider.Core.Selector.Html
+namespace Java2Dotnet.Spider.Core.Selector
 {
 	[Experimental]
-	public class SmartContentSelector : ISelector
+	internal class SmartContentSelector : ISelector
 	{
-		public string Select(string node)
+		public dynamic Select(dynamic node)
 		{
 			string html = node ;
 			html = html.Replace("(?is)<!DOCTYPE.*?>", "");
@@ -81,7 +81,7 @@ namespace Java2Dotnet.Spider.Core.Selector.Html
 			return  text.ToString();
 		}
 
-		public List<string> SelectList(string text)
+		public List<dynamic> SelectList(dynamic text)
 		{
 			throw new NotImplementedException();
 		}

@@ -1,6 +1,5 @@
 ﻿using System;
 using Java2Dotnet.Spider.Core.Selector;
-using Java2Dotnet.Spider.Core.Selector.Html;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Java2Dotnet.Spider.Core.Test.Selector

@@ -35,7 +35,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 		public Page Download(Request request, ISpider spider)
 		{
 			// ReSharper disable once UnusedVariable
-			string path = BasePath + "/" + spider.Identify + "/";
+			string path = BasePath + "/" + spider.Identity + "/";
 			Page page;
 			try
 			{
@@ -46,7 +46,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 				if (("url:\t" + request.Url).Equals(line))
 				{
 					string html = GetHtml(bufferedReader);
-					page = new Page(request);
+					page = new Page(request, spider.Site.ContentType);
 					page.Url = request.Url.ToString();
 					page.Content = html;
 				}
@@ -68,7 +68,7 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 
 		public void Process(ResultItems resultItems, ISpider spider)
 		{
-			string path = BasePath + PathSeperator + spider.Identify + PathSeperator;
+			string path = BasePath + PathSeperator + spider.Identity + PathSeperator;
 			try
 			{
 				FileInfo fileInfo = PrepareFile(path + Encrypt.Md5Encrypt(resultItems.Request.Url.ToString()) + ".html");

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Java2Dotnet.Spider.Core.Selector;
-using Java2Dotnet.Spider.Core.Selector.Html;
-using Java2Dotnet.Spider.Core.Selector.Json;
 using Java2Dotnet.Spider.Core.Utils;
 
 namespace Java2Dotnet.Spider.Core
@@ -15,8 +13,8 @@ namespace Java2Dotnet.Spider.Core
 	{
 		public const string Images = "580c9065-0f44-47e9-94ea-b172d5a730c0";
 
-		private HtmlSelectable _htmlSelectable;
-		private JsonSelectable _jsonSelectable;
+		private Selectable _selectable;
+
 		private string _content;
 
 		/// <summary>
@@ -32,6 +30,8 @@ namespace Java2Dotnet.Spider.Core
 		public string TargetUrl { get; set; }
 
 		public string Title { get; set; }
+
+		public ContentType ContentType { get; set; }
 
 		/// <summary>
 		/// Get request of current page
@@ -53,8 +53,7 @@ namespace Java2Dotnet.Spider.Core
 				if (!Equals(value, _content))
 				{
 					_content = value;
-					_htmlSelectable = null;
-					_jsonSelectable = null;
+					_selectable = null;
 				}
 			}
 		}
@@ -71,10 +70,11 @@ namespace Java2Dotnet.Spider.Core
 
 		public HashSet<Request> TargetRequests { get; } = new HashSet<Request>();
 
-		public Page(Request request)
+		public Page(Request request, ContentType contentType)
 		{
 			Request = request;
 			ResultItems.Request = request;
+			ContentType = contentType;
 		}
 
 		/// <summary>
@@ -91,9 +91,7 @@ namespace Java2Dotnet.Spider.Core
 		/// Get html content of page
 		/// </summary>
 		/// <returns></returns>
-		public HtmlSelectable HtmlSelectable => _htmlSelectable ?? (_htmlSelectable = new HtmlSelectable(Content, Request.Url.ToString()));
-
-		public JsonSelectable JsonSelectable => _jsonSelectable ?? (_jsonSelectable = new JsonSelectable(Content));
+		public Selectable Selectable => _selectable ?? (_selectable = new Selectable(Content, Request.Url.ToString(), ContentType));
 
 		/// <summary>
 		/// Add urls to fetch

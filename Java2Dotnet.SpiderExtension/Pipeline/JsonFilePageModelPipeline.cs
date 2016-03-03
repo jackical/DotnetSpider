@@ -30,7 +30,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 
 		public void Process(List<T> data, ISpider spider)
 		{
-			string path = BasePath + "/" + spider.Identify + "/";
+			string path = BasePath + "/" + spider.Identity + "/";
 			string filename = path + _type.FullName + ".json";
 
 			foreach (var entry in data)

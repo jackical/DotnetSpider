@@ -8,7 +8,7 @@ namespace Java2Dotnet.Spider.Extension
 	{
 		public static string GetDataFilePath(ISpider spider, string name)
 		{
-			string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", spider.Identify);
+			string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", spider.Identity);
 
 			if (!Directory.Exists(folderPath))
 			{

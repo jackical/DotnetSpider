@@ -4,19 +4,19 @@ using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
 
-namespace Java2Dotnet.Spider.Core.Selector.Html
+namespace Java2Dotnet.Spider.Core.Selector
 {
-	public class CssSelector : BaseSelector
+	internal class CssHtmlSelector : BaseHtmlSelector
 	{
 		private readonly string _selectorText;
 		private readonly string _attrName;
 
-		public CssSelector(string selectorText)
+		public CssHtmlSelector(string selectorText)
 		{
 			_selectorText = selectorText;
 		}
 
-		public CssSelector(string selectorText, string attrName)
+		public CssHtmlSelector(string selectorText, string attrName)
 		{
 			_selectorText = selectorText;
 			_attrName = attrName;
@@ -35,19 +35,19 @@ namespace Java2Dotnet.Spider.Core.Selector.Html
 			return accum.ToString();
 		}
 
-		public override string Select(HtmlNode element)
+		public override dynamic Select(HtmlNode element)
 		{
 			IList<HtmlNode> elements = element.QuerySelectorAll(_selectorText);
 			if (elements != null && elements.Count > 0)
 			{
-				return GetValue(elements[0]);
+				return elements[0];
 			}
 			return null;
 		}
 
-		public override List<string> SelectList(HtmlNode element)
+		public override List<dynamic> SelectList(HtmlNode element)
 		{
-			return element.QuerySelectorAll(_selectorText).Select(GetValue).ToList();
+			return element.QuerySelectorAll(_selectorText).Cast<dynamic>().ToList();
 		}
 
 		public override bool HasAttribute()

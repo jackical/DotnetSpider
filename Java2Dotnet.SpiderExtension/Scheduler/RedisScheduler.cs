@@ -53,7 +53,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 			RedialManagerUtils.Execute("rds-init", () =>
 			{
 				// redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
-				_db.SortedSetAdd(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
+				_db.SortedSetAdd(TaskList, spider.Identity, DateTimeUtil.GetCurrentTimeStamp());
 			});
 		}
 
@@ -67,22 +67,22 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		private string GetSetKey(ISpider spider)
 		{
-			return SetPrefix + Encrypt.Md5Encrypt(spider.Identify);
+			return SetPrefix + Encrypt.Md5Encrypt(spider.Identity);
 		}
 
 		private string GetQueueKey(ISpider spider)
 		{
-			return QueuePrefix + Encrypt.Md5Encrypt(spider.Identify);
+			return QueuePrefix + Encrypt.Md5Encrypt(spider.Identity);
 		}
 
 		public bool IsDuplicate(Request request, ISpider spider)
 		{
 			return SafeExecutor.Execute(30, () =>
 			{
-				bool isDuplicate = _db.SetContains(GetSetKey(spider), request.Url.ToString());
+				bool isDuplicate = _db.SetContains(GetSetKey(spider), request.Identity);
 				if (!isDuplicate)
 				{
-					_db.SetAdd(GetSetKey(spider), request.Url.ToString());
+					_db.SetAdd(GetSetKey(spider), request.Identity);
 				}
 				return isDuplicate;
 			});
@@ -93,15 +93,15 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			SafeExecutor.Execute(30, () =>
 			{
-				_db.SetAdd(GetQueueKey(spider), request.Url.ToString());
+				_db.SetAdd(GetQueueKey(spider), request.Identity);
 
 				// 没有必要判断浪费性能了, 这里不可能为空。最少会有一个层级数据 Grade
 				//if (request.Extras != null && request.Extras.Count > 0)
 				//{
-				string field = Encrypt.Md5Encrypt(request.Url.ToString());
+				string field = request.Identity;
 				string value = JsonConvert.SerializeObject(request);
 
-				_db.HashSet(ItemPrefix + spider.Identify, field, value);
+				_db.HashSet(ItemPrefix + spider.Identity, field, value);
 			});
 		}
 
@@ -149,9 +149,8 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 				{
 					return null;
 				}
-				string url = value.ToString();
-				string hashId = ItemPrefix + spider.Identify;
-				string field = Encrypt.Md5Encrypt(url);
+				string field = value.ToString();
+				string hashId = ItemPrefix + spider.Identity;
 
 				string json = null;
 
@@ -170,8 +169,8 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 				// 严格意义上说不会走到这里, 一定会有JSON数据,详情看Push方法
 				// 是否应该设为1级？
-				Request request = new Request(url, 1, null);
-				return request;
+
+				return null;
 			});
 		}
 	}

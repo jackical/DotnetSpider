@@ -12,15 +12,12 @@ namespace Java2Dotnet.Spider.Core
 	public class Site
 	{
 		private readonly List<Request> _startRequests = new List<Request>();
-		private Dictionary<string, string> _headers;
 		private ProxyPool _httpProxyPool = new ProxyPool();
 		private string _domain;
 
-		public Dictionary<string, string> Headers
-		{
-			get { return _headers ?? (_headers = new Dictionary<string, string>()); }
-			set { _headers = value; }
-		}
+		public Dictionary<string, string> Headers { get; set; }
+
+		public ContentType ContentType { get; set; } = ContentType.Html;
 
 		/// <summary>
 		/// User agent
@@ -196,7 +193,7 @@ namespace Java2Dotnet.Spider.Core
 					", cycleRetryTimes=" + CycleRetryTimes +
 					", timeOut=" + Timeout +
 					", acceptStatCode=" + AcceptStatCode +
-					", headers=" + _headers +
+					", headers=" + Headers +
 					'}';
 		}
 

@@ -4,7 +4,6 @@ using System.Text;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Downloader;
 using Java2Dotnet.Spider.Core.Selector;
-using Java2Dotnet.Spider.Core.Selector.Json;
 using Java2Dotnet.Spider.Extension;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper.Attributes;
 using Java2Dotnet.Spider.Extension.Model;
@@ -81,8 +80,8 @@ namespace Java2Dotnet.Spider.Samples
 			};
 			ooSpider.SetCustomizeTargetUrls(page =>
 			{
-				string totalPage = page.HtmlSelectable.Select(new JsonPathSelector("$.mods.pager.data.totalPage")).Value;
-				string currentPage = page.HtmlSelectable.Select(new JsonPathSelector("$.mods.pager.data.currentPage")).Value;
+				string totalPage = page.Selectable.Select(new JsonPathSelector("$.mods.pager.data.totalPage")).Value;
+				string currentPage = page.Selectable.Select(new JsonPathSelector("$.mods.pager.data.currentPage")).Value;
 				if (totalPage == currentPage)
 				{
 					return new List<string>();

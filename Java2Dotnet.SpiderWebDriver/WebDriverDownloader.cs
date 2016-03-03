@@ -18,7 +18,7 @@ namespace Java2Dotnet.Spider.WebDriver
 		protected Option Option;
 		private static bool _isLogined;
 
-		public Func<RemoteWebDriver, bool> Login;
+		public Func<RemoteWebDriver, bool> Login { get; set; }
 		public Func<string, string> UrlFormat;
 		public Func<RemoteWebDriver, bool> AfterNavigate;
 
@@ -99,7 +99,7 @@ namespace Java2Dotnet.Spider.WebDriver
 
 				AfterNavigate?.Invoke((RemoteWebDriver)driverService.WebDriver);
 
-				Page page = new Page(request);
+				Page page = new Page(request, spider.Site.ContentType);
 				page.Content = driverService.WebDriver.PageSource;
 				page.Url = request.Url.ToString();
 				page.TargetUrl = driverService.WebDriver.Url;

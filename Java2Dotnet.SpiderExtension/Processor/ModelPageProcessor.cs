@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Processor;
-using Java2Dotnet.Spider.Core.Selector.Html;
+using Java2Dotnet.Spider.Core.Selector;
 using Java2Dotnet.Spider.Extension.Model;
 
 namespace Java2Dotnet.Spider.Extension.Processor
@@ -63,7 +63,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 				var formatter = targetUrlExtractInfo.TargetUrlFormatter;
 				var urlPatterns = targetUrlExtractInfo.Patterns;
 
-				var links = urlRegionSelector == null ? page.HtmlSelectable.Links().Value : ((ISelectable)page.HtmlSelectable.SelectList(urlRegionSelector)).Links().Value;
+				var links = urlRegionSelector == null ? page.Selectable.Links().Value : ((ISelectable)page.Selectable.SelectList(urlRegionSelector)).Links().Value;
 				if (links == null)
 				{
 					return;

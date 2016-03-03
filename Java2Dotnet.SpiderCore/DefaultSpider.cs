@@ -15,14 +15,14 @@ namespace Java2Dotnet.Spider.Core
 			{
 				throw new SpiderExceptoin("Task Identify only can contains A-Z a-z 0-9 _ - [SPACE]");
 			}
-			Identify = uuid;
+			Identity = uuid;
 			Site = site;
 		}
 
 		/// <summary>
 		/// Unique id for a task.
 		/// </summary>
-		public string Identify { get; }
+		public string Identity { get; }
 
 
 		/// <summary>

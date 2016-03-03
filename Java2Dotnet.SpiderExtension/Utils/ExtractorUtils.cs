@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using Java2Dotnet.Spider.Core.Selector;
-using Java2Dotnet.Spider.Core.Selector.Html;
-using Java2Dotnet.Spider.Core.Selector.Json;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
 
@@ -19,7 +17,7 @@ namespace Java2Dotnet.Spider.Extension.Utils
 			switch (extractBy.Type)
 			{
 				case ExtractType.Css:
-					selector = new CssSelector(value);
+					selector = new CssHtmlSelector(value);
 					break;
 				case ExtractType.Regex:
 					selector = new RegexSelector(value);

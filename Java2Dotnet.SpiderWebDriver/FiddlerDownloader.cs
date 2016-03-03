@@ -100,7 +100,7 @@ namespace Java2Dotnet.Spider.WebDriver
 
 				AfterNavigate?.Invoke((RemoteWebDriver)driverService.WebDriver);
 
-				Page page = new Page(request);
+				Page page = new Page(request, spider.Site.ContentType);
 				page.Content = _fiddlerClient.ResponseBodyString;
 				_fiddlerClient.Clear();
 				page.Url = request.Url.ToString();

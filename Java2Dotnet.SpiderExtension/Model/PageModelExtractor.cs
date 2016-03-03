@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Selector;
-using Java2Dotnet.Spider.Core.Selector.Html;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
 using Java2Dotnet.Spider.Extension.Model.Formatter;
 using Java2Dotnet.Spider.Extension.Utils;
@@ -238,7 +237,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 			{
 				if (_typeExtractor.Multi)
 				{
-					IList<string> list = _typeExtractor.Selector.SelectList(page.Content);
+					IList<dynamic> list = _typeExtractor.Selector.SelectList(page.Content);
 					if (_typeExtractor.Count < int.MaxValue)
 					{
 						list = list.Take(_typeExtractor.Count).ToList();
@@ -279,7 +278,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 						continue;
 					}
 
-					IList<string> value = fieldExtractor.Selector.SelectList(content);
+					IList<dynamic> value = fieldExtractor.Selector.SelectList(content);
 
 					if ((value == null || value.Count == 0))
 					{
@@ -422,7 +421,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 			return page.Request.GetExtra(field);
 		}
 
-		private dynamic Convert(string value, IObjectFormatter objectFormatter)
+		private dynamic Convert(dynamic value, IObjectFormatter objectFormatter)
 		{
 			try
 			{
@@ -437,7 +436,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 			return null;
 		}
 
-		private IList<dynamic> Convert(IList<string> values, IObjectFormatter objectFormatter)
+		private IList<dynamic> Convert(IList<dynamic> values, IObjectFormatter objectFormatter)
 		{
 			return values.Select(value => Convert(value, objectFormatter)).ToList();
 		}

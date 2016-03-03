@@ -1,22 +1,44 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using HtmlAgilityPack;
 using log4net;
 
 namespace Java2Dotnet.Spider.Core.Selector
 {
-	public abstract class BaseSelectable : IBaseSelectable
+	public abstract class BaseSelectable : ISelectable
 	{
 		protected static readonly ILog Logger = LogManager.GetLogger("BaseSelectable");
 
-		public List<string> Elements { get; set; }
+		public List<dynamic> Elements { get; set; }
 
-		public IBaseSelectable Regex(string regex)
+		public abstract ISelectable XPath(string xpath);
+
+
+		public abstract ISelectable Css(string selector);
+
+
+		public abstract ISelectable Css(string selector, string attrName);
+
+
+		public abstract ISelectable SmartContent();
+
+
+		public abstract ISelectable Links();
+
+
+		public abstract IList<ISelectable> Nodes();
+
+
+		public abstract ISelectable JsonPath(string path);
+
+
+		public ISelectable Regex(string regex)
 		{
 			RegexSelector regexSelector = Selectors.Regex(regex);
 			return Select(regexSelector);
 		}
 
-		public IBaseSelectable Regex(string regex, int group)
+		public ISelectable Regex(string regex, int group)
 		{
 			RegexSelector regexSelector = Selectors.Regex(regex, group);
 			return Select(regexSelector);
@@ -33,15 +55,22 @@ namespace Java2Dotnet.Spider.Core.Selector
 
 				if (Elements.Count == 1)
 				{
-					return Elements[0];
+					if (Elements[0] is HtmlNode)
+					{
+						return Elements[0].InnerHtml;
+					}
+					else
+					{
+						return Elements[0].ToString();
+					}
 				}
 
-				return Elements.Select(selectedNode => selectedNode.ToString()).ToList();
+				return Elements.Select(selectedNode => selectedNode is HtmlNode ? Elements[0].InnerHtml : selectedNode.ToString()).ToList();
 			}
 		}
 
-		public abstract IBaseSelectable Select(ISelector selector);
- 
-		public abstract IBaseSelectable SelectList(ISelector selector);
+		public abstract ISelectable Select(ISelector selector);
+
+		public abstract ISelectable SelectList(ISelector selector);
 	}
 }

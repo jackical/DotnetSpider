@@ -25,7 +25,7 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 
 		public void Process(ResultItems resultItems, ISpider spider)
 		{
-			string path = BasePath + "/" + spider.Identify + "/";
+			string path = BasePath + "/" + spider.Identity + "/";
 			try
 			{
 				FileInfo file = PrepareFile(path + Encrypt.Md5Encrypt(resultItems.Request.Url.ToString()) + ".json");

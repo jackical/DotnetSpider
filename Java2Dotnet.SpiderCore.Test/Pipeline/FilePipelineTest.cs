@@ -24,7 +24,7 @@ namespace Java2Dotnet.Spider.Core.Test.Pipeline
 
 		private class TestSpider : ISpider
 		{
-			public string Identify => Guid.NewGuid().ToString();
+			public string Identity => Guid.NewGuid().ToString();
 
 			public Site Site => null;
 			public void Start()

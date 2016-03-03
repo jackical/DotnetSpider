@@ -117,7 +117,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 					TotalPageCount,
 					AliveThreadCount
 				};
-				db.HashSet(RedisScheduler.TaskStatus, _spider.Identify, JsonConvert.SerializeObject(status));
+				db.HashSet(RedisScheduler.TaskStatus, _spider.Identity, JsonConvert.SerializeObject(status));
 			}
 
 			public void OnSuccess(Request request)
@@ -144,7 +144,7 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 
 			public bool Closed { get; set; }
 
-			public string Name => _spider.Identify;
+			public string Name => _spider.Identity;
 
 			public long LeftPageCount
 			{

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Web;
+using Java2Dotnet.Spider.Core.Utils;
 
 namespace Java2Dotnet.Spider.Core
 {
@@ -117,12 +118,7 @@ namespace Java2Dotnet.Spider.Core
 
 		public override int GetHashCode()
 		{
-			if (Url != null)
-			{
-				return Url.GetHashCode();
-			}
-
-			return -1;
+			return Identity.GetHashCode();
 		}
 
 		public void Dispose()
@@ -134,6 +130,8 @@ namespace Java2Dotnet.Spider.Core
 		{
 			return $"Request {{ url='{Url}', method='{Method}', extras='{Extras}', priority='{Priority}'}}";
 		}
+
+		public string Identity => Encrypt.Md5Encrypt(Url + PostBody);
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public object Clone()

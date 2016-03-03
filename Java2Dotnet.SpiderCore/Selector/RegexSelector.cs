@@ -6,7 +6,7 @@ using Java2Dotnet.Spider.Core.Utils;
 
 namespace Java2Dotnet.Spider.Core.Selector
 {
-	public class RegexSelector : ISelector
+	internal class RegexSelector : ISelector
 	{
 		private readonly string _regexStr;
 		private readonly Regex _regex;
@@ -36,15 +36,15 @@ namespace Java2Dotnet.Spider.Core.Selector
 		{
 		}
 
-		public string Select(string text)
+		public dynamic Select(dynamic text)
 		{
 			return SelectGroup(text).Get(_group);
 		}
 
-		public List<string> SelectList(string text)
+		public List<dynamic> SelectList(dynamic text)
 		{
 			IList<RegexResult> results = SelectGroupList(text);
-			return results.Select(result => result.Get(_group)).ToList();
+			return results.Select(result => result.Get(_group)).Cast<dynamic>().ToList();
 		}
 
 		private RegexResult SelectGroup(string text)

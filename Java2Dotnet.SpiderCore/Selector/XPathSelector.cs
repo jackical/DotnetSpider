@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Java2Dotnet.Spider.Core.Selector.Html
+namespace Java2Dotnet.Spider.Core.Selector
 {
-	public class XPathSelector : BaseSelector
+	internal class XPathSelector : BaseHtmlSelector
 	{
 		private readonly string _xpath;
 		private static readonly Regex AttributeXPathRegex = new Regex(@"@[\w\s-]+", RegexOptions.RightToLeft | RegexOptions.IgnoreCase);
@@ -23,19 +23,26 @@ namespace Java2Dotnet.Spider.Core.Selector.Html
 			//}
 		}
 
-		public override string Select(HtmlAgilityPack.HtmlNode element)
+		public override dynamic Select(HtmlAgilityPack.HtmlNode element)
 		{
 			var node = element.SelectSingleNode(_xpath);
 			if (node != null)
 			{
-				return HasAttribute() ? (node.Attributes.Contains(_attribute) ? node.Attributes[_attribute].Value?.Trim() : null) : node.OuterHtml?.Trim();
+				if (HasAttribute())
+				{
+					return node.Attributes.Contains(_attribute) ? node.Attributes[_attribute].Value?.Trim() : null;
+				}
+				else
+				{
+					return node;
+				}
 			}
 			return null;
 		}
 
-		public override List<string> SelectList(HtmlAgilityPack.HtmlNode element)
+		public override List<dynamic> SelectList(HtmlAgilityPack.HtmlNode element)
 		{
-			List<string> result = new List<string>();
+			List<dynamic> result = new List<dynamic>();
 			var nodes = element.SelectNodes(_xpath);
 			if (nodes != null)
 			{
@@ -43,7 +50,7 @@ namespace Java2Dotnet.Spider.Core.Selector.Html
 				{
 					if (!HasAttribute())
 					{
-						result.Add(node.OuterHtml);
+						result.Add(node);
 					}
 					else
 					{

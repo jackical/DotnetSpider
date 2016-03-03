@@ -4,105 +4,38 @@ using System.IO;
 using System.Text;
 using CommandLine;
 using Java2Dotnet.Spider.Core;
+using Java2Dotnet.Spider.Extension.Configuration;
+using Java2Dotnet.Spider.Lib;
+using Newtonsoft.Json;
 
 namespace Java2Dotnet.Spider.Scripts
 {
 	public class ScriptConsole
 	{
-		//private class Param
-		//{
-		//	Language language = Language.JAVASCRIPT;
-		//	string scriptFileName;
-		//	List<string> urls;
-		//	int thread = 1;
-		//	int sleepTime = 1000;
-		//	private static Dictionary<Language, List<string>> alias = new Dictionary<Language, List<string>>();
-
-		//	static Param()
-		//	{
-		//		alias.Add(Language.JAVASCRIPT, new List<string>() { "js", "javascript", "JavaScript", "JS" });
-		//		//alias.Add(Language.JRuby, Sets.<string>newHashSet("ruby", "jruby", "Ruby", "JRuby"));
-		//	}
-
-		//	public void SetLanguagefromArg(string arg)
-		//	{
-		//		foreach (KeyValuePair<Language, List<string>> languageSetEntry in alias)
-		//		{
-		//			if (languageSetEntry.Value.Contains(arg))
-		//			{
-		//				this.language = languageSetEntry.Key;
-		//				return;
-		//			}
-		//		}
-		//	}
-
-		//	public Language Lang
-		//	{
-		//		get { return language; }
-		//		set
-		//		{
-		//			if (this.language != value)
-		//			{
-		//				this.language = value;
-		//			}
-		//		}
-		//	}
-
-		//	public string ScriptFileName
-		//	{
-		//		get { return scriptFileName; }
-		//		set
-		//		{
-		//			if (this.scriptFileName != value)
-		//			{
-		//				this.scriptFileName = value;
-		//			}
-		//		}
-		//	}
-
-		//	public List<string> Urls
-		//	{
-		//		get { return urls; }
-		//		set
-		//		{
-		//			if (this.urls != value)
-		//			{
-		//				this.urls = value;
-		//			}
-		//		}
-		//	}
-
-		//	public int Thread
-		//	{
-		//		get { return thread; }
-		//		set
-		//		{
-		//			if (this.thread != value)
-		//			{
-		//				this.thread = value;
-		//			}
-		//		}
-		//	}
-
-		//	public int SleepTime
-		//	{
-		//		get { return sleepTime; }
-		//		set
-		//		{
-		//			if (this.sleepTime != value)
-		//			{
-		//				this.sleepTime = value;
-		//			}
-		//		}
-		//	}
-		//}
-
 		public static void Main(string[] args)
 		{
-			Options param = ParseCommand(args);
-			if (param != null)
+			Core.Spider.PrintInfo();
+
+			//Options param = ParseCommand(args);
+			//if (param != null)
+			//{
+			//	StartSpider(param);
+			//}
+			string json = File.ReadAllText("sample.json");
+			json = Macros.Replace(json);
+			JsonSpider jsonSpider = JsonConvert.DeserializeObject<JsonSpider>(json);
+			List<string> errorMessages;
+			if (JsonSpiderValidation.Validate(jsonSpider, out errorMessages))
 			{
-				StartSpider(param);
+				ScriptSpider spider = new ScriptSpider(jsonSpider);
+				spider.Run(args);
+			}
+			else
+			{
+				foreach (var errorMessage in errorMessages)
+				{
+					Console.WriteLine(errorMessage);
+				}
 			}
 		}
 
@@ -111,7 +44,7 @@ namespace Java2Dotnet.Spider.Scripts
 			ScriptProcessor pageProcessor = ScriptProcessorBuilder.Custom().Language(param.Lang).ScriptFromFile(param.File).Thread(param.Thread).Build();
 			pageProcessor.Site.SleepTime = param.Sleep;
 			pageProcessor.Site.RetryTimes = 3;
-			pageProcessor.Site.AcceptStatCode=new HashSet<int> { 200, 404, 403, 500, 502 };
+			pageProcessor.Site.AcceptStatCode = new HashSet<int> { 200, 404, 403, 500, 502 };
 			Core.Spider spider = Core.Spider.Create(pageProcessor).SetThreadNum(param.Thread);
 			spider.ClearPipeline();
 
@@ -130,7 +63,7 @@ namespace Java2Dotnet.Spider.Scripts
 
 			Jurassic.ScriptEngine engine = new Jurassic.ScriptEngine { EnableExposedClrTypes = true };
 			//engine.SetGlobalValue("page", new Page());
-			engine.SetGlobalValue("config", new Site());
+			//engine.SetGlobalValue("config", new Site());
 
 			engine.Evaluate(script);
 

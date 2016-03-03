@@ -65,13 +65,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContentType.cs" />
     <Compile Include="Monitor\SpiderClosing.cs" />
     <Compile Include="Monitor\RequestFailed.cs" />
     <Compile Include="Monitor\RequestSuccessed.cs" />
     <Compile Include="Pipeline\JsonFilePipeline.cs" />
     <Compile Include="Selector\BaseSelectable.cs" />
-    <Compile Include="Selector\IBaseSelectable.cs" />
-    <Compile Include="Selector\Json\ISelectable.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="SpiderExceptoin.cs" />
     <Compile Include="Page.cs" />
@@ -84,16 +83,15 @@
     <Compile Include="Proxy\Proxy.cs" />
     <Compile Include="Proxy\ProxyPool.cs" />
     <Compile Include="Scheduler\QueueScheduler.cs" />
-    <Compile Include="Selector\Html\BaseSelector.cs" />
-    <Compile Include="Selector\Html\CssSelector.cs" />
+    <Compile Include="Selector\BaseHtmlSelector.cs" />
+    <Compile Include="Selector\CssSelector.cs" />
     <Compile Include="Selector\EnviromentSelector.cs" />
-    <Compile Include="Selector\Html\Selectable.cs" />
     <Compile Include="Selector\RegexResult.cs" />
     <Compile Include="Selector\RegexSelector.cs" />
-    <Compile Include="Selector\Html\ISelectable.cs" />
+    <Compile Include="Selector\ISelectable.cs" />
     <Compile Include="Selector\Selectors.cs" />
-    <Compile Include="Selector\Html\SmartContentSelector.cs" />
-    <Compile Include="Selector\Html\XPathSelector.cs" />
+    <Compile Include="Selector\SmartContentSelector.cs" />
+    <Compile Include="Selector\XPathSelector.cs" />
     <Compile Include="Utils\AutomicLong.cs" />
     <Compile Include="Utils\AutomicInteger.cs" />
     <Compile Include="Utils\NetUtils.cs" />
@@ -138,9 +136,8 @@
     <Compile Include="ISpiderListener.cs" />
     <Compile Include="CountableThreadPool.cs" />
     <Compile Include="Utils\HttpConstant.cs" />
-    <Compile Include="Selector\Html\HtmlSelectable.cs" />
-    <Compile Include="Selector\Json\JsonSelectable.cs" />
-    <Compile Include="Selector\Json\JsonPathSelector.cs" />
+    <Compile Include="Selector\Selectable.cs" />
+    <Compile Include="Selector\JsonPathSelector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

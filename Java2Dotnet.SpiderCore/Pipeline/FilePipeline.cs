@@ -28,7 +28,7 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 
 		public void Process(ResultItems resultItems, ISpider spider)
 		{
-			string filePath = BasePath + PathSeperator + spider.Identify + PathSeperator;
+			string filePath = BasePath + PathSeperator + spider.Identity + PathSeperator;
 			try
 			{
 				FileInfo file = PrepareFile(filePath + Encrypt.Md5Encrypt(resultItems.Request.Url.ToString()) + ".html");

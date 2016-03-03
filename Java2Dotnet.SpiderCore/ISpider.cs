@@ -11,7 +11,7 @@ namespace Java2Dotnet.Spider.Core
 		/// <summary>
 		/// Unique id for a task.
 		/// </summary>
-		string Identify { get; }
+		string Identity { get; }
 
 		/// <summary>
 		/// Site of a task

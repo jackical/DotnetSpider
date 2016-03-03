@@ -34,7 +34,7 @@ namespace Java2Dotnet.Spider.Core
 		public Action<Page> CustomizePage;
 		public bool ShowControl { get; set; }
 		public bool SaveStatusToRedis { get; set; }
-		public string Identify { get; }
+		public string Identity { get; }
 		public bool ShowConsoleStatus { get; set; } = true;
 		public List<IPipeline> Pipelines { get; private set; } = new List<IPipeline>();
 		public IDownloader Downloader { get; private set; }
@@ -114,7 +114,7 @@ namespace Java2Dotnet.Spider.Core
 			Scheduler = scheduler ?? new QueueDuplicateRemovedScheduler();
 			if (string.IsNullOrWhiteSpace(identify))
 			{
-				Identify = string.IsNullOrEmpty(Site.Domain) ? Guid.NewGuid().ToString() : Site.Domain;
+				Identity = string.IsNullOrEmpty(Site.Domain) ? Guid.NewGuid().ToString() : Site.Domain;
 			}
 			else
 			{
@@ -122,10 +122,10 @@ namespace Java2Dotnet.Spider.Core
 				{
 					throw new SpiderExceptoin("Task Identify only can contains A-Z a-z 0-9 _ -");
 				}
-				Identify = identify;
+				Identity = identify;
 			}
 
-			DataRootDirectory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\" + Identify;
+			DataRootDirectory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\" + Identity;
 		}
 
 		/// <summary>
@@ -370,10 +370,10 @@ namespace Java2Dotnet.Spider.Core
 			// 必须开启多线程限制
 			System.Net.ServicePointManager.DefaultConnectionLimit = int.MaxValue;
 
-			Logger.Info("Spider " + Identify + " InitComponent...");
+			Logger.Info("Spider " + Identity + " InitComponent...");
 			InitComponent();
 
-			Logger.Info("Spider " + Identify + " Started!");
+			Logger.Info("Spider " + Identity + " Started!");
 
 			bool firstTask = false;
 
@@ -464,7 +464,7 @@ namespace Java2Dotnet.Spider.Core
 
 			if (Stat == Status.Stopped)
 			{
-				Logger.Info("Spider " + Identify + " stop success!");
+				Logger.Info("Spider " + Identity + " stop success!");
 			}
 
 			_runningExit = true;
@@ -506,7 +506,7 @@ namespace Java2Dotnet.Spider.Core
 		public void Stop()
 		{
 			Stat = Status.Stopped;
-			Console.WriteLine("Trying to stop Spider " + Identify + "...");
+			Console.WriteLine("Trying to stop Spider " + Identity + "...");
 		}
 
 		protected void OnClose()
@@ -541,7 +541,7 @@ namespace Java2Dotnet.Spider.Core
 
 		protected Page AddToCycleRetry(Request request, Site site)
 		{
-			Page page = new Page(request);
+			Page page = new Page(request, site.ContentType);
 			dynamic cycleTriedTimesObject = request.GetExtra(Request.CycleTriedTimes);
 			if (cycleTriedTimesObject == null)
 			{
