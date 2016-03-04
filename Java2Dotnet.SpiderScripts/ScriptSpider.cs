@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Utils;
-using Java2Dotnet.Spider.Extension;
 using Java2Dotnet.Spider.Extension.DbSupport;
 using Java2Dotnet.Spider.Extension.Monitor;
 using Java2Dotnet.Spider.Extension.Scheduler;
 using Java2Dotnet.Spider.Extension.Utils;
 using Java2Dotnet.Spider.Lib;
 using Java2Dotnet.Spider.Redial;
-using Java2Dotnet.Spider.Redial.RedialManager;
 using Java2Dotnet.Spider.Validation;
 using StackExchange.Redis;
 using System.Configuration;
 using Java2Dotnet.Spider.Core.Downloader;
+using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Extension.Configuration;
 using Java2Dotnet.Spider.Extension.Downloader;
 using Java2Dotnet.Spider.Extension.Model;
@@ -44,7 +39,6 @@ namespace Java2Dotnet.Spider.Scripts
 		//todo
 		private List<IValidate> _validations;
 		private readonly JsonSpider _jsonSpider;
-		private readonly RedisScheduler _scheduler = new RedisScheduler(RedisProvider.GetProvider());
 
 		public string Name { get; }
 
@@ -239,7 +233,23 @@ namespace Java2Dotnet.Spider.Scripts
 				processor.AddEntity(entity);
 			}
 
-			EntityGeneralSpider spider = new EntityGeneralSpider(_jsonSpider.SpiderName, processor, _scheduler);
+			IScheduler scheduler = new QueueDuplicateRemovedScheduler();
+
+			switch (_jsonSpider.Scheduler)
+			{
+				case Scheduler.Queue:
+					{
+						scheduler = new QueueDuplicateRemovedScheduler();
+						break;
+					}
+				case Scheduler.Redis:
+					{
+						scheduler = new RedisScheduler(RedisProvider.GetProvider());
+						break;
+					}
+			}
+
+			EntityGeneralSpider spider = new EntityGeneralSpider(_jsonSpider.SpiderName, processor, scheduler);
 
 			foreach (var entity in _jsonSpider.Entities)
 			{
@@ -248,12 +258,14 @@ namespace Java2Dotnet.Spider.Scripts
 				{
 					case PipelineType.MongoDb:
 						{
-							spider.AddPipeline(new EntityPipeline(entiyName, new EntityMongoDbPipeline(entity.SelectToken("$.schema").ToObject<DbScheme>(), _jsonSpider.Pipeline.Arguments)));
+							spider.AddPipeline(new EntityPipeline(entiyName, new EntityMongoDbPipeline(entity.SelectToken("$.schema").ToObject<DbSchema>(), _jsonSpider.Pipeline.Arguments)));
 							break;
 						}
 					case PipelineType.MySql:
 						{
-							spider.AddPipeline(new EntityPipeline(entiyName, new EntityGeneralPipeline(entity, _jsonSpider.Pipeline.Arguments)));
+							var pipeline = new EntityMySqlPipeline(entity.SelectToken("$.schema").ToObject<DbSchema>(), entity, _jsonSpider.Pipeline.Arguments);
+							pipeline.Initialize();
+							spider.AddPipeline(new EntityPipeline(entiyName, pipeline));
 							break;
 						}
 				}

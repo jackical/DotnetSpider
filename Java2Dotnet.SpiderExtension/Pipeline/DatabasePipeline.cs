@@ -4,7 +4,6 @@ using System.Threading;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.DbSupport;
-using Java2Dotnet.Spider.Extension.DbSupport.Dapper;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Redial;
 

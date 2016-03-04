@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Selector;
-using Java2Dotnet.Spider.Extension.Configuration;
-using Java2Dotnet.Spider.Lib;
 using Newtonsoft.Json.Linq;
 
 namespace Java2Dotnet.Spider.Extension.Model
@@ -57,10 +51,10 @@ namespace Java2Dotnet.Spider.Extension.Model
 					list = list.Take(count).ToList();
 				}
 
-				List<dynamic> result = new List<dynamic>();
+				List<JObject> result = new List<JObject>();
 				foreach (var item in list)
 				{
-					dynamic obj = ProcessSingle(page, item, _entityDefine);
+					JObject obj = ProcessSingle(page, item, _entityDefine);
 					if (obj != null)
 					{
 						result.Add(obj);

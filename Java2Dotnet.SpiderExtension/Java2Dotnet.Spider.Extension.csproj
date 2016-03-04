@@ -181,12 +181,16 @@
     </Compile>
     <Compile Include="Monitor\ISpiderStatus.cs" />
     <Compile Include="MultiPageModel.cs" />
+    <Compile Include="Pipeline\Column.cs" />
     <Compile Include="Pipeline\CollectorModelPipeline.cs" />
+    <Compile Include="Pipeline\EntityJsonFilePipeline.cs" />
+    <Compile Include="Pipeline\EntityMySqlPipeline.cs" />
     <Compile Include="Pipeline\EntityMongoDbPipeline.cs" />
     <Compile Include="Pipeline\EntityGeneralPipeline.cs" />
     <Compile Include="Pipeline\EntityPipeline.cs" />
     <Compile Include="Pipeline\IEntityPipeline.cs" />
     <Compile Include="Pipeline\MongoDBPipeline.cs" />
+    <Compile Include="Pipeline\EntityMySqlFilePipeline.cs" />
     <Compile Include="Pipeline\MySqlFilePipeline.cs" />
     <Compile Include="Pipeline\ImagePipeline.cs" />
     <Compile Include="Pipeline\PipelineModel.cs" />

@@ -117,10 +117,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="mysqlsample.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="sample.json">
+    <Content Include="mongodbsample.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="test.html">

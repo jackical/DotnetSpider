@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Pipeline;
+using Newtonsoft.Json.Linq;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
 {
@@ -27,7 +24,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 				return;
 			}
 
-			List<dynamic> list = new List<dynamic>();
+			List<JObject> list = new List<JObject>();
 			foreach (var resultItems in resultItemsList)
 			{
 				dynamic data = resultItems.GetResultItem(_entityName);

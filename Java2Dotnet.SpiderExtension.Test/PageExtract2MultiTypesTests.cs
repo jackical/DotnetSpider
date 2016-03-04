@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.DbSupport;
-using Java2Dotnet.Spider.Extension.DbSupport.Dapper;
 using Java2Dotnet.Spider.Extension.DbSupport.Dapper.Attributes;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;

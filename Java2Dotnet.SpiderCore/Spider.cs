@@ -416,8 +416,6 @@ namespace Java2Dotnet.Spider.Core
 								Thread.Sleep(Site.SleepTime);
 
 								OnSuccess(request1);
-
-								Console.WriteLine($"Request: {request.Url} Sucess.");
 							}
 							catch (Exception e)
 							{
@@ -639,15 +637,14 @@ namespace Java2Dotnet.Spider.Core
 				{
 					pipeline.Process(page.ResultItems, this);
 				}
-				//cts?.Cancel();
+				Console.WriteLine($"Request: {request.Url} Sucess.");
 			}
 			else
 			{
-				Logger.Warn($"Request {request.Url} 's result count is zero.");
+				var message = $"Request {request.Url} 's result count is zero.";
+				Console.WriteLine(message);
+				Logger.Warn(message);
 			}
-
-			//watch.Stop();
-			//Logger.Info("pipeline cost time:" + watch.ElapsedMilliseconds);
 		}
 
 		protected void ExtractAndAddRequests(Page page, bool spawnUrl)

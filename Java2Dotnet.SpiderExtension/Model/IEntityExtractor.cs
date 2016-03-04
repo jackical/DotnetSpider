@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Java2Dotnet.Spider.Core;
 
 namespace Java2Dotnet.Spider.Extension.Model

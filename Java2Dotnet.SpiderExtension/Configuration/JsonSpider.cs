@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using System.Text.RegularExpressions;
-using Java2Dotnet.Spider.Core;
-using Java2Dotnet.Spider.Extension.Model;
 using Newtonsoft.Json.Linq;
 
 namespace Java2Dotnet.Spider.Extension.Configuration
@@ -14,6 +11,7 @@ namespace Java2Dotnet.Spider.Extension.Configuration
 		public int Deep { get; set; } = int.MaxValue;
 		public int EmptySleepTime { get; set; } = 15000;
 		public int CachedSize { get; set; }
+		public Scheduler Scheduler { get; set; }
 		public Downloader Downloader { get; set; }
 		public Site Site { get; set; }
 		public bool NeedRedial { get; set; }
@@ -36,12 +34,19 @@ namespace Java2Dotnet.Spider.Extension.Configuration
 		public string ValidationReportTo { get; set; }
 	}
 
+	public enum Scheduler
+	{
+		Queue,
+		Redis
+	}
 
 	public enum PipelineType
 	{
 		MongoDb,
 		MySql,
-		MsSql
+		MsSql,
+		JsonFile,
+		MySqlFile
 	}
 
 	public class Site

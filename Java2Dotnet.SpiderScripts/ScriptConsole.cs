@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CommandLine;
-using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.Configuration;
-using Java2Dotnet.Spider.Lib;
 using Newtonsoft.Json;
 
 namespace Java2Dotnet.Spider.Scripts
@@ -21,7 +19,7 @@ namespace Java2Dotnet.Spider.Scripts
 			//{
 			//	StartSpider(param);
 			//}
-			string json = File.ReadAllText("sample.json");
+			string json = File.ReadAllText("mysqlsample.json");
 			json = Macros.Replace(json);
 			JsonSpider jsonSpider = JsonConvert.DeserializeObject<JsonSpider>(json);
 			List<string> errorMessages;
@@ -37,6 +35,7 @@ namespace Java2Dotnet.Spider.Scripts
 					Console.WriteLine(errorMessage);
 				}
 			}
+			Console.Read();
 		}
 
 		private static void StartSpider(Options param)

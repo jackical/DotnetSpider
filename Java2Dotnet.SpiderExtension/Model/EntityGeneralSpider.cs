@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using Java2Dotnet.Spider.Core.Pipeline;
-using Java2Dotnet.Spider.Core.Processor;
+﻿using Java2Dotnet.Spider.Core.Processor;
 using Java2Dotnet.Spider.Core.Scheduler;
-using Java2Dotnet.Spider.Extension.Pipeline;
 
 namespace Java2Dotnet.Spider.Extension.Model
 {

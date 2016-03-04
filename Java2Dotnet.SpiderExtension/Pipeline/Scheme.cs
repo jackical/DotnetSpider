@@ -1,6 +1,6 @@
 ﻿namespace Java2Dotnet.Spider.Extension.Pipeline
 {
-	public class DbScheme
+	public class DbSchema
 	{
 		public string DatabaseName { get; set; }
 		public string TableName { get; set; }

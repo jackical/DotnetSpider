@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Processor;
-using Java2Dotnet.Spider.Core.Selector;
-using Java2Dotnet.Spider.Extension.Configuration;
 using Java2Dotnet.Spider.Extension.Model;
 using Newtonsoft.Json.Linq;
 using Site = Java2Dotnet.Spider.Core.Site;
