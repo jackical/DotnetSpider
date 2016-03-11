@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Java2Dotnet.Spider.Core;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline

@@ -8,7 +8,6 @@ using Java2Dotnet.Spider.Extension.Configuration;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
 using Java2Dotnet.Spider.Extension.Model.Formatter;
 using Java2Dotnet.Spider.Lib;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Java2Dotnet.Spider.Extension.Model
@@ -148,7 +147,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 				if (!isEntity)
 				{
-					string tmpValue = null;
+					string tmpValue;
 					if (selector is EnviromentSelector)
 					{
 						var enviromentSelector = selector as EnviromentSelector;
@@ -185,10 +184,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 						else
 						{
 							tmpValue = item.Select(selector)?.Value;
-							foreach (var formatter in formatters)
-							{
-								tmpValue = formatter.Formate(tmpValue);
-							}
+							tmpValue = formatters.Aggregate(tmpValue, (current, formatter) => formatter.Formate(current));
 							dataItem.Add(propertyName, tmpValue);
 						}
 					}
@@ -244,7 +240,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 				stopping.DataType = datatype.ToString().ToLower();
 				if (stopping.NeedStop(dataItem.SelectToken($"$.{stopping.PropertyName}")?.ToString()))
 				{
-					Console.WriteLine("STOPPING: " + stoppingJobject.ToString() + " Worked.");
+					Console.WriteLine("STOPPING: " + stopping + " Worked.");
 					page.IsSkip = true;
 				}
 			}

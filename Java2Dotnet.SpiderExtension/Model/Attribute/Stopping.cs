@@ -156,6 +156,11 @@ namespace Java2Dotnet.Spider.Extension.Model.Attribute
 
 			throw new SpiderExceptoin("Unsport DataType: " + DataType);
 		}
+
+		public override string ToString()
+		{
+			return $"{PropertyName} {Operate} {CompareValue}";
+		}
 	}
 
 	public enum Operate
