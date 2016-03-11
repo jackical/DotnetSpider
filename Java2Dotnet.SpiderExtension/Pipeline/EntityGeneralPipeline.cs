@@ -4,63 +4,88 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text.RegularExpressions;
 using Java2Dotnet.Spider.Core;
 using Newtonsoft.Json.Linq;
 using Dapper;
+using Java2Dotnet.Spider.Extension.DbSupport;
+using Java2Dotnet.Spider.Extension.Utils;
+using Java2Dotnet.Spider.Lib;
 using PropertyAttributes = System.Reflection.PropertyAttributes;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
 {
 	public abstract class EntityGeneralPipeline : IEntityPipeline
 	{
-		public class GeneralPipelineArgument
+		public class Column
 		{
-			public string ConnectString { get; set; }
+			public string Name { get; set; }
+			public string DataType { get; set; }
+
+			public override string ToString()
+			{
+				return $"{Name},{DataType}";
+			}
 		}
-		protected readonly GeneralPipelineArgument Argument;
+
+		protected string ConnectString { get; set; }
 		protected readonly List<Column> Columns;
 
 		protected abstract IDbConnection CreateConnection();
 		protected abstract string GetInsertSql();
 		protected abstract string GetCreateTableSql();
 		protected abstract string GetCreateSchemaSql();
-		protected readonly DbSchema Schema;
+		protected readonly Schema Schema;
 
 		protected readonly Type Type;
 
-		protected static Regex StringTypeRegex = new Regex(@"string\(\d+\)");
-		protected static Regex IntTypeRegex = new Regex(@"[int\(\d+\)|int]");
-		protected static Regex BigIntTypeRegex = new Regex(@"[bigint\(\d+\)|bigint]");
-		protected static Regex FloatTypeRegex = new Regex(@"[float\(\d+\)|float]");
-		protected static Regex DoubleTypeRegex = new Regex(@"[double\(\d+\)|double]");
-		protected static Regex NumRegex = new Regex(@"\d+");
-
 		protected List<List<string>> Indexs { get; set; } = new List<List<string>>();
 		protected List<List<string>> Uniques { get; set; } = new List<List<string>>();
+		protected List<string> Primary { get; set; }
+		protected string AutoIncrement { get; set; }
 
 		protected abstract string ConvertToDbType(string datatype);
 
-		protected EntityGeneralPipeline(DbSchema schema, JObject entityDefine, JObject argument)
+		protected EntityGeneralPipeline(Schema schema, JObject entityDefine, string connectString)
 		{
-			Schema = schema;
-			Columns = entityDefine.SelectTokens("$.fields[*]").Select(j => j.ToObject<Column>()).ToList();
+			ConnectString = connectString;
 
-			foreach (var index in entityDefine.SelectTokens("$.indexs[*]"))
+			Schema = GenerateSchema(schema);
+			Columns = entityDefine.SelectTokens("$.Fields[*]").Select(j => j.ToObject<Column>()).ToList();
+
+			Primary = entityDefine.SelectToken("$.Primary").ToObject<List<string>>();
+			AutoIncrement = entityDefine.SelectToken("$.AutoIncrement")?.ToString();
+			foreach (var index in entityDefine.SelectTokens("$.Indexs[*]"))
 			{
 				Indexs.Add(index.ToObject<List<string>>());
 			}
 
-			foreach (var index in entityDefine.SelectTokens("$.uniques[*]"))
+			foreach (var index in entityDefine.SelectTokens("$.Uniques[*]"))
 			{
 				Uniques.Add(index.ToObject<List<string>>());
 			}
 
-			Argument = argument.ToObject<GeneralPipelineArgument>();
 			Type = GenerateType(schema, Columns);
 		}
 
-		public void Initialize()
+		private Schema GenerateSchema(Schema schema)
+		{
+			switch (schema.Suffix)
+			{
+				case TableSuffix.FirstDayOfThisMonth:
+					{
+						schema.TableName += "_" + DateTimeUtil.FirstDayofThisMonth.ToString("yyyy_MM_dd");
+						break;
+					}
+				case TableSuffix.Monday:
+					{
+						schema.TableName += "_" + DateTimeUtil.FirstDayofThisWeek.ToString("yyyy_MM_dd");
+						break;
+					}
+			}
+			return schema;
+		}
+
+		public virtual void Initialize()
 		{
 			using (IDbConnection conn = CreateConnection())
 			{
@@ -81,7 +106,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		{
 		}
 
-		private Type GenerateType(DbSchema schema, List<Column> columns)
+		private Type GenerateType(Schema schema, List<Column> columns)
 		{
 			AppDomain currentAppDomain = AppDomain.CurrentDomain;
 			AssemblyName assyName = new AssemblyName("DotnetSpiderAss_" + schema.TableName);
@@ -94,10 +119,8 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 
 			foreach (var column in columns)
 			{
-				AddProperty(typeBuilder, column.Name, Convert(column.DataType));
+				AddProperty(typeBuilder, column.Name, Convert(column.DataType.ToLower()));
 			}
-
-			AddProperty(typeBuilder, "id", typeof(long));
 
 			return (typeBuilder.CreateType());
 		}
@@ -131,29 +154,38 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 
 		private Type Convert(string datatype)
 		{
-			if (StringTypeRegex.IsMatch(datatype))
+			if (RegexUtil.StringTypeRegex.IsMatch(datatype))
 			{
 				return typeof(string);
 			}
 
-			if (IntTypeRegex.IsMatch(datatype))
+			if (RegexUtil.IntTypeRegex.IsMatch(datatype))
 			{
 				return typeof(int);
 			}
 
-			if (BigIntTypeRegex.IsMatch(datatype))
+			if (RegexUtil.BigIntTypeRegex.IsMatch(datatype))
 			{
 				return typeof(long);
 			}
 
-			if (FloatTypeRegex.IsMatch(datatype))
+			if (RegexUtil.FloatTypeRegex.IsMatch(datatype))
 			{
 				return typeof(float);
 			}
 
-			if (DoubleTypeRegex.IsMatch(datatype))
+			if (RegexUtil.DoubleTypeRegex.IsMatch(datatype))
 			{
 				return typeof(double);
+			}
+			if (RegexUtil.DateTypeRegex.IsMatch(datatype) || RegexUtil.TimeStampTypeRegex.IsMatch(datatype))
+			{
+				return typeof(DateTime);
+			}
+
+			if (RegexUtil.TimeStampTypeRegex.IsMatch(datatype) || RegexUtil.DateTypeRegex.IsMatch(datatype))
+			{
+				return typeof(DateTime);
 			}
 
 			if ("text" == datatype)

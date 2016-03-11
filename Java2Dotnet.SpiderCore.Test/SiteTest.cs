@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Text;
 
 namespace Java2Dotnet.Spider.Core.Test
 {
@@ -11,7 +10,7 @@ namespace Java2Dotnet.Spider.Core.Test
 		private const string wValue = "12580emall";
 		private const string wDomain = "www.12580emall.com"; // 沪动商城
 		private const string URL = @"http://www.12580emall.com/emall/mall/index.html";
-		private Site Site = new Site() { Domain = wDomain, Encoding = Encoding.UTF8, Timeout = 3000, };
+		private Site Site = new Site() { Domain = wDomain, EncodingName = "UTF-8", Timeout = 3000, };
 
 		[TestMethod]
 		public void TestAddCookies()

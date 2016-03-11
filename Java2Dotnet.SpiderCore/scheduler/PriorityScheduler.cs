@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Contexts;
 using Java2Dotnet.Spider.Core.Utils;
 
-namespace Java2Dotnet.Spider.Core.Scheduler 
+namespace Java2Dotnet.Spider.Core.Scheduler
 {
 	/// <summary>
 	/// Priority scheduler. Request with higher priority will poll earlier.
@@ -31,6 +31,13 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 			{
 				_priorityQueueMinus.Pop();
 			}
+		}
+
+		public override void ResetDuplicateCheck(ISpider spider)
+		{
+			_noPriorityQueue.Clear();
+			_priorityQueuePlus.Clear();
+			_priorityQueueMinus.Clear();
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]

@@ -6,8 +6,8 @@ namespace Java2Dotnet.Spider.Samples
 	{
 		static void Main(string[] args)
 		{
-			TmallGmvSpider spider = new TmallGmvSpider();
-			spider.Run();
+			GanjiPostSpider spider = new GanjiPostSpider();
+			spider.Run(args);
 
 			Console.Read();
 		}

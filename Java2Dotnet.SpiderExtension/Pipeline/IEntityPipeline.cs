@@ -7,6 +7,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 {
 	public interface IEntityPipeline : IDisposable
 	{
-		void Process(List<JObject> data, ISpider spider);
+		void Initialize();
+		void Process(List<JObject> datas, ISpider spider);
 	}
 }

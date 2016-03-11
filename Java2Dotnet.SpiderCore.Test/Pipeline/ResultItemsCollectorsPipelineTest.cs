@@ -1,24 +1,30 @@
-﻿using System;
+﻿using Java2Dotnet.Spider.Core.Pipeline;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Java2Dotnet.Spider.Core.Pipeline;
 
-namespace Java2Dotnet.Spider.Core.Test
+namespace Java2Dotnet.Spider.Core.Test.Pipeline
 {
-    [TestClass]
-    public class ResultItemsCollectorsPipelineTest
-    {
-        ResultItemsCollectorPipeline ResultItemsCollectorPipeline = new ResultItemsCollectorPipeline();
+	[TestClass]
+	public class ResultItemsCollectorsPipelineTest
+	{
+		readonly ResultItemsCollectorPipeline _resultItemsCollectorPipeline = new ResultItemsCollectorPipeline();
 
-        [TestMethod]
-        public void TestCollectorPipeline()
-        {
-            ResultItems item = new ResultItems();
-            ResultItems resultItems = new ResultItems();
-            resultItems.Put("a", "a");
-            resultItems.Put("b", "b");
-            resultItems.Put("c", "c");
-            ResultItemsCollectorPipeline.Process(resultItems, null);
-            Assert.IsTrue(ResultItemsCollectorPipeline.GetCollected().Count == 3);
-        }
-    }
+		[TestMethod]
+		public void TestCollectorPipeline()
+		{
+			ResultItems resultItems = new ResultItems();
+			resultItems.AddOrUpdateResultItem("a", "a");
+			resultItems.AddOrUpdateResultItem("b", "b");
+			resultItems.AddOrUpdateResultItem("c", "c");
+			_resultItemsCollectorPipeline.Process(resultItems, null);
+			foreach (var result in _resultItemsCollectorPipeline.GetCollected())
+			{
+				ResultItems items = result as ResultItems;
+				 
+				Assert.AreEqual(items.Results.Count, 3);
+				Assert.AreEqual(items.Results["a"], "a");
+				Assert.AreEqual(items.Results["b"], "b");
+				Assert.AreEqual(items.Results["c"], "c");
+			}
+		}
+	}
 }

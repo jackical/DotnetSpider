@@ -7,7 +7,6 @@ using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Scheduler;
 using Java2Dotnet.Spider.Core.Utils;
 using Java2Dotnet.Spider.Extension.Scheduler;
-using Java2Dotnet.Spider.Extension.Utils;
 using log4net;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -74,29 +73,33 @@ namespace Java2Dotnet.Spider.Extension.Monitor
 				{
 					Task.Factory.StartNew(() =>
 					{
-						ConnectionMultiplexer redis = RedisProvider.GetProvider();
-						IDatabase db = redis.GetDatabase(0);
-
-						while (true)
+						RedisScheduler scheduler = spider.Scheduler as RedisScheduler;
+						if (scheduler != null)
 						{
-							try
+							ConnectionMultiplexer redis = scheduler.Redis;
+
+							IDatabase db = redis.GetDatabase(0);
+
+							while (true)
 							{
-								if (Closed)
+								try
 								{
+									if (Closed)
+									{
+										UpdateStatus(db);
+										break;
+									}
+
 									UpdateStatus(db);
-									break;
+								}
+								catch (Exception)
+								{
+									// ignored
 								}
 
-								UpdateStatus(db);
+								Thread.Sleep(3000);
 							}
-							catch (Exception)
-							{
-								// ignored
-							}
-
-							Thread.Sleep(3000);
 						}
-						redis.Close();
 					});
 				}
 			}

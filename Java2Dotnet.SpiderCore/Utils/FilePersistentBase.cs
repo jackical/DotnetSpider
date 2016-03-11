@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Java2Dotnet.Spider.Core.Downloader;
 using log4net;
 
 namespace Java2Dotnet.Spider.Core.Utils
@@ -9,10 +10,12 @@ namespace Java2Dotnet.Spider.Core.Utils
 	/// </summary>
 	public class FilePersistentBase : ContextBoundObject
 	{
+		public DownloadValidation DownloadValidation { get; set; }
+
 		protected readonly ILog Logger = LogManager.GetLogger(typeof(FilePersistentBase));
 		protected string BasePath;
 
-		protected static string PathSeperator = "/";
+		protected static string PathSeperator = "\\";
 
 		protected void SetPath(string path)
 		{

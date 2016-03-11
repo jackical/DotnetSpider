@@ -19,7 +19,11 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 		public void SetCustomizeTargetUrls(Func<Page, IList<string>> getCustomizeTargetUrls)
 		{
-			((ModelPageProcessor)PageProcessor).GetCustomizeTargetUrls = getCustomizeTargetUrls;
+			var processor = PageProcessor as EntityProcessor;
+			if (processor != null)
+			{
+				processor.GetCustomizeTargetUrls = getCustomizeTargetUrls;
+			}
 		}
 
 		public void SetCachedSize(int count)

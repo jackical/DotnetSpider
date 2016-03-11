@@ -21,7 +21,7 @@ namespace Java2Dotnet.Spider.Lib
 
 		public static string RunIdStr = DateTime.Now.ToString("yyyy_MM");
 		public static string LastRunIdStr = DateTime.Now.AddMonths(-1).ToString("yyyy_MM");
-		public static DateTime RunId = DateTime.Now.Date;
+		public static string TodayRunId = DateTime.Now.Date.ToString("yyyy_MM_dd");
 		public static DateTime RunIdtoMinute = DateTime.Now.ToLocalTime();
 		//public static DateTime MONTHLY_RUN_ID = DateTime.Now.Date.Month;
 

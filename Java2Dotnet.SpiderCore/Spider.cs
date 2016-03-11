@@ -61,7 +61,7 @@ namespace Java2Dotnet.Spider.Core
 		private int _waitCount;
 		private bool _init;
 		private bool _runningExit;
-		private static readonly Regex IdentifyRegex = new Regex(@"^[\d\w\s-/]+$");
+		private static readonly Regex IdentifyRegex = new Regex(@"^[\{\}\d\w\s-/]+$");
 		private static bool _printedInfo;
 		private bool _waitingToExit;
 
@@ -157,7 +157,7 @@ namespace Java2Dotnet.Spider.Core
 		/// <param name="emptySleepTime"></param>
 		public void SetEmptySleepTime(int emptySleepTime)
 		{
-			if (emptySleepTime > 10000)
+			if (emptySleepTime >= 10000)
 			{
 				_waitCountLimit = emptySleepTime / WaitInterval;
 			}
@@ -514,6 +514,8 @@ namespace Java2Dotnet.Spider.Core
 			{
 				SafeDestroy(pipeline);
 			}
+
+			(Scheduler as DuplicateRemovedScheduler)?.ResetDuplicateCheck(this);
 
 			SafeDestroy(Scheduler);
 			SafeDestroy(PageProcessor);

@@ -16,10 +16,19 @@ namespace Java2Dotnet.Spider.Core.Utils
 		public PriorityBlockingQueue(int capacity) : this(capacity, null) { }
 		public PriorityBlockingQueue(IComparer<T> comparer) : this(16, comparer) { }
 
+		private int _capacity;
+
 		public PriorityBlockingQueue(int capacity, IComparer<T> comparer)
 		{
 			_comparer = comparer ?? Comparer<T>.Default;
-			_heap = new T[capacity];
+			_capacity = capacity;
+			_heap = new T[_capacity];
+		}
+
+		public void Clear()
+		{
+			_heap = new T[_capacity];
+			Count = 0;
 		}
 
 		public void Push(T v)

@@ -32,6 +32,8 @@ namespace Java2Dotnet.Spider.Extension.Downloader
 			return this;
 		}
 
+
+
 		public Page Download(Request request, ISpider spider)
 		{
 			// ReSharper disable once UnusedVariable

@@ -115,6 +115,8 @@ namespace Java2Dotnet.Spider.Core.Test
 
 		public class TestDownloader : IDownloader
 		{
+			public DownloadValidation DownloadValidation { get; set; }
+
 			public Page Download(Request request, ISpider spider)
 			{
 				var page = new Page(request, ContentType.Html);

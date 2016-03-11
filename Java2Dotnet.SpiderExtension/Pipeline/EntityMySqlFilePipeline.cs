@@ -1,60 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Utils;
+using Java2Dotnet.Spider.Extension.DbSupport;
 using Newtonsoft.Json.Linq;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
 {
+	/// <summary>
+	/// LOAD DATA LOCAL INFILE '{filePath}' INTO TABLE `{schema}`.`{dababase}` FIELDS TERMINATED BY '$'  ENCLOSED BY '#' LINES TERMINATED BY '@END@' IGNORE 1 LINES;
+	/// </summary>
 	public class EntityMySqlFilePipeline : FilePersistentBase, IEntityPipeline
 	{
-		public class MySqlFilePipelineArgument
-		{
-			public string Directory { get; set; }
-		}
+		protected readonly Schema Schema;
+		protected readonly List<EntityGeneralPipeline.Column> Columns;
 
-		protected readonly DbSchema Schema;
-		protected readonly List<Column> Columns;
-
-		public EntityMySqlFilePipeline(DbSchema schema, JObject entityDefine, JObject argument)
+		public EntityMySqlFilePipeline(Schema schema, JObject entityDefine)
 		{
 			Schema = schema;
 
-			Columns = entityDefine.SelectTokens("$.fields[*]").Select(j => j.ToObject<Column>()).ToList();
-			SetPath(argument.ToObject<MySqlFilePipelineArgument>()?.Directory);
+			Columns = entityDefine.SelectTokens("$.Fields[*]").Select(j => j.ToObject<EntityGeneralPipeline.Column>()).ToList();
+			SetPath("DataFiles");
+		}
+
+		public void Initialize()
+		{
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void Process(List<JObject> datas, ISpider spider)
 		{
-			FileInfo file = PrepareFile(Schema.TableName);
+			FileInfo file = PrepareFile(BasePath + $"{Schema.Database}.{Schema.TableName}.df");
 
 			using (StreamWriter printWriter = new StreamWriter(file.OpenWrite(), Encoding.UTF8))
 			{
 				foreach (var entry in datas)
 				{
 					StringBuilder builder = new StringBuilder();
+					builder.Append("@END@");
 					foreach (var column in Columns)
 					{
-						var value = entry.SelectToken($"$.{column}")?.ToString();
+						var value = entry.SelectToken($"$.{column.Name}")?.ToString();
 						if (!string.IsNullOrEmpty(value))
 						{
-							string correntValue = value.Replace("'", " ").Replace(",", " ");
-							builder.Append("'").Append(correntValue).Append("'").Append(",");
+							builder.Append("#").Append(value).Append("#").Append("$");
 						}
 						else
 						{
-							builder.Append("'',");
+							builder.Append("##$");
 						}
 					}
 					builder.Remove(builder.Length - 1, 1);
-					builder.Append(Environment.NewLine);
-					printWriter.WriteLine(builder);
+					printWriter.Write(builder);
 				}
 			}
 		}

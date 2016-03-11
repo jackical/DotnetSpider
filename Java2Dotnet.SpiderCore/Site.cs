@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Java2Dotnet.Spider.Core.Proxy;
+using Newtonsoft.Json;
 
 namespace Java2Dotnet.Spider.Core
 {
@@ -14,8 +15,9 @@ namespace Java2Dotnet.Spider.Core
 		private readonly List<Request> _startRequests = new List<Request>();
 		private ProxyPool _httpProxyPool = new ProxyPool();
 		private string _domain;
+		private Encoding _encoding = System.Text.Encoding.ASCII;
 
-		public Dictionary<string, string> Headers { get; set; }
+		public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
 
 		public ContentType ContentType { get; set; } = ContentType.Html;
 
@@ -53,7 +55,20 @@ namespace Java2Dotnet.Spider.Core
 		/// Set charset of page manually. 
 		/// When charset is not set or set to null, it can be auto detected by Http header.
 		/// </summary>
-		public Encoding Encoding { get; set; } = Encoding.Default;
+		public string EncodingName { get; set; } = "UTF-8";
+
+		[JsonIgnore]
+		public Encoding Encoding
+		{
+			get
+			{
+				if (Equals(_encoding, Encoding.ASCII))
+				{
+					_encoding = Encoding.GetEncoding(EncodingName);
+				}
+				return _encoding;
+			}
+		}
 
 		/// <summary>
 		/// Set or Get timeout for downloader in ms

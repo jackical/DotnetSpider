@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Java2Dotnet.Spider.Extension;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
-using Java2Dotnet.Spider.Extension.Model.Formatter;
 
 namespace Java2Dotnet.Spider.Samples.Model
 {
@@ -16,7 +15,7 @@ namespace Java2Dotnet.Spider.Samples.Model
 
 		////div[@class=\"ep-pages\"]/a[substring(@href,string-length(@href)-5)='.html']
 
-		[Formatter(typeof(RegexFormater), new[] { "http://news\\.163\\.com/\\d+/\\d+/\\d+/\\w+_(\\d+)\\.html", "1" })]
+		//[Formatter(typeof(RegexFormater), new[] { "http://news\\.163\\.com/\\d+/\\d+/\\d+/\\w+_(\\d+)\\.html", "1" })]
 		[PropertyExtractBy(Expression = "//div[@class=\"ep-pages\"]/a/@href", NotNull = false)]
 		public HashSet<string> OtherPage { get; set; }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -15,7 +16,7 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 			_collector.Add(resultItems);
 		}
 
-		public ICollection GetCollected()
+		public IEnumerable GetCollected()
 		{
 			return _collector;
 		}

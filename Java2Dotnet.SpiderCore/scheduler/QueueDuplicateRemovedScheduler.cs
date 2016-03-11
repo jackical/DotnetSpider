@@ -16,6 +16,11 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 			_queue.Enqueue(request);
 		}
 
+		public override void ResetDuplicateCheck(ISpider spider)
+		{
+			_queue.Clear();
+		}
+
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override Request Poll(ISpider spider)
 		{

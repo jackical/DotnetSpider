@@ -7,6 +7,8 @@ namespace Java2Dotnet.Spider.Core.Downloader
 	/// </summary>
 	public interface IDownloader
 	{
+		DownloadValidation DownloadValidation { get; set; }
+
 		/// <summary>
 		/// Downloads web pages and store in Page object.
 		/// </summary>

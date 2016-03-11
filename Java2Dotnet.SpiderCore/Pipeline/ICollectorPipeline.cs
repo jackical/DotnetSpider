@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 
 namespace Java2Dotnet.Spider.Core.Pipeline
@@ -11,6 +12,6 @@ namespace Java2Dotnet.Spider.Core.Pipeline
 		/// Get all results collected.
 		/// </summary>
 		/// <returns></returns>
-		ICollection GetCollected();
+		IEnumerable GetCollected();
 	}
 }

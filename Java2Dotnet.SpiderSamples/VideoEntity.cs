@@ -1,22 +1,21 @@
-﻿using Java2Dotnet.Spider.Extension.DbSupport.Dapper.Attributes;
+﻿using Java2Dotnet.Spider.Extension.DbSupport;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
 
 namespace Java2Dotnet.Spider.Samples
 {
 	[TypeExtractBy(Expression = "//*[@id=\"listofficial\"]/div[1]/div")]
-	[Scheme("youku", "video3")]
+	[Schema("youku", "video3")]
 	public class VideoEntity
 	{
-		[KeyProperty]
-		[StoredAs("id", StoredAs.ValueType.Int, true)]
+		[StoredAs("id", StoredAs.ValueType.Int)]
 		public int Id { get; set; }
 		[StoredAs("Url", StoredAs.ValueType.Text)]
 		[PropertyExtractBy(Expression = "/div[1]/div[1]/div[2]/a/@href")]
 		public string Url { get; set; }
-		[StoredAs("Name", StoredAs.ValueType.Varchar)]
+		[StoredAs("Name", StoredAs.ValueType.String, 100)]
 		[PropertyExtractBy(Expression = "/div[1]/div[1]/div[4]/div[1]/a/@title")]
 		public string Name { get; set; }
-		[StoredAs("Count", StoredAs.ValueType.Varchar)]
+		[StoredAs("Count", StoredAs.ValueType.String, 12)]
 		[PropertyExtractBy(Expression = "/div[1]/div[1]/div[4]/div[3]/span")]
 		public string Count { get; set; }
 	}

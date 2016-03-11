@@ -10,6 +10,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 	public class RedisSchedulerManager : ISchedulerManager, IDisposable
 	{
 		private readonly ConnectionMultiplexer _redis;
+		private readonly IDatabase _db;
 
 		public RedisSchedulerManager(string host, string password = null, int port = 6379)
 		{
@@ -25,6 +26,8 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 					{ host, port }
 				}
 			});
+
+			_db = _redis.GetDatabase(0);
 		}
 
 		public RedisSchedulerManager()
@@ -34,9 +37,8 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public IDictionary<string, double> GetTaskList(int startIndex, int count)
 		{
-			IDatabase db = _redis.GetDatabase(0);
 			Dictionary<string, double> tmp = new Dictionary<string, double>();
-			foreach (var entry in db.SortedSetRangeByRank(RedisScheduler.TaskList, startIndex, startIndex + count))
+			foreach (var entry in _db.SortedSetRangeByRank(RedisScheduler.TaskList, startIndex, startIndex + count))
 			{
 				tmp.Add(entry.ToString(), 0d);
 			}
@@ -45,18 +47,16 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public void RemoveTask(string taskIdentify)
 		{
-			IDatabase db = _redis.GetDatabase(0);
-
-			db.KeyDelete(GetQueueKey(taskIdentify));
-			db.KeyDelete(GetSetKey(taskIdentify));
-			db.HashDelete(RedisScheduler.TaskStatus, taskIdentify);
-			db.KeyDelete(RedisScheduler.ItemPrefix + taskIdentify);
-			db.KeyDelete(taskIdentify);
-			db.KeyDelete("locker-" + taskIdentify);
-			db.SortedSetRemove(RedisScheduler.TaskList, taskIdentify);
-			db.HashDelete(AbstractSpiderTask.InitStatusSetName, taskIdentify);
-			db.HashDelete(AbstractSpiderTask.ValidateStatusName, taskIdentify);
-			db.KeyDelete("set-" + Encrypt.Md5Encrypt(taskIdentify));
+			_db.KeyDelete(GetQueueKey(taskIdentify));
+			_db.KeyDelete(GetSetKey(taskIdentify));
+			_db.HashDelete(RedisScheduler.TaskStatus, taskIdentify);
+			_db.KeyDelete(RedisScheduler.ItemPrefix + taskIdentify);
+			_db.KeyDelete(taskIdentify);
+			_db.KeyDelete("locker-" + taskIdentify);
+			_db.SortedSetRemove(RedisScheduler.TaskList, taskIdentify);
+			_db.HashDelete("init-status", taskIdentify);
+			_db.HashDelete("validate-status", taskIdentify);
+			_db.KeyDelete("set-" + Encrypt.Md5Encrypt(taskIdentify));
 		}
 
 		private string GetSetKey(string identify)
@@ -71,8 +71,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 
 		public SpiderStatus GetTaskStatus(string taskIdentify)
 		{
-			IDatabase db = _redis.GetDatabase(0);
-			string json = db.HashGet(RedisScheduler.TaskStatus, taskIdentify);
+			string json = _db.HashGet(RedisScheduler.TaskStatus, taskIdentify);
 			if (!string.IsNullOrEmpty(json))
 			{
 				return JsonConvert.DeserializeObject<SpiderStatus>(json);

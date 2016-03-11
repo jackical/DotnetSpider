@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Pipeline;
 using Newtonsoft.Json.Linq;
@@ -15,6 +14,7 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		{
 			_entityName = entityName;
 			_pipeline = pipeline;
+			pipeline.Initialize();
 		}
 
 		protected override void Process(List<ResultItems> resultItemsList, ISpider spider)
@@ -31,13 +31,13 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 
 				if (data != null)
 				{
-					if (data is IEnumerable)
+					if (data is JObject)
 					{
-						list.AddRange(data);
+						list.Add(data);
 					}
 					else
 					{
-						list.Add(data);
+						list.AddRange(data);
 					}
 				}
 			}

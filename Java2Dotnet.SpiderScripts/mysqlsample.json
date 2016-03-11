@@ -1,78 +1,107 @@
 ﻿{
-	"spidername": "Taobao Industry Rank {MACROS_TODAY}",
-	"threadnum": 1,
-	"cachedsize": 1,
-	"scheduler": "Queue",
+	"spiderName": "Taobao Industry Rank {MACROS_TODAY}",
+	"threadNum": 1,
+	"cachedSize": 1,
+	"scheduler": "Redis",
 	"downloader": {
-		"name": "WebDriverDownloader",
-		"brower": "Firefox",
-		"login": {
-			"name": "common",
-			"arguments": {
-				"url": "https://login.taobao.com/member/login.jhtml?sub=true&style=miniall&from=subway&full_redirect=false&tpl_redirect_url=http://subway.simba.taobao.com:80/entry/login.htm",
-				"user": {
-					"findby": "xpath",
-					"expression": "//*[@id='TPL_username_1']",
-					"value": "pe1788"
-				},
-				"pass": {
-					"findby": "xpath",
-					"expression": "//*[@id='TPL_password_1']",
-					"value": "66666666R"
-				},
-				"submit": {
-					"findby": "xpath",
-					"expression": "//*[@id='J_SubmitStatic']"
+		"type": "WebDriverDownloader",
+		"arguments": {
+			"brower": "Firefox",
+			"login": {
+				"name": "common",
+				"arguments": {
+					"url": "https://login.taobao.com/member/login.jhtml?sub=true&style=miniall&from=subway&full_redirect=false&tpl_redirect_url=http://subway.simba.taobao.com:80/entry/login.htm",
+					"user": {
+						"selector": {
+							"type": "xpath",
+							"expression": "//*[@id='TPL_username_1']"
+						},
+						"value": "pe1788"
+					},
+					"pass": {
+						"selector": {
+							"type": "xpath",
+							"expression": "//*[@id='TPL_password_1']"
+						},
+						"value": "66666666R"
+					},
+					"submit": {
+						"selector": {
+							"type": "xpath",
+							"expression": "//*[@id='J_SubmitStatic']"
+						}
+					}
 				}
 			}
 		}
 	},
 	"pipeline": {
-		"pipelinetype": "mysql",
+		"pipelineType": "mysql",
 		"arguments": {
-			"connectstring": "Database='mysql';Data Source= ooodata.com;User ID=root;Password=qwIi1DBlTjm1jYBo;Port=3306"
+			"connectString": "Database='mysql';Data Source= ooodata.com;User ID=root;Password=qwIi1DBlTjm1jYBo;Port=3306"
 		}
 	},
+	"startUrls": [ "http://shu.taobao.com/top/16/search?spm=0.0.0.0.zOzmQz" ],
 	"site": {
-		"starturls": [ "http://shu.taobao.com/top/16/search?spm=0.0.0.0.zOzmQz" ],
-		"contenttype": "html"
+		"contentType": "html"
 	},
-	"needredial": false,
-	"validationreportto": "136831898@qq.com",
+	"isNeedRedial": false,
+	"validationReportTo": "136831898@qq.com",
 	"corporation": "86Research ",
 	"entities": [
 		{
-			"targeturls": [
+			"targetUrls": [
 				{
-					"sourceregion": "",
+					"sourceRegion": "",
 					"values": [
 						"http://shu.taobao.com/top/[\\d]+/search"
 					]
 				}
 			],
-			"expression": "//div[contains(@class,'mod')]",
 			"multi": true,
-			"selector": "xpath",
+			"selector": {
+				"type": "xpath",
+				"expression": "//div[contains(@class,'mod')]"
+			},
 			"schema": {
-				"databasename": "test",
-				"tablename": "industry_rank"
+				"databaseName": "test",
+				"tableName": "industry_rank",
+				"suffix": "THIS_MONDAY"
 			},
 			"identity": "industry_rank",
 			"uniques": [ [ "category", "supercategory" ] ],
-			"indexs": [ [ "category" ] ],
+			"indexes": [ [ "category" ] ],
+			"primary": [ [ "id" ] ],
+			"autoIncrement": "id",
+			"stopping": {
+				"field": "category",
+				"selector": {
+					"type": "json",
+					"expression": "$.xxxx"
+				}
+			},
 			"fields": [
 				{
-					"datatype": "string(100)",
-					"expression": "//li[@class='click']/a",
-					"name": "supercategory",
-					"selector": "xpath",
-					"multi": false
+					"dataType": "long",
+					"name": "id",
+					"selector": null
 				},
 				{
-					"datatype": "string(100)",
-					"expression": "./h3[1]",
+					"dataType": "string(100)",
+					"multi": false,
+					"name": "supercategory",
+					"selector": {
+						"type": "xpath",
+						"expression": "//li[@class='click']/a"
+					}
+				},
+				{
+					"dataType": "string(100)",
 					"name": "category",
-					"selector": "xpath",
+					"selector": {
+						"type": "xpath",
+						"expression": "./h3[1]"
+					},
 					"multi": false
 				}
 			]

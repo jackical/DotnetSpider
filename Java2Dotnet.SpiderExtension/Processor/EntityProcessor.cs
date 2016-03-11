@@ -27,7 +27,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 
 		private IEntityExtractor GenerateExtractor(JObject entityDefine)
 		{
-			return new EntityExtractor(entityDefine.SelectToken("$.identity").ToString(), entityDefine);
+			return new EntityExtractor(entityDefine.SelectToken("$.Identity").ToString(), entityDefine);
 		}
 
 		public void Process(Page page)
@@ -83,7 +83,7 @@ namespace Java2Dotnet.Spider.Extension.Processor
 					List<string> tmp = new List<string>();
 					foreach (var link in links)
 					{
-						tmp.Add(formatter.Format(link));
+						tmp.Add(formatter.Formate(link));
 					}
 					links = tmp;
 				}

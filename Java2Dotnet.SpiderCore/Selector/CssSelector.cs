@@ -40,7 +40,14 @@ namespace Java2Dotnet.Spider.Core.Selector
 			IList<HtmlNode> elements = element.QuerySelectorAll(_selectorText);
 			if (elements != null && elements.Count > 0)
 			{
-				return elements[0];
+				if (string.IsNullOrEmpty(_attrName))
+				{
+					return elements[0];
+				}
+				else
+				{
+					return elements[0].Attributes[_attrName]?.Value;
+				}
 			}
 			return null;
 		}
@@ -53,30 +60,6 @@ namespace Java2Dotnet.Spider.Core.Selector
 		public override bool HasAttribute()
 		{
 			return _attrName != null;
-		}
-
-		private string GetValue(HtmlNode element)
-		{
-			if (_attrName == null)
-			{
-				return element.OuterHtml;
-			}
-			else if ("innerhtml".Equals(_attrName.ToLower()))
-			{
-				return element.InnerHtml;
-			}
-			else if ("text".Equals(_attrName.ToLower()))
-			{
-				return GetText(element);
-			}
-			//check
-			//else if ("allText".equalsIgnoreCase(attrName)) {
-			//	return element.text();
-			//} 
-			else
-			{
-				return element.Attributes[_attrName].Value;
-			}
 		}
 	}
 }

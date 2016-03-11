@@ -20,7 +20,9 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		public static readonly string SetPrefix = "set-";
 		public static readonly string TaskList = "task";
 		public static readonly string ItemPrefix = "item-";
-		private ConnectionMultiplexer Redis { get; }
+
+		public ConnectionMultiplexer Redis { get; }
+
 		private readonly IDatabase _db;
 
 		public RedisScheduler(string host, string password = null, int port = 6379) : this(ConnectionMultiplexer.Connect(new ConfigurationOptions()
@@ -52,37 +54,37 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			RedialManagerUtils.Execute("rds-init", () =>
 			{
-				// redis.AddItemToSortedSet(TaskList, spider.Identify, DateTimeUtil.GetCurrentTimeStamp());
 				_db.SortedSetAdd(TaskList, spider.Identity, DateTimeUtil.GetCurrentTimeStamp());
 			});
 		}
 
-		public void ResetDuplicateCheck(ISpider spider)
+		public override void ResetDuplicateCheck(ISpider spider)
 		{
 			RedialManagerUtils.Execute("rds-reset", () =>
 			{
-				_db.KeyDelete(GetSetKey(spider));
+				_db.KeyDelete(GetSetKey(spider.Identity));
 			});
 		}
 
-		private string GetSetKey(ISpider spider)
+		public static string GetSetKey(string identity)
 		{
-			return SetPrefix + Encrypt.Md5Encrypt(spider.Identity);
+			return SetPrefix + Encrypt.Md5Encrypt(identity);
 		}
 
-		private string GetQueueKey(ISpider spider)
+		public static string GetQueueKey(string identity)
 		{
-			return QueuePrefix + Encrypt.Md5Encrypt(spider.Identity);
+			return QueuePrefix + Encrypt.Md5Encrypt(identity);
 		}
 
 		public bool IsDuplicate(Request request, ISpider spider)
 		{
 			return SafeExecutor.Execute(30, () =>
 			{
-				bool isDuplicate = _db.SetContains(GetSetKey(spider), request.Identity);
+				string key = GetSetKey(spider.Identity);
+				bool isDuplicate = _db.SetContains(key, request.Identity);
 				if (!isDuplicate)
 				{
-					_db.SetAdd(GetSetKey(spider), request.Identity);
+					_db.SetAdd(key, request.Identity);
 				}
 				return isDuplicate;
 			});
@@ -93,11 +95,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			SafeExecutor.Execute(30, () =>
 			{
-				_db.SetAdd(GetQueueKey(spider), request.Identity);
-
-				// 没有必要判断浪费性能了, 这里不可能为空。最少会有一个层级数据 Grade
-				//if (request.Extras != null && request.Extras.Count > 0)
-				//{
+				_db.ListRightPush(GetQueueKey(spider.Identity), request.Identity);
 				string field = request.Identity;
 				string value = JsonConvert.SerializeObject(request);
 
@@ -108,17 +106,14 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public override Request Poll(ISpider spider)
 		{
-			return RedialManagerUtils.Execute("rds-poll", () =>
-			{
-				return DoPoll(spider);
-			});
+			return RedialManagerUtils.Execute("rds-poll", () => DoPoll(spider));
 		}
 
 		public int GetLeftRequestsCount(ISpider spider)
 		{
 			return RedialManagerUtils.Execute("rds-getleftcount", () =>
 			{
-				long size = _db.SetLength(GetQueueKey(spider));
+				long size = _db.ListLength(GetQueueKey(spider.Identity));
 				return (int)size;
 			});
 		}
@@ -127,7 +122,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			return RedialManagerUtils.Execute("rds-gettotalcount", () =>
 			{
-				long size = _db.SetLength(GetSetKey(spider));
+				long size = _db.SetLength(GetSetKey(spider.Identity));
 
 				return (int)size;
 			});
@@ -142,9 +137,7 @@ namespace Java2Dotnet.Spider.Extension.Scheduler
 		{
 			return SafeExecutor.Execute(30, () =>
 			{
-				//string url = redis.PopItemWithLowestScoreFromSortedSet(GetQueueKey(spider));
-
-				var value = _db.SetPop(GetQueueKey(spider));
+				var value = _db.ListRightPop(GetQueueKey(spider.Identity));
 				if (!value.HasValue)
 				{
 					return null;

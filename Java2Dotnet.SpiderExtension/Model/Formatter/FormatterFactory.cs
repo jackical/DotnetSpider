@@ -1,56 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Java2Dotnet.Spider.Extension.Model.Formatter
 {
 	public class FormatterFactory
 	{
-		private static readonly Dictionary<string, IObjectFormatter> BasicTypeFormatters = new Dictionary<string, IObjectFormatter>();
+		private static readonly Dictionary<string, Type> Formatters = new Dictionary<string, Type>();
 
 		static FormatterFactory()
 		{
-			BasicTypeFormatters.Add(Types.Int.FullName, new IntegerFormatter());
-			BasicTypeFormatters.Add(Types.Double.FullName, new DoubleFormatter());
-			BasicTypeFormatters.Add(Types.Float.FullName, new FloatFormatter());
-			BasicTypeFormatters.Add(Types.Short.FullName, new ShortFormatter());
-			BasicTypeFormatters.Add(Types.Long.FullName, new LongFormatter());
-
-			BasicTypeFormatters.Add(Types.NullableInt.FullName, new NullableIntegerFormatter());
-			BasicTypeFormatters.Add(Types.NullableDouble.FullName, new NullableDoubleFormatter());
-			BasicTypeFormatters.Add(Types.NullableFloat.FullName, new NullableFloatFormatter());
-			BasicTypeFormatters.Add(Types.NullableShort.FullName, new NullableShortFormatter());
-			BasicTypeFormatters.Add(Types.NullableLong.FullName, new NullableLongFormatter());
-
-			BasicTypeFormatters.Add(Types.Char.FullName, new CharactorFormatter());
-			BasicTypeFormatters.Add(Types.Byte.FullName, new ByteFormatter());
-			BasicTypeFormatters.Add(Types.Bool.FullName, new BooleanFormatter());
-			BasicTypeFormatters.Add(Types.String.FullName, new StringFormatter());
-			BasicTypeFormatters.Add(Types.Datetime.FullName, new DatetimeFormatter());
-		}
-
-		public static IObjectFormatter GetFormatter(Type type)
-		{
-			if (type.IsGenericType)
+			var formatterType = typeof(Formatter);
+			var types = formatterType.Assembly.GetTypes().Where(t => t.FullName != formatterType.FullName).ToList();
+			foreach (var type in types)
 			{
-				Type t1 = type.GenericTypeArguments[0];
-				return GetFormatter(t1);
-			}
-			else
-			{
-				return GetTerminalFormatter(type);
+				if (formatterType.IsAssignableFrom(type))
+				{
+					Formatters.Add(type.Name, type);
+				}
 			}
 		}
 
-		public static IObjectFormatter GetTerminalFormatter(Type type)
+		public static Type GetFormatterType(string name)
 		{
-			if (BasicTypeFormatters.ContainsKey(type.FullName))
-			{
-				return BasicTypeFormatters[type.FullName];
-			}
-			else
-			{
-				return null;
-			}
+			return Formatters.ContainsKey(name) ? Formatters[name] : null;
 		}
 	}
 }

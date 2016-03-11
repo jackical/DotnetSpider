@@ -3,7 +3,7 @@
 	"threadnum": 1,
 	"cachedsize": 1,
 	"downloader": {
-		"name": "WebDriverDownloader",
+		"type": "WebDriverDownloader",
 		"brower": "Firefox",
 		"login": {
 			"name": "common",
@@ -29,8 +29,7 @@
 	"pipeline": {
 		"pipelinetype": "mongodb",
 		"arguments": {
-			"host": "mongodb://127.0.0.1",
-			"port": 27017
+			"connectstring": "mongodb://127.0.0.1"
 		}
 	},
 	"site": {

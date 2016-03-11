@@ -1,6 +1,9 @@
-﻿using Java2Dotnet.Spider.Extension.Model.Attribute;
+﻿using Java2Dotnet.Spider.Extension;
+using Java2Dotnet.Spider.Extension.Model.Attribute;
 using Java2Dotnet.Spider.Extension.Processor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Java2Dotnet.Spider.Core.Test.Model
 {
@@ -27,9 +30,17 @@ namespace Java2Dotnet.Spider.Core.Test.Model
 			Page page = new Page(new Request("http://codecraft.us/foo", 1, null), ContentType.Html);
 			page.Content = "<div foo='foo'></div><div bar='bar'></div>";
 			page.Url = ("http://codecraft.us/foo");
-			ModelPageProcessor modelPageProcessor = new ModelPageProcessor<ModelFoo, ModelBar>(new Site());
+			EntityProcessor modelPageProcessor = new EntityProcessor(new Site());
+			JObject entity1 = JsonConvert.DeserializeObject(BaseTask.ConvertToJson(typeof(ModelFoo))) as JObject;
+			JObject entity2 = JsonConvert.DeserializeObject(BaseTask.ConvertToJson(typeof(ModelBar))) as JObject;
+			modelPageProcessor.AddEntity(entity1);
+			modelPageProcessor.AddEntity(entity2);
 			modelPageProcessor.Process(page);
-			Assert.IsFalse(page.ResultItems.IsSkip);
+
+			string result1 = page.ResultItems.GetResultItem(typeof(ModelFoo).FullName).ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", "");
+			string result2 = page.ResultItems.GetResultItem(typeof(ModelBar).FullName).ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", "");
+			Assert.AreEqual("{\"Foo\":\"foo\"}", result1);
+			Assert.AreEqual("{\"Bar\":\"bar\"}", result2);
 		}
 	}
 }

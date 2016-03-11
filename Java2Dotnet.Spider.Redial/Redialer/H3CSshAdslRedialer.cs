@@ -24,11 +24,12 @@ namespace Java2Dotnet.Spider.Redial.Redialer
 			_sshport = port == null ? 22 : int.Parse(port);
 		}
 
-		public H3CSshAdslRedialer(string sshhost, string sshuser, string sshpass, string interface1, string user, string password) : base(interface1, user, password)
+		public H3CSshAdslRedialer(string sshhost,int sshPort, string sshuser, string sshpass, string interface1, string user, string password) : base(interface1, user, password)
 		{
 			_sshhost = sshhost;
 			_sshuser = sshuser;
 			_sshpass = sshpass;
+			_sshport = sshPort;
 		}
 
 		public override void Redial()

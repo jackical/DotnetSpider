@@ -27,6 +27,8 @@ namespace Java2Dotnet.Spider.Core.Scheduler
 		{
 		}
 
+		public abstract void ResetDuplicateCheck(ISpider spider);
+
 		public virtual Request Poll(ISpider spider)
 		{
 			return null;

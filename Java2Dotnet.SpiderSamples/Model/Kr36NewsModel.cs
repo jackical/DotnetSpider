@@ -4,7 +4,6 @@ using Java2Dotnet.Spider.Extension.Model.Attribute;
 namespace Java2Dotnet.Spider.Samples.Model
 {
 	[TargetUrl(new[] { "http://www.36kr.com/p/\\d+.html" })]
-	[HelpUrl(Value = new[] { "http://www.36kr.com/#/page/\\d+" })]
 	public class Kr36NewsModel
 	{
 		[PropertyExtractBy(Expression = "//h1[@class='entry-title sep10']")]

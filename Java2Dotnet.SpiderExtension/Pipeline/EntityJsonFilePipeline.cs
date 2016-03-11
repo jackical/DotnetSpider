@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -20,8 +19,12 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 
 		public EntityJsonFilePipeline(JObject entityDefine, JObject argument)
 		{
-			_entityName = entityDefine.SelectToken("$.identity").ToString();
+			_entityName = entityDefine.SelectToken("$.Identity").ToString();
 			SetPath(argument.ToObject<JsonFilePipelineArgument>()?.Directory);
+		}
+
+		public void Initialize()
+		{
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]

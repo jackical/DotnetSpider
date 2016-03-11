@@ -32,5 +32,27 @@ namespace Java2Dotnet.Spider.Extension.Utils
 				throw new SpiderExceptoin("Can't init redis provider: " + e);
 			}
 		}
+
+		public static ConnectionMultiplexer GetProvider(string host, int port, string password)
+		{
+			try
+			{
+				return ConnectionMultiplexer.Connect(new ConfigurationOptions()
+				{
+					ServiceName = host,
+					Password = password,
+					ConnectTimeout = 5000,
+					KeepAlive = 8,
+					EndPoints =
+					{
+						{host, port }
+					}
+				});
+			}
+			catch (Exception e)
+			{
+				throw new SpiderExceptoin("Can't init redis provider: " + e);
+			}
+		}
 	}
 }

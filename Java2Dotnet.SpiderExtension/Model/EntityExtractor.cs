@@ -1,8 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Selector;
+using Java2Dotnet.Spider.Extension.Configuration;
+using Java2Dotnet.Spider.Extension.Model.Attribute;
+using Java2Dotnet.Spider.Extension.Model.Formatter;
+using Java2Dotnet.Spider.Lib;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Java2Dotnet.Spider.Extension.Model
@@ -21,15 +27,15 @@ namespace Java2Dotnet.Spider.Extension.Model
 		private List<TargetUrlExtractInfo> GenerateTargetUrlExtractInfos(JObject entityDefine)
 		{
 			List<TargetUrlExtractInfo> results = new List<TargetUrlExtractInfo>();
-			var targetUrlTokens = entityDefine.SelectTokens("$.targeturls[*]");
+			var targetUrlTokens = entityDefine.SelectTokens("$.TargetUrls[*]");
 			foreach (var targetUrlToken in targetUrlTokens)
 			{
-				var patterns = targetUrlToken.SelectToken("$.values").ToObject<HashSet<string>>();
-				var sourceregionToken = targetUrlToken.SelectToken("$.sourceregion");
+				var patterns = targetUrlToken.SelectToken("$.Values")?.ToObject<HashSet<string>>();
+				var sourceregionToken = targetUrlToken.SelectToken("$.SourceRegion");
 				results.Add(new TargetUrlExtractInfo()
 				{
 					Patterns = patterns == null || patterns.Count == 0 ? new List<Regex>() { new Regex("(.*)") } : patterns.Select(p => new Regex(p)).ToList(),
-					TargetUrlRegionSelector = sourceregionToken == null || !sourceregionToken.HasValues ? null : Selectors.XPath(sourceregionToken.ToString())
+					TargetUrlRegionSelector = string.IsNullOrEmpty(sourceregionToken?.Value<string>()) ? null : Selectors.XPath(sourceregionToken.ToString())
 				});
 			}
 
@@ -38,13 +44,19 @@ namespace Java2Dotnet.Spider.Extension.Model
 
 		public dynamic Process(Page page)
 		{
-			bool isMulti = _entityDefine.SelectToken("$.multi").ToObject<bool>();
-			ISelector selector = GetSelector(_entityDefine.SelectToken("$.selector").ToObject<ExtractType>(), _entityDefine.SelectToken("$.expression").ToString());
+			bool isMulti = _entityDefine.SelectToken("$.Multi").ToObject<bool>();
+
+			ISelector selector = GetSelector(_entityDefine.SelectToken("$.Selector").ToObject<Selector>());
 
 			if (isMulti)
 			{
+				if (selector == null)
+				{
+					throw new SpiderExceptoin("Selector can't be null when set isMulti true.");
+				}
+
 				var list = page.Selectable.SelectList(selector).Nodes();
-				var countToken = _entityDefine.SelectToken("$.count");
+				var countToken = _entityDefine.SelectToken("$.Count");
 				if (countToken != null)
 				{
 					int count = countToken.ToObject<int>();
@@ -64,11 +76,20 @@ namespace Java2Dotnet.Spider.Extension.Model
 			}
 			else
 			{
-				var select = page.Selectable.Select(selector);
-				if (select == null)
+				ISelectable select;
+				if (selector == null)
 				{
-					return null;
+					select = page.Selectable;
 				}
+				else
+				{
+					select = page.Selectable.Select(selector);
+					if (select == null)
+					{
+						return null;
+					}
+				}
+
 				return ProcessSingle(page, select, _entityDefine);
 			}
 		}
@@ -85,6 +106,21 @@ namespace Java2Dotnet.Spider.Extension.Model
 				return page.TargetUrl;
 			}
 
+			if (field.ToLower() == "now")
+			{
+				return DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+			}
+
+			if (field.ToLower() == "monday")
+			{
+				return DateTimeUtil.FirstDayofThisWeek.ToString("yyyy-MM-dd");
+			}
+
+			if (field.ToLower() == "today")
+			{
+				return DateTimeUtil.TodayRunId;
+			}
+
 			return page.Request.GetExtra(field);
 		}
 
@@ -92,42 +128,68 @@ namespace Java2Dotnet.Spider.Extension.Model
 		{
 			JObject dataItem = new JObject();
 
-			foreach (var field in entityDefine.SelectTokens("$.fields[*]"))
+			foreach (var field in entityDefine.SelectTokens("$.Fields[*]"))
 			{
-				var datatype = field.SelectToken("$.datatype");
+				ISelector selector = GetSelector(field.SelectToken("$.Selector").ToObject<Selector>());
+				if (selector == null)
+				{
+					continue;
+				}
+
+				var datatype = field.SelectToken("$.DataType");
 				bool isEntity = VerifyIfEntity(datatype);
 
-				var multiToken = field.SelectToken("$.multi");
+				var multiToken = field.SelectToken("$.Multi");
 				bool isMulti = multiToken?.ToObject<bool>() ?? false;
 
-				ISelector selector = GetSelector(field.SelectToken("$.selector").ToObject<ExtractType>(),
-						field.SelectToken("$.expression").ToString());
+				string propertyName = field.SelectToken("$.Name").ToString();
 
-				string propertyName = field.SelectToken("$.name").ToString();
+				List<Formatter.Formatter> formatters = GenerateFormatter(field.SelectTokens("$.Formatters[*]"));
 
 				if (!isEntity)
 				{
+					string tmpValue = null;
 					if (selector is EnviromentSelector)
 					{
 						var enviromentSelector = selector as EnviromentSelector;
-						dataItem.Add(propertyName, GetEnviromentValue(enviromentSelector.Field, page));
+						tmpValue = GetEnviromentValue(enviromentSelector.Field, page);
+						foreach (var formatter in formatters)
+						{
+							tmpValue = formatter.Formate(tmpValue);
+						}
+						dataItem.Add(propertyName, tmpValue);
 					}
 					else
 					{
 						if (isMulti)
 						{
 							var propertyValues = item.SelectList(selector).Value;
-							var countToken = _entityDefine.SelectToken("$.count");
+							var countToken = _entityDefine.SelectToken("$.Count");
 							if (countToken != null)
 							{
 								int count = countToken.ToObject<int>();
 								propertyValues = propertyValues.Take(count).ToList();
 							}
-							dataItem.Add(propertyName, new JArray(propertyValues));
+							List<string> results = new List<string>();
+							foreach (var propertyValue in propertyValues)
+							{
+								string tmp = propertyValue;
+								foreach (var formatter in formatters)
+								{
+									tmp = formatter.Formate(tmp);
+								}
+								results.Add(tmp);
+							}
+							dataItem.Add(propertyName, new JArray(results));
 						}
 						else
 						{
-							dataItem.Add(propertyName, new JValue(item.Select(selector).Value));
+							tmpValue = item.Select(selector)?.Value;
+							foreach (var formatter in formatters)
+							{
+								tmpValue = formatter.Formate(tmpValue);
+							}
+							dataItem.Add(propertyName, tmpValue);
 						}
 					}
 
@@ -137,7 +199,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 					if (isMulti)
 					{
 						var propertyValues = item.SelectList(selector).Nodes();
-						var countToken = _entityDefine.SelectToken("$.count");
+						var countToken = _entityDefine.SelectToken("$.Count");
 						if (countToken != null)
 						{
 							int count = countToken.ToObject<int>();
@@ -162,13 +224,46 @@ namespace Java2Dotnet.Spider.Extension.Model
 						{
 							return null;
 						}
-						var perpertyValue = ProcessSingle(page, select, datatype);
-						dataItem.Add(propertyName, new JObject(perpertyValue));
+						var propertyValue = ProcessSingle(page, select, datatype);
+						dataItem.Add(propertyName, new JObject(propertyValue));
 					}
+				}
+			}
+			var stoppingJobject = entityDefine.SelectToken("$.Stopping");
+			var stopping = stoppingJobject?.ToObject<Stopping>();
+
+			if (stopping != null)
+			{
+				var field = entityDefine.SelectToken($"$.Fields[?(@.Name == '{stopping.PropertyName}')]");
+				var datatype = field.SelectToken("$.DataType");
+				bool isEntity = VerifyIfEntity(datatype);
+				if (isEntity)
+				{
+					throw new SpiderExceptoin("Can't compare with object.");
+				}
+				stopping.DataType = datatype.ToString().ToLower();
+				if (stopping.NeedStop(dataItem.SelectToken($"$.{stopping.PropertyName}")?.ToString()))
+				{
+					Console.WriteLine("STOPPING: " + stoppingJobject.ToString() + " Worked.");
+					page.IsSkip = true;
 				}
 			}
 
 			return dataItem;
+		}
+
+		private List<Formatter.Formatter> GenerateFormatter(IEnumerable<JToken> selectTokens)
+		{
+			var results = new List<Formatter.Formatter>();
+			foreach (var selectToken in selectTokens)
+			{
+				Type type = FormatterFactory.GetFormatterType(selectToken.SelectToken("$.Name")?.ToString());
+				if (type != null)
+				{
+					results.Add(selectToken.ToObject(type) as Formatter.Formatter);
+				}
+			}
+			return results;
 		}
 
 		private bool VerifyIfEntity(JToken datatype)
@@ -182,9 +277,16 @@ namespace Java2Dotnet.Spider.Extension.Model
 		public List<TargetUrlExtractInfo> TargetUrlExtractInfos { get; }
 		public string EntityName { get; }
 
-		private static ISelector GetSelector(ExtractType selector, string expression)
+		private static ISelector GetSelector(Selector selector)
 		{
-			switch (selector)
+			if (string.IsNullOrEmpty(selector?.Expression))
+			{
+				return null;
+			}
+
+			string expression = selector.Expression;
+
+			switch (selector.Type)
 			{
 				case ExtractType.Css:
 					{

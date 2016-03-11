@@ -7,7 +7,8 @@ namespace Java2Dotnet.Spider.Extension.Model.Formatter
 	{
 		public IObjectFormatter NextFormatter { get; set; }
 
-		public string[] Extra;
+		public string[] Extra { get; set; }
+
 		public Page Page { get; set; }
 
 		public void InitParam(string[] extra)

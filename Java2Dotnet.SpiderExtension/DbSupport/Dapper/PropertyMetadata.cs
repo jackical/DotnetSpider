@@ -59,11 +59,6 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 						result = "TINYINT(1) " + (notNull ? "NOT NULL" : "NULL");
 						break;
 					}
-				case StoredAs.ValueType.Char:
-					{
-						result = $"CHAR ({(length <= 1 ? 1 : length)}) " + (notNull ? "NOT NULL" : "NULL");
-						break;
-					}
 				case StoredAs.ValueType.Float:
 					{
 						result = $"FLOAT {(length > 0 ? $"({length})" : "")} " + (notNull ? "NOT NULL" : "NULL");
@@ -84,7 +79,7 @@ namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
 						result = $"TIMESTAMP {(length > 0 ? $"({length})" : "")} " + (notNull ? "NOT NULL" : "NULL") + " DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
 						break;
 					}
-				case StoredAs.ValueType.Varchar:
+				case StoredAs.ValueType.String:
 					{
 						result = $"VARCHAR {(length > 0 ? $"({length})" : "(50)")} " + (notNull ? "NOT NULL" : "NULL");
 						break;
