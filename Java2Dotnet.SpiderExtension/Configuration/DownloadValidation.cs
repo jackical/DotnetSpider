@@ -3,7 +3,7 @@ using Java2Dotnet.Spider.Core.Downloader;
 
 namespace Java2Dotnet.Spider.Extension.Configuration
 {
-	public abstract class DownloadValidation : IJObject
+	public abstract class DownloadValidation : IJobject
 	{
 		public enum Types
 		{
@@ -17,7 +17,6 @@ namespace Java2Dotnet.Spider.Extension.Configuration
 	public class ContainsDownloadValidation : DownloadValidation
 	{
 		public string ContainsString { get; set; }
-
 		public DownloadValidationResult Result { get; set; }
 
 		public override Types Type { get; internal set; } = Types.Contains;

@@ -3,7 +3,7 @@ using Java2Dotnet.Spider.Core;
 
 namespace Java2Dotnet.Spider.Extension.Configuration
 {
-	public abstract class CustomizePage : IJObject
+	public abstract class CustomizePage : IJobject
 	{
 		public enum Types
 		{

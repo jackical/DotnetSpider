@@ -2,7 +2,7 @@
 
 namespace Java2Dotnet.Spider.Extension.Configuration
 {
-	public abstract class Scheduler : IJObject
+	public abstract class Scheduler : IJobject
 	{
 		public enum Types
 		{

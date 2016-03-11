@@ -7,7 +7,7 @@ namespace Java2Dotnet.Spider.Extension.Configuration
 	/// 配置下载器
 	/// Http, WebDriver, Fiddler
 	/// </summary>
-	public abstract class Downloader : IJObject
+	public abstract class Downloader : IJobject
 	{
 		public enum Types
 		{

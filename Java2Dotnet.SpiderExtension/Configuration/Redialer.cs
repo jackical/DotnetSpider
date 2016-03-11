@@ -2,7 +2,7 @@
 
 namespace Java2Dotnet.Spider.Extension.Configuration
 {
-	public abstract class Redialer : IJObject
+	public abstract class Redialer : IJobject
 	{
 		public enum Types
 		{

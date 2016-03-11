@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace Java2Dotnet.Spider.Extension.Configuration
 {
-	public abstract class PrepareStartUrls : IJObject
+	public abstract class PrepareStartUrls : IJobject
 	{
 		public enum Types
 		{

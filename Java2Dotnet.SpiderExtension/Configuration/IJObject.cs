@@ -1,15 +1,15 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Java2Dotnet.Spider.Extension
+namespace Java2Dotnet.Spider.Extension.Configuration
 {
-	public interface IJObject
+	public interface IJobject
 	{
 	}
 
 	public static class JsonObjectExtension
 	{
-		public static JObject ToJObject(this IJObject jsonObj)
+		public static JObject ToJObject(this IJobject jsonObj)
 		{
 			return JsonConvert.DeserializeObject(JsonConvert.SerializeObject(jsonObj)) as JObject;
 		}

@@ -7,7 +7,7 @@ using OpenQA.Selenium.Remote;
 
 namespace Java2Dotnet.Spider.Extension.Configuration
 {
-	public abstract class Loginer : IJObject
+	public abstract class Loginer : IJobject
 	{
 		public enum Types
 		{
