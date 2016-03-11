@@ -1,4 +1,4 @@
-﻿namespace Java2Dotnet.Spider.Extension.DbSupport
+﻿namespace Java2Dotnet.Spider.Extension.ORM
 {
 	public enum TableSuffix
 	{

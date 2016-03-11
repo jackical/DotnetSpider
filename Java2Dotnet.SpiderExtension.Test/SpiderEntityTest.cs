@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using Java2Dotnet.Spider.Extension.DbSupport;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
+using Java2Dotnet.Spider.Extension.ORM;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Java2Dotnet.Spider.Extension.Test

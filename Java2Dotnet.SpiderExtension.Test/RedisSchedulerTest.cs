@@ -52,33 +52,33 @@ namespace Java2Dotnet.Spider.Extension.Test
 			m.RemoveTask(spider.Identity);
 		}
 	}
-}
 
-internal class TestSpider : ISpider
-{
-	public string Identity => "1";
-
-	public Site Site => null;
-	public void Start()
+	internal class TestSpider : ISpider
 	{
-	}
+		public string Identity => "1";
 
-	public void Run()
-	{
-	}
+		public Site Site => null;
+		public void Start()
+		{
+		}
 
-	public void Stop()
-	{
-	}
+		public void Run()
+		{
+		}
 
-	public Dictionary<string, dynamic> Settings { get; } = new Dictionary<string, dynamic>();
+		public void Stop()
+		{
+		}
 
-	public void Exit()
-	{
+		public Dictionary<string, dynamic> Settings { get; } = new Dictionary<string, dynamic>();
 
-	}
+		public void Exit()
+		{
 
-	public void Dispose()
-	{
+		}
+
+		public void Dispose()
+		{
+		}
 	}
 }

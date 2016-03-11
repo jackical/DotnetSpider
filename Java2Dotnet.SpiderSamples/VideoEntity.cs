@@ -1,5 +1,5 @@
-﻿using Java2Dotnet.Spider.Extension.DbSupport;
-using Java2Dotnet.Spider.Extension.Model.Attribute;
+﻿using Java2Dotnet.Spider.Extension.Model.Attribute;
+using Java2Dotnet.Spider.Extension.ORM;
 
 namespace Java2Dotnet.Spider.Samples
 {

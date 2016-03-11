@@ -127,9 +127,9 @@
     <Compile Include="Configuration\SpiderContext.cs" />
     <Compile Include="Configuration\SpiderContextValidation.cs" />
     <Compile Include="Configuration\Macros.cs" />
-    <Compile Include="DbSupport\Scheme.cs" />
-    <Compile Include="DbSupport\StoredAs.cs" />
-    <Compile Include="DbSupport\Dapper\SqlMapperExtention.cs" />
+    <Compile Include="ORM\Scheme.cs" />
+    <Compile Include="ORM\StoredAs.cs" />
+    <Compile Include="ORM\Dapper\SqlMapperExtention.cs" />
     <Compile Include="Downloader\WebDriver\Browser.cs" />
     <Compile Include="Downloader\FiddlerDownloader.cs" />
     <Compile Include="Downloader\FileDownloader.cs" />
@@ -166,7 +166,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Monitor\ISpiderStatus.cs" />
-    <Compile Include="MultiPageModel.cs" />
+    <Compile Include="Model\MultiPageModel.cs" />
     <Compile Include="Pipeline\EntityCollectorPipeline.cs" />
     <Compile Include="Pipeline\EntityJsonFilePipeline.cs" />
     <Compile Include="Pipeline\EntityMySqlPipeline.cs" />
@@ -178,7 +178,7 @@
     <Compile Include="Pipeline\EntityMySqlFilePipeline.cs" />
     <Compile Include="Pipeline\ImagePipeline.cs" />
     <Compile Include="Pipeline\PipelineModel.cs" />
-    <Compile Include="DbSupport\TableSuffix.cs" />
+    <Compile Include="ORM\TableSuffix.cs" />
     <Compile Include="Processor\EntityProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduler\ISchedulerManager.cs" />

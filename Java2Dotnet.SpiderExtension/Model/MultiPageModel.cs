@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Java2Dotnet.Spider.Extension
+namespace Java2Dotnet.Spider.Extension.Model
 {
 	public interface IMultiPageModel
 	{

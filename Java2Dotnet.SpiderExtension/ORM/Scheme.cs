@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Java2Dotnet.Spider.Extension.DbSupport
+namespace Java2Dotnet.Spider.Extension.ORM
 {
 	[AttributeUsage(AttributeTargets.Class)]
 	public class Schema : Attribute

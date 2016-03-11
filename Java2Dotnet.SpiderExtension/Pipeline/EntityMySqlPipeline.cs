@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Text;
 using Java2Dotnet.Spider.Core;
+using Java2Dotnet.Spider.Extension.ORM;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json.Linq;
-using Java2Dotnet.Spider.Extension.DbSupport;
 using Java2Dotnet.Spider.Extension.Utils;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline

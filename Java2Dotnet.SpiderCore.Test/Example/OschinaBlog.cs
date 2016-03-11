@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Java2Dotnet.Spider.Extension;
 using Java2Dotnet.Spider.Extension.Configuration;
-using Java2Dotnet.Spider.Extension.DbSupport;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
+using Java2Dotnet.Spider.Extension.ORM;
 using Java2Dotnet.Spider.Lib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

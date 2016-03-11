@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Java2Dotnet.Spider.Extension;
+using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
 
 namespace Java2Dotnet.Spider.Samples.Model

@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using Java2Dotnet.Spider.Core;
 using Newtonsoft.Json.Linq;
 using Dapper;
-using Java2Dotnet.Spider.Extension.DbSupport;
+using Java2Dotnet.Spider.Extension.ORM;
 using Java2Dotnet.Spider.Extension.Utils;
 using Java2Dotnet.Spider.Lib;
 using PropertyAttributes = System.Reflection.PropertyAttributes;

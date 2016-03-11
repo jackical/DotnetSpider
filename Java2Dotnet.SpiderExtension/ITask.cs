@@ -4,10 +4,10 @@ using System.Linq;
 using System.Reflection;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Extension.Configuration;
-using Java2Dotnet.Spider.Extension.DbSupport;
 using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
 using Java2Dotnet.Spider.Extension.Model.Formatter;
+using Java2Dotnet.Spider.Extension.ORM;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -27,22 +27,8 @@ namespace Java2Dotnet.Spider.Extension
 		{
 			Build();
 
-			string json = JsonConvert.SerializeObject(Context);
-			_context = JsonConvert.DeserializeObject<SpiderContext>(json);
-
-			List<string> errorMessages;
-			if (SpiderContextValidation.Validate(Context, out errorMessages))
-			{
-				ScriptSpider spider = new ScriptSpider(Context);
-				spider.Run(args);
-			}
-			else
-			{
-				foreach (var errorMessage in errorMessages)
-				{
-					Console.WriteLine(errorMessage);
-				}
-			}
+			ScriptSpider spider = new ScriptSpider(Context);
+			spider.Run(args);
 		}
 
 		public void Build()

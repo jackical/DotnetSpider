@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Java2Dotnet.Spider.Core;
 using Java2Dotnet.Spider.Core.Utils;
-using Java2Dotnet.Spider.Extension.DbSupport;
+using Java2Dotnet.Spider.Extension.ORM;
 using Newtonsoft.Json.Linq;
 
 namespace Java2Dotnet.Spider.Extension.Pipeline
@@ -35,28 +35,26 @@ namespace Java2Dotnet.Spider.Extension.Pipeline
 		{
 			FileInfo file = PrepareFile(BasePath + $"{Schema.Database}.{Schema.TableName}.df");
 
-			using (StreamWriter printWriter = new StreamWriter(file.OpenWrite(), Encoding.UTF8))
+
+			StringBuilder builder = new StringBuilder();
+
+			foreach (var entry in datas)
 			{
-				foreach (var entry in datas)
+				builder.Append("@END@");
+				foreach (var column in Columns)
 				{
-					StringBuilder builder = new StringBuilder();
-					builder.Append("@END@");
-					foreach (var column in Columns)
+					var value = entry.SelectToken($"$.{column.Name}")?.ToString();
+					if (!string.IsNullOrEmpty(value))
 					{
-						var value = entry.SelectToken($"$.{column.Name}")?.ToString();
-						if (!string.IsNullOrEmpty(value))
-						{
-							builder.Append("#").Append(value).Append("#").Append("$");
-						}
-						else
-						{
-							builder.Append("##$");
-						}
+						builder.Append("#").Append(value).Append("#").Append("$");
 					}
-					builder.Remove(builder.Length - 1, 1);
-					printWriter.Write(builder);
+					else
+					{
+						builder.Append("##$");
+					}
 				}
 			}
+			File.AppendAllText(file.FullName, builder.ToString());
 		}
 
 		public void Dispose()

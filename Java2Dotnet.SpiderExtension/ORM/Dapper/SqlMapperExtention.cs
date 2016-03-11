@@ -3,7 +3,7 @@ using System.Data;
 using System.Linq;
 using Dapper;
 
-namespace Java2Dotnet.Spider.Extension.DbSupport.Dapper
+namespace Java2Dotnet.Spider.Extension.ORM.Dapper
 {
 	public static class SqlMapperExtention
 	{
