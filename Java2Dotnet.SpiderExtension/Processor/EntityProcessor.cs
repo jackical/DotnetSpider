@@ -42,15 +42,19 @@ namespace Java2Dotnet.Spider.Extension.Processor
 
 				page.AddResultItem(pageModelExtractor.EntityName, process);
 
-				if (GetCustomizeTargetUrls == null)
+				if (!page.MissTargetUrls)
 				{
-					ExtractLinks(page, pageModelExtractor.TargetUrlExtractInfos);
-				}
-				else
-				{
-					page.AddTargetRequests(GetCustomizeTargetUrls(page));
+					if (GetCustomizeTargetUrls == null)
+					{
+						ExtractLinks(page, pageModelExtractor.TargetUrlExtractInfos);
+					}
+					else
+					{
+						page.AddTargetRequests(GetCustomizeTargetUrls(page));
+					}
 				}
 			}
+
 			if (page.ResultItems.Results.Count == 0)
 			{
 				page.ResultItems.IsSkip = true;

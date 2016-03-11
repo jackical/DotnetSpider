@@ -240,8 +240,7 @@ namespace Java2Dotnet.Spider.Extension.Model
 				stopping.DataType = datatype.ToString().ToLower();
 				if (stopping.NeedStop(dataItem.SelectToken($"$.{stopping.PropertyName}")?.ToString()))
 				{
-					Console.WriteLine("STOPPING: " + stopping + " Worked.");
-					page.IsSkip = true;
+					page.MissTargetUrls = true;
 				}
 			}
 
