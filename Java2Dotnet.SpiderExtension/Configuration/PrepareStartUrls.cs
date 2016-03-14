@@ -3,8 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Java2Dotnet.Spider.Core;
+using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Formatter;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json.Linq;
 
 namespace Java2Dotnet.Spider.Extension.Configuration
 {
@@ -23,6 +25,12 @@ namespace Java2Dotnet.Spider.Extension.Configuration
 
 	public class GeneralDbPrepareStartUrls : PrepareStartUrls
 	{
+		public class Column
+		{
+			public string Name { get; set; }
+			public List<JObject> Formatters { get; set; }
+		}
+
 		public enum DataSource
 		{
 			MySql,
@@ -49,7 +57,7 @@ namespace Java2Dotnet.Spider.Extension.Configuration
 		/// <summary>
 		/// 用于拼接Url所需要的列
 		/// </summary>
-		public string[] Columns { get; set; }
+		public List<Column> Columns { get; set; }
 
 		public int Limit { get; set; }
 
@@ -63,6 +71,13 @@ namespace Java2Dotnet.Spider.Extension.Configuration
 
 		public override void Build(Site site)
 		{
+			Dictionary<Column, List<Formatter>> dic = new Dictionary<Column, List<Formatter>>();
+			foreach (var column in Columns)
+			{
+				List<Formatter> formatters = EntityExtractor.GenerateFormatter(column.Formatters);
+				dic.Add(column, formatters);
+			}
+
 			using (var conn = new MySqlConnection(ConnectString))
 			{
 				var data = conn.Query(GetSelectQueryString());
@@ -70,11 +85,22 @@ namespace Java2Dotnet.Spider.Extension.Configuration
 				Parallel.ForEach(data, new ParallelOptions { MaxDegreeOfParallelism = 1 }, brand =>
 				{
 					IDictionary<string, object> tmp = (IDictionary<string, object>)brand;
-					var arguments = Columns.Select(c => tmp[c]).ToArray();
+					List<string> arguments = new List<string>();
+					foreach (var column in Columns)
+					{
+						string value = tmp[column.Name]?.ToString();
 
-					string tmpUrl = string.Format(FormateString, arguments);
+						foreach (var formatter in dic[column])
+						{
+							value = formatter.Formate(value);
+						}
+						arguments.Add(value);
+					}
+
+					string tmpUrl = string.Format(FormateString, arguments.Cast<object>().ToArray());
 
 					tmpUrl = CustomizeFormaters.Aggregate(tmpUrl, (current, customizeFormater) => customizeFormater.Formate(current));
+
 
 					site.AddStartUrl(tmpUrl, tmp);
 				});

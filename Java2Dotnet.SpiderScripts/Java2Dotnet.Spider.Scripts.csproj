@@ -82,8 +82,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ScriptProcessorBuilder.cs" />
-    <Compile Include="ScriptProcessor.cs" />
     <Compile Include="ScriptConsole.cs" />
     <EmbeddedResource Include="Resource\js\youkuvideo.js" />
     <EmbeddedResource Include="Resource\js\define.js" />

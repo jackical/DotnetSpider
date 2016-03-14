@@ -254,7 +254,8 @@ namespace Java2Dotnet.Spider.Extension
 			{
 				case PrepareStartUrls.Types.GeneralDb:
 					{
-						prepareStartUrls = _spiderContext.PrepareStartUrls.ToObject<GeneralDbPrepareStartUrls>();
+						var tmp = _spiderContext.PrepareStartUrls.ToObject<GeneralDbPrepareStartUrls>();
+						prepareStartUrls = tmp;
 						break;
 					}
 				case PrepareStartUrls.Types.Cycle:

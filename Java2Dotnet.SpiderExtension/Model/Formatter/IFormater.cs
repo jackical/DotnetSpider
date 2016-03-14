@@ -1,9 +1,10 @@
 ﻿using System;
+using Java2Dotnet.Spider.Extension.Configuration;
 
 namespace Java2Dotnet.Spider.Extension.Model.Formatter
 {
 	[AttributeUsage(AttributeTargets.Property)]
-	public abstract class Formatter : System.Attribute
+	public abstract class Formatter : System.Attribute, IJobject
 	{
 		public abstract string Name { get; internal set; }
 

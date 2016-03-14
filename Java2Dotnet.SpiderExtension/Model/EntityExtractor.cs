@@ -238,17 +238,29 @@ namespace Java2Dotnet.Spider.Extension.Model
 					throw new SpiderExceptoin("Can't compare with object.");
 				}
 				stopping.DataType = datatype.ToString().ToLower();
-				if (stopping.NeedStop(dataItem.SelectToken($"$.{stopping.PropertyName}")?.ToString()))
+				string value = dataItem.SelectToken($"$.{stopping.PropertyName}")?.ToString();
+				if (string.IsNullOrEmpty(value))
 				{
 					page.MissTargetUrls = true;
+				}
+				else
+				{
+					if (stopping.NeedStop(value))
+					{
+						page.MissTargetUrls = true;
+					}
 				}
 			}
 
 			return dataItem;
 		}
 
-		private List<Formatter.Formatter> GenerateFormatter(IEnumerable<JToken> selectTokens)
+		public static List<Formatter.Formatter> GenerateFormatter(IEnumerable<JToken> selectTokens)
 		{
+			if (selectTokens == null)
+			{
+				return new List<Formatter.Formatter>();
+			}
 			var results = new List<Formatter.Formatter>();
 			foreach (var selectToken in selectTokens)
 			{

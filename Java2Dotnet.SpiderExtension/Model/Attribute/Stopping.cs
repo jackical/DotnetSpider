@@ -31,114 +31,168 @@ namespace Java2Dotnet.Spider.Extension.Model.Attribute
 
 			if (RegexUtil.IntTypeRegex.IsMatch(DataType))
 			{
-				switch (Operate)
+				int realValue = 0;
+				int compareValue = 0;
+				if (int.TryParse(value, out realValue) && int.TryParse(CompareValue, out compareValue))
 				{
-					case Operate.Equal:
-						{
-							return int.Parse(value) == int.Parse(CompareValue);
-						}
-					case Operate.Large:
-						{
-							return int.Parse(value) > int.Parse(CompareValue);
-						}
-					case Operate.Less:
-						{
-							return int.Parse(value) < int.Parse(CompareValue);
-						}
+					switch (Operate)
+					{
+						case Operate.Equal:
+							{
+								return realValue == compareValue;
+							}
+						case Operate.Large:
+							{
+								return realValue > compareValue;
+							}
+						case Operate.Less:
+							{
+								return realValue < compareValue;
+							}
+					}
+				}
+				else
+				{
+					throw new SpiderExceptoin($"Can't parse to int: Value-{value}, CompareValue-{CompareValue}");
 				}
 			}
 
 			if (RegexUtil.BigIntTypeRegex.IsMatch(DataType))
 			{
-				switch (Operate)
+				long realValue = 0;
+				long compareValue = 0;
+				if (long.TryParse(value, out realValue) && long.TryParse(CompareValue, out compareValue))
 				{
-					case Operate.Equal:
-						{
-							return long.Parse(value) == long.Parse(CompareValue);
-						}
-					case Operate.Large:
-						{
-							return long.Parse(value) > long.Parse(CompareValue);
-						}
-					case Operate.Less:
-						{
-							return long.Parse(value) < long.Parse(CompareValue);
-						}
+					switch (Operate)
+					{
+						case Operate.Equal:
+							{
+								return realValue == compareValue;
+							}
+						case Operate.Large:
+							{
+								return realValue > compareValue;
+							}
+						case Operate.Less:
+							{
+								return realValue < compareValue;
+							}
+					}
+				}
+				else
+				{
+					throw new SpiderExceptoin($"Can't parse to long: Value-{value}, CompareValue-{CompareValue}");
 				}
 			}
 
 			if (RegexUtil.FloatTypeRegex.IsMatch(DataType))
 			{
-				switch (Operate)
+				float realValue = 0;
+				float compareValue = 0;
+				if (float.TryParse(value, out realValue) && float.TryParse(CompareValue, out compareValue))
 				{
-					case Operate.Equal:
-						{
-							return Equals(float.Parse(value), float.Parse(CompareValue));
-						}
-					case Operate.Large:
-						{
-							return float.Parse(value) > float.Parse(CompareValue);
-						}
-					case Operate.Less:
-						{
-							return float.Parse(value) < float.Parse(CompareValue);
-						}
+					switch (Operate)
+					{
+						case Operate.Equal:
+							{
+								return Equals(realValue, compareValue);
+							}
+						case Operate.Large:
+							{
+								return realValue > compareValue;
+							}
+						case Operate.Less:
+							{
+								return realValue < compareValue;
+							}
+					}
+				}
+				else
+				{
+					throw new SpiderExceptoin($"Can't parse to float: Value-{value}, CompareValue-{CompareValue}");
 				}
 			}
 
 			if (RegexUtil.DoubleTypeRegex.IsMatch(DataType))
 			{
-				switch (Operate)
+				double realValue = 0;
+				double compareValue = 0;
+				if (double.TryParse(value, out realValue) && double.TryParse(CompareValue, out compareValue))
 				{
-					case Operate.Equal:
-						{
-							return Equals(double.Parse(value), double.Parse(CompareValue));
-						}
-					case Operate.Large:
-						{
-							return double.Parse(value) > double.Parse(CompareValue);
-						}
-					case Operate.Less:
-						{
-							return double.Parse(value) < double.Parse(CompareValue);
-						}
+					switch (Operate)
+					{
+						case Operate.Equal:
+							{
+								return Equals(realValue, compareValue);
+							}
+						case Operate.Large:
+							{
+								return realValue > compareValue;
+							}
+						case Operate.Less:
+							{
+								return realValue < compareValue;
+							}
+					}
+				}
+				else
+				{
+					throw new SpiderExceptoin($"Can't parse to double: Value-{value}, CompareValue-{CompareValue}");
 				}
 			}
 			if (RegexUtil.DateTypeRegex.IsMatch(DataType) || RegexUtil.TimeStampTypeRegex.IsMatch(DataType))
 			{
-				switch (Operate)
+				DateTime realValue;
+				DateTime compareValue;
+				if (DateTime.TryParse(value, out realValue) && DateTime.TryParse(CompareValue, out compareValue))
 				{
-					case Operate.Equal:
-						{
-							return DateTime.Parse(value) == DateTime.Parse(CompareValue);
-						}
-					case Operate.Large:
-						{
-							return DateTime.Parse(value) > DateTime.Parse(CompareValue);
-						}
-					case Operate.Less:
-						{
-							return DateTime.Parse(value) < DateTime.Parse(CompareValue);
-						}
+					switch (Operate)
+					{
+						case Operate.Equal:
+							{
+								return Equals(realValue, compareValue);
+							}
+						case Operate.Large:
+							{
+								return realValue > compareValue;
+							}
+						case Operate.Less:
+							{
+								return realValue < compareValue;
+							}
+					}
+				}
+				else
+				{
+					throw new SpiderExceptoin($"Can't parse to DateTime: Value-{value}, CompareValue-{CompareValue}");
 				}
 			}
 
 			if (RegexUtil.TimeStampTypeRegex.IsMatch(DataType) || RegexUtil.DateTypeRegex.IsMatch(DataType))
 			{
-				switch (Operate)
+				DateTime realValue;
+				DateTime compareValue;
+				if (DateTime.TryParse(value, out realValue) && DateTime.TryParse(CompareValue, out compareValue))
 				{
-					case Operate.Equal:
-						{
-							return DateTime.Parse(value) == DateTime.Parse(CompareValue);
-						}
-					case Operate.Large:
-						{
-							return DateTime.Parse(value) > DateTime.Parse(CompareValue);
-						}
-					case Operate.Less:
-						{
-							return DateTime.Parse(value) < DateTime.Parse(CompareValue);
-						}
+					switch (Operate)
+					{
+						case Operate.Equal:
+							{
+								return Equals(realValue, compareValue);
+							}
+						case Operate.Large:
+							{
+								return realValue > compareValue;
+							}
+						case Operate.Less:
+							{
+								return realValue < compareValue;
+							}
+					}
+				}
+				else
+				{
+					throw new SpiderExceptoin($"Can't parse to DateTime: Value-{value}, CompareValue-{CompareValue}");
 				}
 			}
 

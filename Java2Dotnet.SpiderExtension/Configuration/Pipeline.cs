@@ -1,4 +1,5 @@
-﻿using Java2Dotnet.Spider.Extension.ORM;
+﻿using Java2Dotnet.Spider.Core;
+using Java2Dotnet.Spider.Extension.ORM;
 using Java2Dotnet.Spider.Extension.Pipeline;
 using Newtonsoft.Json.Linq;
 
@@ -30,7 +31,8 @@ namespace Java2Dotnet.Spider.Extension.Configuration
 
 		public override IEntityPipeline GetPipeline(Schema schema, JObject entityDefine)
 		{
-			return new EntityMongoDbPipeline(schema, Host, Port, Password);
+			//return new EntityMongoDbPipeline(schema, Host, Port, Password);
+			throw new SpiderExceptoin("UNSPORT");
 		}
 	}
 

@@ -26,10 +26,10 @@ namespace Java2Dotnet.Spider.Samples
 				},
 				PrepareStartUrls = new GeneralDbPrepareStartUrls()
 				{
-					Source =  GeneralDbPrepareStartUrls.DataSource.MySql,
+					Source = GeneralDbPrepareStartUrls.DataSource.MySql,
 					TableName = "jd.category",
 					ConnectString = "Database='jd';Data Source= ooodata.com;User ID=root;Password=qwIi1DBlTjm1jYBo;Port=3306",
-					Columns = new[] { "url" },
+					Columns = new List<GeneralDbPrepareStartUrls.Column>() { new GeneralDbPrepareStartUrls.Column() { Name = "url" } },
 					FormateString = "{0}&page=1&JL=6_0_0",
 					CustomizeFormaters = new List<Formatter>() { new ReplaceFormatter() { OldValue = ".html", NewValue = "" } }
 				}.ToJObject(),

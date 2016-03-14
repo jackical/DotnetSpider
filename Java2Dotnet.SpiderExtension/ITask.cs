@@ -8,6 +8,7 @@ using Java2Dotnet.Spider.Extension.Model;
 using Java2Dotnet.Spider.Extension.Model.Attribute;
 using Java2Dotnet.Spider.Extension.Model.Formatter;
 using Java2Dotnet.Spider.Extension.ORM;
+using Java2Dotnet.Spider.Lib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
